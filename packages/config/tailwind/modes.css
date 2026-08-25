@@ -1,0 +1,66 @@
+/*
+ * Semantic, mode-aware tokens. These declare Tailwind's own theme-facing
+ * custom property names directly (--color-background, not an aliased
+ * --background that --color-background points at) — Tailwind's CSS
+ * optimizer statically folds simple var() indirection chains declared
+ * inside @theme, which silently freezes an aliased token to its light
+ * value and breaks dark-mode switching. Declaring the final name directly
+ * here, outside @theme, sidesteps that: these rules are unlayered CSS, and
+ * unlayered rules always beat the @theme-generated defaults (which live in
+ * `@layer theme`), so they reliably override per `[data-mode]`.
+ *
+ * `:root` is the light default — apps/web never opts into anything else.
+ * apps/portal and apps/admin set `<html data-mode="dark">` in their root
+ * layout to flip to the dark palette; those are the only two apps that
+ * ever paint ink/steel as a background. A `data-mode="dark"` wrapper can
+ * also be nested anywhere (e.g. the style-guide's dark preview blocks)
+ * since this is a plain cascading attribute, not a page-level switch.
+ */
+:root {
+  --color-background: var(--palette-paper);
+  /* Light mode has no separate "card" hue of its own — surface stays
+     paper, and cards are set apart with --color-border / shadow instead,
+     so as not to invent a 7th neutral outside the given palette. */
+  --color-surface: var(--palette-paper);
+  --color-foreground: var(--palette-ink);
+  --color-muted: var(--palette-mist);
+  --color-border: color-mix(in srgb, var(--palette-mist) 35%, var(--color-background));
+
+  /* Accent "text" role: the AA-safe shade of each accent for whichever
+     surface is currently active — text, icons, dots, borders. */
+  --color-beacon: var(--palette-beacon-on-light);
+  --color-cleared: var(--palette-cleared-on-light);
+  --color-danger: var(--palette-danger);
+
+  /* Accent "soft" role: a low-opacity wash used as badge/pill backgrounds,
+     mixed from the *solid* hue (not the darkened text variant) so the
+     wash still reads as the true brand hue at a glance. */
+  --color-beacon-soft: color-mix(in srgb, var(--palette-beacon) 14%, var(--color-surface));
+  --color-cleared-soft: color-mix(in srgb, var(--palette-cleared) 14%, var(--color-surface));
+
+  /* Elevation: a normal soft dark cast reads fine on a light surface. */
+  --shadow-sm: 0 1px 2px rgb(26 23 20 / 0.06);
+  --shadow-md: 0 6px 16px rgb(26 23 20 / 0.1), 0 1px 2px rgb(26 23 20 / 0.06);
+  --shadow-lg: 0 16px 40px rgb(26 23 20 / 0.16), 0 2px 6px rgb(26 23 20 / 0.08);
+}
+
+[data-mode="dark"] {
+  --color-background: var(--palette-ink);
+  --color-surface: var(--palette-steel);
+  --color-foreground: var(--palette-paper);
+  --color-muted: var(--palette-mist-on-dark);
+  --color-border: color-mix(in srgb, var(--palette-mist) 35%, var(--color-background));
+
+  --color-beacon: var(--palette-beacon);
+  --color-cleared: var(--palette-cleared);
+  --color-danger: var(--palette-danger-on-dark);
+
+  --color-beacon-soft: color-mix(in srgb, var(--palette-beacon) 16%, var(--color-surface));
+  --color-cleared-soft: color-mix(in srgb, var(--palette-cleared) 16%, var(--color-surface));
+
+  /* A dark cast shadow is invisible against near-black ink/steel, so
+     elevation in dark mode reads as a faint light-colored glow instead. */
+  --shadow-sm: 0 1px 2px rgb(246 247 249 / 0.06);
+  --shadow-md: 0 6px 16px rgb(246 247 249 / 0.1), 0 1px 2px rgb(246 247 249 / 0.06);
+  --shadow-lg: 0 16px 40px rgb(246 247 249 / 0.16), 0 2px 6px rgb(246 247 249 / 0.08);
+}

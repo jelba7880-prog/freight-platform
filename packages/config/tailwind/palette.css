@@ -1,0 +1,57 @@
+/*
+ * Raw brand hues. These are the ONLY literal hex values anywhere in the
+ * design system — every semantic token in modes.css, and every Tailwind
+ * utility generated from theme.css, resolves back to one of these. Never
+ * write a hex value anywhere else; add a new semantic token here instead.
+ *
+ * ink / steel / paper / mist / beacon / cleared come directly from the
+ * Visual Direction spec. `danger` does not — the spec gives no
+ * error/validation color, but Input requires a real error state, so this
+ * is a deliberate, minimal addition, contrast-checked the same way as
+ * every other accent below.
+ */
+:root {
+  /* Ink — dark, warm charcoal (NOT navy/cool black). Background for
+     apps/portal and apps/admin ONLY — apps/web never paints this. */
+  --palette-ink: #1a1714;
+
+  /* Steel — dark, warm charcoal, one step lighter than ink. Card/surface
+     fill in apps/portal and apps/admin ONLY. */
+  --palette-steel: #241f1a;
+
+  /* Paper — light neutral. Background for apps/web (always). Also the
+     foreground text color inside apps/portal and apps/admin. */
+  --palette-paper: #f6f7f9;
+
+  /* Mist — secondary text / borders, both modes, as given. */
+  --palette-mist: #5c6b80;
+  /* Mist lightened along the same hue: plain mist is only 3.29:1 against
+     ink and 3.01:1 against steel — short of WCAG AA's 4.5:1 for normal
+     text. Used for muted/secondary text in dark mode; light mode keeps
+     plain mist (5.06:1 against paper already passes AA). */
+  --palette-mist-on-dark: #7c8ca3;
+
+  /* Beacon — amber. In-transit / active state / primary accent, as given. */
+  --palette-beacon: #e2a33b;
+  /* Beacon darkened along the same hue: #E2A33B is only 2.05:1 against
+     paper, well short of AA (and even short of the 3:1 non-text minimum).
+     This is the beacon text/icon/dot/border color wherever beacon sits on
+     a light (paper) surface. On ink/steel, plain --palette-beacon already
+     clears AA (8.10:1 / 7.42:1) and is used directly. */
+  --palette-beacon-on-light: #96650f;
+
+  /* Cleared — teal. Delivered / cleared state / secondary accent, as given. */
+  --palette-cleared: #46b893;
+  /* Cleared darkened along the same hue, same reasoning as beacon: plain
+     cleared is only 2.29:1 against paper. */
+  --palette-cleared-on-light: #2e7c63;
+
+  /* Danger — not in the given palette (see file comment above). A warm,
+     muted red that reads as part of the same family as ink's warm
+     undertone rather than a generic bright red. Already >=4.5:1 against
+     paper as-is, so no light-mode darkening is needed. */
+  --palette-danger: #c4462f;
+  /* Danger lightened along the same hue for dark surfaces: the base value
+     is only 3.62:1 against ink / 3.32:1 against steel. */
+  --palette-danger-on-dark: #d35d47;
+}

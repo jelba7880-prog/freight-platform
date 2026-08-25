@@ -1,8 +1,24 @@
 /*
- * Shared Tailwind layer consumed by every app.
+ * Shared Tailwind layer consumed by every app. Split into:
  *
- * Design tokens (colors, fonts, spacing, etc., via @theme) belong here once
- * packages/ui is wired up in a follow-up task. Left empty until then so no
- * tokens get invented ahead of that work — each app still imports this file
- * so it only needs to be touched once when that happens.
+ *   palette.css  raw hue tokens — the ONLY file with literal hex values
+ *   modes.css    semantic tokens that flip value between light/dark via
+ *                [data-mode] on an ancestor, set by each app's root layout
+ *   theme.css    maps semantic tokens onto Tailwind's @theme so they're
+ *                usable as ordinary utilities (bg-surface, text-muted, …)
+ *   reset.css    focus-visible ring, prefers-reduced-motion, base font
  */
+@import "./palette.css";
+@import "./modes.css";
+@import "./theme.css";
+@import "./reset.css";
+
+/*
+ * Tailwind v4 never scans node_modules, so packages/ui — pulled in through
+ * a pnpm-symlinked node_modules/@freight/ui in every app — would otherwise
+ * lose any utility class used only inside its component source (never
+ * echoed verbatim in an app's own files). This explicitly adds it back,
+ * resolved relative to this file's real path on disk, so every app that
+ * imports this stylesheet also scans @freight/ui's components for classes.
+ */
+@source "../../ui/src/**/*.{ts,tsx}";

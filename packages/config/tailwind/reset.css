@@ -1,0 +1,49 @@
+/*
+ * Minimal global base, plus the two non-negotiable accessibility behaviors
+ * that apply everywhere rather than per-component: a visible keyboard
+ * focus ring on every interactive element, and prefers-reduced-motion
+ * support for every transition/animation token.
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-mono);
+}
+
+/* Visible keyboard focus on every interactive primitive. Mouse/touch
+   activation never shows it (:focus-visible); keyboard navigation always
+   does — components may layer their own focus treatment on top, but this
+   is the guaranteed floor. */
+:focus-visible {
+  outline: 2px solid var(--color-beacon);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
