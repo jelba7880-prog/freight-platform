@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Input } from "@freight/ui";
+import { Badge, Button, Card, Input, ManifestStrip } from "@freight/ui";
 import { PreviewPair } from "./_components/PreviewPair";
 import { Section } from "./_components/Section";
 import { Swatch } from "./_components/Swatch";
@@ -434,6 +434,16 @@ export default function StyleGuidePage() {
               />
             </div>
           }
+        />
+      </Section>
+
+      <Section
+        title="Manifest strip"
+        description="Simulated live shipment feed — decorative chrome, not real data. A new row fades in every 4-6s (randomized, not a metronome) as the oldest fades out; the status dot breathes slowly. Not wired into any real page yet. Marked aria-hidden with a static sr-only label instead of aria-live: the feed churns forever and carries no real information, so polite announcements every few seconds would be pure noise for screen reader users rather than something worth interrupting for."
+      >
+        <PreviewPair
+          light={<ManifestStrip />}
+          dark={<ManifestStrip />}
         />
       </Section>
     </main>
