@@ -1,0 +1,8 @@
+/*
+ * Shared Tailwind layer consumed by every app.
+ *
+ * Design tokens (colors, fonts, spacing, etc., via @theme) belong here once
+ * packages/ui is wired up in a follow-up task. Left empty until then so no
+ * tokens get invented ahead of that work — each app still imports this file
+ * so it only needs to be touched once when that happens.
+ */

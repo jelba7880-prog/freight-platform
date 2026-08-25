@@ -1,0 +1,20 @@
+{
+  "name": "@freight/database",
+  "version": "0.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "main": "./src/client.ts",
+  "types": "./src/client.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.4"
+  },
+  "devDependencies": {
+    "@freight/config": "workspace:*",
+    "eslint": "^9.39.5",
+    "typescript": "^6.0.3"
+  }
+}
