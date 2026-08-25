@@ -30,6 +30,21 @@ const sizes: Record<ButtonSize, string> = {
   md: "h-10 rounded-md px-comfortable text-sm",
 };
 
+/**
+ * The composed class string a <button variant size> would get — exported
+ * so a non-<button> element that must still look and read as "the primary
+ * action" (e.g. Header's contextual CTA, which needs a real <a href>) can
+ * reuse the exact same styling instead of a second hand-copied set of
+ * classes drifting out of sync with this file.
+ */
+export function buttonClassName(
+  variant: ButtonVariant = "primary",
+  size: ButtonSize = "md",
+  className?: string,
+): string {
+  return cx(base, variants[variant], sizes[size], className);
+}
+
 export function Button({
   variant = "primary",
   size = "md",
@@ -37,7 +52,5 @@ export function Button({
   ref,
   ...props
 }: ButtonProps) {
-  return (
-    <button ref={ref} className={cx(base, variants[variant], sizes[size], className)} {...props} />
-  );
+  return <button ref={ref} className={buttonClassName(variant, size, className)} {...props} />;
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { Footer, Header } from "@freight/ui";
 import { fontVariables } from "@freight/ui/fonts";
 import "./globals.css";
 
@@ -11,7 +12,19 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" data-mode="light" className={fontVariables}>
-      <body>{children}</body>
+      <body className="flex min-h-screen flex-col">
+        {/*
+          Header lives in the root layout, so every apps/web route shares
+          it. Real per-page contextual CTAs (a Sea Freight page passing its
+          own primaryAction, etc.) need routes to actually exist first —
+          out of scope here per the task. This wires the mechanism with a
+          homepage-flavored CTA; other pages fall back to Header's own
+          DEFAULT_PRIMARY_ACTION until they're built and can pass their own.
+        */}
+        <Header primaryAction={{ label: "Start a quote", href: "/get-a-quote" }} />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </body>
     </html>
   );
 }

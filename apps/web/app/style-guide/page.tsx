@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Input, ManifestStrip } from "@freight/ui";
+import { Badge, Button, Card, Footer, Header, Input, ManifestStrip } from "@freight/ui";
 import { PreviewPair } from "./_components/PreviewPair";
 import { Section } from "./_components/Section";
 import { Swatch } from "./_components/Swatch";
@@ -115,7 +115,7 @@ const radiusScale = [
 
 export default function StyleGuidePage() {
   return (
-    <main className="mx-auto flex max-w-5xl flex-col gap-expansive px-comfortable py-expansive">
+    <div className="mx-auto flex max-w-5xl flex-col gap-expansive px-comfortable py-expansive">
       <header className="flex flex-col gap-tight">
         <p className="font-mono text-xs uppercase tracking-wide text-muted">Internal / review</p>
         <h1 className="font-display text-4xl font-semibold text-foreground">Style guide</h1>
@@ -446,6 +446,41 @@ export default function StyleGuidePage() {
           dark={<ManifestStrip />}
         />
       </Section>
-    </main>
+
+      <Section
+        title="Header"
+        description="Utility actions (Track, Find a location, Talk to an expert, Search, Portal login) are fixed content, not a prop — a page can't grow that row. The contextual primary CTA is the one thing a page configures, via primaryAction; it always renders beacon-filled and visually heavier than the utility row. The two previews below are the same Header, differing only in that prop, to make the distinction visible."
+      >
+        <div className="flex flex-col gap-cozy">
+          <div className="flex flex-col gap-tight">
+            <p className="font-mono text-xs uppercase tracking-wide text-muted">
+              Default fallback CTA (no primaryAction passed)
+            </p>
+            <div className="rounded-lg border border-border shadow-sm">
+              <Header />
+            </div>
+          </div>
+          <div className="flex flex-col gap-tight">
+            <p className="font-mono text-xs uppercase tracking-wide text-muted">
+              Overridden primaryAction — {'{ label: "Talk to a Sea Freight specialist", href: "/contact" }'}
+            </p>
+            <div className="rounded-lg border border-border shadow-sm">
+              <Header
+                primaryAction={{ label: "Talk to a Sea Freight specialist", href: "/contact" }}
+              />
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      <Section
+        title="Footer"
+        description="Company layer (About, Leadership, Sustainability, Corporate governance, Compliance, Careers, Investor information, Newsroom) and Resources layer (Market insights, Industry insights, Success stories, How-to guides, Webinars, Logistics knowledge, Regulatory information, Glossaries, Shipping references), pulled directly from Project_Overview.md. Careers lives here only — never alongside Header's commercial actions."
+      >
+        <div className="rounded-lg border border-border shadow-sm">
+          <Footer />
+        </div>
+      </Section>
+    </div>
   );
 }
