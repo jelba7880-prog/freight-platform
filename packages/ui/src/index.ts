@@ -1,7 +1,18 @@
 /**
- * Shared design system / component library.
- *
- * Wired up in a separate follow-up task — intentionally empty here so no
- * design tokens or components get invented ahead of that work.
+ * Shared design system / component library: tokens live in
+ * packages/config/tailwind, font loading in ./fonts, and the primitives
+ * below. Table, nav/header shells, the manifest-strip/live-tracking
+ * component, and forms beyond Input are deliberately out of scope for this
+ * pass — follow-ups once these are reviewed.
  */
-export {};
+export { Button } from "./Button";
+export type { ButtonProps, ButtonVariant, ButtonSize } from "./Button";
+
+export { Badge } from "./Badge";
+export type { BadgeProps, BadgeVariant } from "./Badge";
+
+export { Card } from "./Card";
+export type { CardProps } from "./Card";
+
+export { Input } from "./Input";
+export type { InputProps } from "./Input";

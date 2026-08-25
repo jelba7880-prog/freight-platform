@@ -1,0 +1,111 @@
+/*
+ * Wires the semantic tokens from palette.css / modes.css into Tailwind's
+ * theme, so components use ordinary utilities (bg-surface, text-muted,
+ * text-beacon, rounded-md, shadow-md, ease-standard, …) and never a literal
+ * hex or Tailwind's built-in gray/blue/amber scales.
+ *
+ * `--color-*: initial` below wipes Tailwind's entire default color
+ * palette first, so `bg-blue-500`-style utilities simply don't exist to
+ * reach for by accident — only the semantic names defined here do.
+ *
+ * The mode-aware entries (background/surface/foreground/muted/border,
+ * beacon/cleared/danger and their soft variants, and the three shadow
+ * tokens) only get a light-mode placeholder value here — modes.css
+ * redeclares the real per-mode values directly against these same
+ * property names (see the comment there for why it can't instead be a
+ * `var(--background)`-style alias declared inside this @theme block).
+ */
+@theme {
+  /* === Color ============================================================ */
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* Static — never mode-dependent, safe to declare once. */
+  --color-ink: var(--palette-ink);
+  --color-steel: var(--palette-steel);
+  --color-paper: var(--palette-paper);
+  --color-mist: var(--palette-mist);
+
+  /* Fixed, non-mode-aware raw hue — full-bleed fills (e.g. the primary
+     button) that are always paired with ink-colored text on top,
+     regardless of which app/mode is rendering it. */
+  --color-beacon-solid: var(--palette-beacon);
+  --color-cleared-solid: var(--palette-cleared);
+
+  /* Mode-aware — placeholder (light) values; modes.css owns the real ones. */
+  --color-background: var(--palette-paper);
+  --color-surface: var(--palette-paper);
+  --color-foreground: var(--palette-ink);
+  --color-muted: var(--palette-mist);
+  --color-border: var(--palette-mist);
+  --color-beacon: var(--palette-beacon-on-light);
+  --color-cleared: var(--palette-cleared-on-light);
+  --color-danger: var(--palette-danger);
+  --color-beacon-soft: var(--palette-beacon);
+  --color-cleared-soft: var(--palette-cleared);
+
+  /* === Type ==============================================================
+     Font loading itself happens in packages/ui/src/fonts.ts via next/font;
+     these just point the family utilities at the CSS variables next/font
+     attaches to <html>. font-sans/font-mono are Tailwind's own utility
+     names — pointed at Plex Sans/Mono so a bare `font-sans` still does the
+     right thing. font-display has no Tailwind default; it's added here
+     for Geist headings. */
+  --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  /* Type scale — each size carries an intended role, not just a value. */
+  --text-xs: 0.75rem; /* 12px — timestamps, meta, table captions */
+  --text-xs--line-height: 1.4;
+  --text-sm: 0.8125rem; /* 13px — form labels, secondary UI text */
+  --text-sm--line-height: 1.45;
+  --text-base: 0.9375rem; /* 15px — default body copy */
+  --text-base--line-height: 1.6;
+  --text-lg: 1.125rem; /* 18px — lead paragraph, card titles */
+  --text-lg--line-height: 1.5;
+  --text-xl: 1.375rem; /* 22px — section headings */
+  --text-xl--line-height: 1.35;
+  --text-2xl: 1.75rem; /* 28px — page headings */
+  --text-2xl--line-height: 1.25;
+  --text-3xl: 2.25rem; /* 36px — hero subheads */
+  --text-3xl--line-height: 1.15;
+  --text-4xl: 3rem; /* 48px — hero display */
+  --text-4xl--line-height: 1.05;
+
+  /* === Spacing ============================================================
+     Named on top of Tailwind's numeric scale, so component code reads by
+     intent (px-cozy) instead of by magic number (px-4). The numeric scale
+     (p-4, gap-2, …) still works underneath for anything ad hoc. */
+  --spacing-hairline: 0.0625rem; /* 1px  — dividers */
+  --spacing-tight: 0.375rem; /* 6px   — icon-to-label gaps */
+  --spacing-snug: 0.625rem; /* 10px  — dense control padding (badge, chip) */
+  --spacing-cozy: 1rem; /* 16px  — default control padding (button, input) */
+  --spacing-comfortable: 1.5rem; /* 24px  — card padding */
+  --spacing-loose: 2.5rem; /* 40px  — section spacing */
+  --spacing-expansive: 4rem; /* 64px  — page-level rhythm */
+
+  /* === Radius ============================================================ */
+  --radius-sm: 0.375rem; /* 6px  — inputs, badges */
+  --radius-md: 0.625rem; /* 10px — buttons, cards */
+  --radius-lg: 1rem; /* 16px — panels, modals */
+  --radius-full: 999px; /* pills, avatars, status dots */
+
+  /* === Shadow =============================================================
+     Placeholder (light) values — modes.css redeclares --shadow-sm/md/lg
+     directly per mode: a soft dark cast in light mode, and a faint light
+     glow in dark mode, where a dark cast shadow would be invisible against
+     ink/steel. */
+  --shadow-sm: 0 1px 2px rgb(26 23 20 / 0.06);
+  --shadow-md: 0 6px 16px rgb(26 23 20 / 0.1), 0 1px 2px rgb(26 23 20 / 0.06);
+  --shadow-lg: 0 16px 40px rgb(26 23 20 / 0.16), 0 2px 6px rgb(26 23 20 / 0.08);
+
+  /* === Motion =============================================================
+     Restrained by design: a short, deliberate transition on hover/focus/
+     press only. No ambient or scroll-triggered motion tokens exist here —
+     that's a deliberate scoping choice for this pass, not an oversight. */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1); /* precise settle, no overshoot */
+  --duration-fast: 120ms; /* press feedback */
+  --duration-base: 180ms; /* hover / focus-ring transitions */
+}
