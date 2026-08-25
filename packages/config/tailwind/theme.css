@@ -108,4 +108,24 @@
   --ease-standard: cubic-bezier(0.2, 0, 0, 1); /* precise settle, no overshoot */
   --duration-fast: 120ms; /* press feedback */
   --duration-base: 180ms; /* hover / focus-ring transitions */
+
+  /* Slow opacity/scale "breathing" for a live-status dot (e.g.
+     ManifestStrip) — quietly alive, not blinking. Components should still
+     gate this behind a JS prefers-reduced-motion check rather than relying
+     on it alone: reset.css's blanket animation-duration override handles
+     CSS-only cases, but it can't stop app-level state churn (new rows
+     appearing on an interval), which needs its own JS-level guard. */
+  --animate-pulse-dot: pulse-dot 2.6s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.82);
+  }
 }
