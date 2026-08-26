@@ -11,6 +11,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
+    /*
+      Root shell for both branches of the tree: the localized `[locale]`
+      routes (Tier 1 + global default) and the top-level `countries` routes
+      (Tier 2). It sits above the locale segment, so it has no locale of its
+      own — `lang` stays "en" until Phase 6 introduces actual languages, and
+      `Header`'s links stay locale-agnostic. Pages that need a locale-aware
+      href build it with `localePath()` from lib/locale/config.
+    */
     <html lang="en" data-mode="light" className={fontVariables}>
       <body className="flex min-h-screen flex-col">
         {/*
