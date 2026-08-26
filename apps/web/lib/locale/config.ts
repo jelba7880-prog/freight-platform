@@ -42,6 +42,25 @@ export type Locale = DefaultLocale | Tier1Locale;
 export const LOCALES: readonly Locale[] = [DEFAULT_LOCALE, ...TIER1_LOCALES];
 
 /**
+ * Maps each internal routing key to the BCP-47 tag it actually represents.
+ *
+ * The routing key and the language tag are different things that happen to
+ * look similar for two-letter Tier 1 codes: `"global"` isn't a language at
+ * all (it's the absence of a country code), and a real market's tag isn't
+ * always its routing key verbatim — `us` renders as `en-US`, not `en`, and a
+ * multilingual Tier 1 split (Phase 6's `/{countryCode}/{lang}` for markets
+ * like Belgium) will need one routing key to resolve to several tags
+ * depending on the `lang` segment. Keeping this table as the one source of
+ * truth means Phase 6's `hreflang`/`alternates.languages` reads the same
+ * mapping instead of a second copy drifting out of sync with this one.
+ */
+export const LOCALE_TO_BCP47: Record<Locale, string> = {
+  [DEFAULT_LOCALE]: "en",
+  us: "en-US",
+  de: "de",
+};
+
+/**
  * Top-level path segments that sit *outside* the `[locale]` tree and must
  * not be rewritten under the default locale prefix.
  *

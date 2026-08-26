@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { fontVariables } from "@freight/ui/fonts";
 import { AppShell } from "@/components/AppShell";
-import { LOCALES } from "@/lib/locale/config";
+import { LOCALE_TO_BCP47, LOCALES } from "@/lib/locale/config";
 import { LocaleProvider } from "@/lib/locale/context";
 import { resolveLocaleParam, setLocale } from "@/lib/locale/server";
 import "@/app/globals.css";
@@ -38,7 +38,7 @@ export default async function LocaleLayout({
   setLocale(locale);
 
   return (
-    <html lang={locale} data-mode="light" className={fontVariables}>
+    <html lang={LOCALE_TO_BCP47[locale] ?? locale} data-mode="light" className={fontVariables}>
       <body className="flex min-h-screen flex-col">
         <LocaleProvider locale={locale}>
           <AppShell>
