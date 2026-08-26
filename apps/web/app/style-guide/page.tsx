@@ -2,6 +2,7 @@ import { Badge, Button, Card, Footer, Header, Input, ManifestStrip } from "@frei
 import { PreviewPair } from "./_components/PreviewPair";
 import { Section } from "./_components/Section";
 import { Swatch } from "./_components/Swatch";
+import { TableDemo } from "./_components/TableDemo";
 
 export const metadata = {
   title: "Style Guide — Freight Platform",
@@ -479,6 +480,28 @@ export default function StyleGuidePage() {
       >
         <div className="rounded-lg border border-border shadow-sm">
           <Footer />
+        </div>
+      </Section>
+
+      <Section
+        title="Table"
+        description="Controlled, not self-managing: sort state lives with the caller (client-side here, server-side once packages/database is real) — Table only renders the sort prop it's given and reports the next descriptor via onSort. Horizontal scroll (not row-to-card collapse) preserves column alignment for a dense operational tool; the faint edge gradients hint that it scrolls. Status uses Badge, never a second color system. Reference/ETA use IBM Plex Mono; Route uses IBM Plex Sans. Click a sortable header, or Tab to it and press Enter/Space."
+      >
+        <div className="flex flex-col gap-comfortable">
+          <div className="flex flex-col gap-tight">
+            <p className="font-mono text-xs uppercase tracking-wide text-muted">Populated</p>
+            <PreviewPair light={<TableDemo variant="populated" />} dark={<TableDemo variant="populated" />} />
+          </div>
+          <div className="flex flex-col gap-tight">
+            <p className="font-mono text-xs uppercase tracking-wide text-muted">
+              Loading — shimmer sweep, or a static muted fill under prefers-reduced-motion
+            </p>
+            <PreviewPair light={<TableDemo variant="loading" />} dark={<TableDemo variant="loading" />} />
+          </div>
+          <div className="flex flex-col gap-tight">
+            <p className="font-mono text-xs uppercase tracking-wide text-muted">Empty</p>
+            <PreviewPair light={<TableDemo variant="empty" />} dark={<TableDemo variant="empty" />} />
+          </div>
         </div>
       </Section>
     </div>

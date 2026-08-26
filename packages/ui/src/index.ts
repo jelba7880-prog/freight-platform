@@ -1,10 +1,11 @@
 /**
  * Shared design system / component library: tokens live in
  * packages/config/tailwind, font loading in ./fonts, and the primitives
- * below. Table, and forms beyond Input, are deliberately out of scope for
- * this pass — follow-ups once these are reviewed. Header/Footer are wired
- * into apps/web only; apps/portal and apps/admin get their own nav in a
- * later task.
+ * below. Row selection/pagination/filtering/column resizing on Table, and
+ * forms beyond Input, are deliberately out of scope for this pass —
+ * follow-ups once these are reviewed. Header/Footer are wired into
+ * apps/web only; apps/portal and apps/admin get their own nav in a later
+ * task.
  */
 export { Button, buttonClassName } from "./Button";
 export type { ButtonProps, ButtonVariant, ButtonSize } from "./Button";
@@ -17,6 +18,9 @@ export type { CardProps } from "./Card";
 
 export { Input } from "./Input";
 export type { InputProps } from "./Input";
+
+export { Table } from "./Table";
+export type { TableProps, Column, ColumnAlign, SortState, SortDirection } from "./Table";
 
 export { ManifestStrip } from "./ManifestStrip";
 export type { ManifestStripProps } from "./ManifestStrip";
