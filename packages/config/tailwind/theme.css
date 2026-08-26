@@ -116,6 +116,12 @@
      CSS-only cases, but it can't stop app-level state churn (new rows
      appearing on an interval), which needs its own JS-level guard. */
   --animate-pulse-dot: pulse-dot 2.6s ease-in-out infinite;
+
+  /* Loading-skeleton sweep (e.g. Table). Same rule as pulse-dot above:
+     components should gate the `skeleton-shimmer` utility below behind a
+     JS prefers-reduced-motion check and fall back to a flat --color-border
+     fill, not just rely on reset.css's blanket duration override. */
+  --animate-skeleton-shimmer: skeleton-shimmer 1.6s ease-in-out infinite;
 }
 
 @keyframes pulse-dot {
@@ -128,4 +134,29 @@
     opacity: 0.55;
     transform: scale(0.82);
   }
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* A moving highlight sweep across a muted fill. Defined here (not as
+   inline styles in Table.tsx) so it stays token-driven: the base fill is
+   --color-border and the highlight is mixed from --color-surface, so it
+   automatically reads correctly in whichever mode is active. */
+@utility skeleton-shimmer {
+  background-color: var(--color-border);
+  background-image: linear-gradient(
+    90deg,
+    transparent 25%,
+    color-mix(in srgb, var(--color-surface) 65%, transparent) 50%,
+    transparent 75%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-skeleton-shimmer);
 }
