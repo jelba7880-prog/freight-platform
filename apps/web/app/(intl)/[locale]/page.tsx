@@ -11,7 +11,7 @@ import {
   type ContentNavLink,
 } from "@freight/ui";
 import { localePath, type Locale } from "@/lib/locale/config";
-import { resolveLocaleParam } from "@/lib/locale/server";
+import { getLocale } from "@/lib/locale/server";
 
 export const metadata: Metadata = {
   title: "Freight Platform — Global freight forwarding & logistics",
@@ -57,13 +57,8 @@ function ContentCard({ entry, locale }: { entry: ContentNavLink; locale: Locale 
   );
 }
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
-  // Reads the route's own `params` rather than the shared getLocale()
-  // request-cache: under static prerendering, the three locale variants of
-  // this route can end up sharing one cache() scope, so a page component
-  // (unlike the layout, which always receives `params` directly) can't rely
-  // on getLocale() reflecting the locale it's actually being rendered for.
-  const locale = resolveLocaleParam((await params).locale);
+export default async function Page() {
+  const locale = await getLocale();
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-expansive px-comfortable py-expansive">
