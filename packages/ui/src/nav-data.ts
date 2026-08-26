@@ -18,34 +18,149 @@ export interface PrimaryNavItem extends NavLink {
   items?: NavLink[];
 }
 
-export const SERVICES: NavLink[] = [
-  { label: "Sea freight", href: "/services/sea-freight" },
-  { label: "Air freight", href: "/services/air-freight" },
-  { label: "Road freight", href: "/services/road-freight" },
+/**
+ * Services and Industries carry richer content than a plain nav link: the
+ * homepage's Services/Industries grids (see app/(intl)/[locale]/page.tsx)
+ * render the same entries as cards, and need a stable `slug` (React key,
+ * card icon monogram) and a `shortDescription` neither Header's mega-menu
+ * nor Footer needs. `label`/`href` stay the fields Header/Footer already
+ * consume generically via `NavLink`, so this is additive, not a rename.
+ */
+export interface ContentNavLink extends NavLink {
+  slug: string;
+  shortDescription: string;
+}
+
+export const SERVICES: ContentNavLink[] = [
   {
+    slug: "sea-freight",
+    label: "Sea freight",
+    href: "/services/sea-freight",
+    shortDescription: "Full container and consolidated ocean freight across major global trade lanes.",
+  },
+  {
+    slug: "air-freight",
+    label: "Air freight",
+    href: "/services/air-freight",
+    shortDescription: "Time-critical air cargo with express, standard, and charter options worldwide.",
+  },
+  {
+    slug: "road-freight",
+    label: "Road freight",
+    href: "/services/road-freight",
+    shortDescription: "Full-truckload, part-load, and cross-border road transport across regions.",
+  },
+  {
+    slug: "warehousing-fulfilment-distribution",
     label: "Warehousing, fulfilment and distribution",
     href: "/services/warehousing-fulfilment-distribution",
+    shortDescription: "Storage, pick-and-pack, and last-mile distribution from a global facility network.",
   },
-  { label: "Customs clearance", href: "/services/customs-clearance" },
-  { label: "Cargo insurance", href: "/services/cargo-insurance" },
-  { label: "E-commerce logistics", href: "/services/ecommerce-logistics" },
-  { label: "Project logistics", href: "/services/project-logistics" },
-  { label: "Sustainable logistics", href: "/services/sustainable-logistics" },
-  { label: "Integrated logistics / 4PL", href: "/services/integrated-logistics-4pl" },
-  { label: "Order management", href: "/services/order-management" },
-  { label: "Cold-chain logistics", href: "/services/cold-chain-logistics" },
-  { label: "Supply-chain consulting", href: "/services/supply-chain-consulting" },
-  { label: "Digital logistics services", href: "/services/digital-logistics-services" },
+  {
+    slug: "customs-clearance",
+    label: "Customs clearance",
+    href: "/services/customs-clearance",
+    shortDescription: "Import and export clearance handled by specialists who know local regulations.",
+  },
+  {
+    slug: "cargo-insurance",
+    label: "Cargo insurance",
+    href: "/services/cargo-insurance",
+    shortDescription: "Protect shipments in transit with coverage tailored to cargo value and risk.",
+  },
+  {
+    slug: "ecommerce-logistics",
+    label: "E-commerce logistics",
+    href: "/services/ecommerce-logistics",
+    shortDescription: "Fulfilment and returns logistics built for high-volume online retail.",
+  },
+  {
+    slug: "project-logistics",
+    label: "Project logistics",
+    href: "/services/project-logistics",
+    shortDescription: "Engineering and coordination for oversized, heavy, and complex cargo moves.",
+  },
+  {
+    slug: "sustainable-logistics",
+    label: "Sustainable logistics",
+    href: "/services/sustainable-logistics",
+    shortDescription: "Lower-emission transport options and carbon reporting across your supply chain.",
+  },
+  {
+    slug: "integrated-logistics-4pl",
+    label: "Integrated logistics / 4PL",
+    href: "/services/integrated-logistics-4pl",
+    shortDescription: "End-to-end supply-chain management under a single point of accountability.",
+  },
+  {
+    slug: "order-management",
+    label: "Order management",
+    href: "/services/order-management",
+    shortDescription: "Centralized visibility and control across purchase orders and suppliers.",
+  },
+  {
+    slug: "cold-chain-logistics",
+    label: "Cold-chain logistics",
+    href: "/services/cold-chain-logistics",
+    shortDescription: "Temperature-controlled transport and storage for sensitive, perishable cargo.",
+  },
+  {
+    slug: "supply-chain-consulting",
+    label: "Supply-chain consulting",
+    href: "/services/supply-chain-consulting",
+    shortDescription: "Network design and optimization guidance from logistics specialists.",
+  },
+  {
+    slug: "digital-logistics-services",
+    label: "Digital logistics services",
+    href: "/services/digital-logistics-services",
+    shortDescription: "Tools and platforms that bring real-time visibility to your shipments.",
+  },
 ];
 
-export const INDUSTRIES: NavLink[] = [
-  { label: "Aerospace", href: "/industries/aerospace" },
-  { label: "Automotive and mobility", href: "/industries/automotive-mobility" },
-  { label: "Consumer goods", href: "/industries/consumer-goods" },
-  { label: "Healthcare", href: "/industries/healthcare" },
-  { label: "Technology and semiconductors", href: "/industries/technology-semiconductors" },
-  { label: "Industrial", href: "/industries/industrial" },
-  { label: "Perishables", href: "/industries/perishables" },
+export const INDUSTRIES: ContentNavLink[] = [
+  {
+    slug: "aerospace",
+    label: "Aerospace",
+    href: "/industries/aerospace",
+    shortDescription: "Certified handling for aircraft parts, tooling, and AOG shipments.",
+  },
+  {
+    slug: "automotive-mobility",
+    label: "Automotive and mobility",
+    href: "/industries/automotive-mobility",
+    shortDescription: "Just-in-time and just-in-sequence logistics for automotive supply chains.",
+  },
+  {
+    slug: "consumer-goods",
+    label: "Consumer goods",
+    href: "/industries/consumer-goods",
+    shortDescription: "Reliable, scalable logistics for fast-moving consumer goods brands.",
+  },
+  {
+    slug: "healthcare",
+    label: "Healthcare",
+    href: "/industries/healthcare",
+    shortDescription: "Compliant, temperature-controlled logistics for pharma and medical devices.",
+  },
+  {
+    slug: "technology-semiconductors",
+    label: "Technology and semiconductors",
+    href: "/industries/technology-semiconductors",
+    shortDescription: "Secure, time-critical logistics for high-value tech and semiconductor cargo.",
+  },
+  {
+    slug: "industrial",
+    label: "Industrial",
+    href: "/industries/industrial",
+    shortDescription: "Heavy machinery and industrial equipment logistics, door to door.",
+  },
+  {
+    slug: "perishables",
+    label: "Perishables",
+    href: "/industries/perishables",
+    shortDescription: "Cold-chain expertise for food, flowers, and other perishable goods.",
+  },
 ];
 
 /**
