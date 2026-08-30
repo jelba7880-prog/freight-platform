@@ -41,4 +41,4 @@ export {
   COMPANY_LINKS,
   RESOURCES_LINKS,
 } from "./nav-data";
-export type { NavLink, PrimaryNavItem } from "./nav-data";
+export type { NavLink, PrimaryNavItem, ContentNavLink } from "./nav-data";

@@ -4,7 +4,7 @@ import { fontVariables } from "@freight/ui/fonts";
 import { AppShell } from "@/components/AppShell";
 import { LOCALE_TO_BCP47, LOCALES } from "@/lib/locale/config";
 import { LocaleProvider } from "@/lib/locale/context";
-import { resolveLocaleParam, setLocale } from "@/lib/locale/server";
+import { resolveLocaleParam } from "@/lib/locale/server";
 import "@/app/globals.css";
 
 export const metadata: Metadata = {
@@ -31,11 +31,11 @@ export default async function LocaleLayout({
   children: ReactNode;
   params: Promise<{ locale: string }>;
 }) {
+  // Still read here for this layout's own two jobs — `<html lang>` and
+  // seeding LocaleProvider for client islands. Server components below get
+  // the locale from `getLocale()`, which reads the same root param from the
+  // framework directly rather than from anything this layout publishes.
   const locale = resolveLocaleParam((await params).locale);
-
-  // Runs before `children` render, which is what lets any server component
-  // below call `getLocale()` without `params` being threaded down to it.
-  setLocale(locale);
 
   return (
     <html lang={LOCALE_TO_BCP47[locale] ?? locale} data-mode="light" className={fontVariables}>
