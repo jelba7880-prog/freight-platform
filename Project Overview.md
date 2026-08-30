@@ -80,6 +80,13 @@ Authenticated tracking (inside the customer portal) — full detail: current shi
 
 Tracking is surfaced directly alongside quoting on the homepage and in the persistent header, matching K+N's real prioritisation of these two actions above everything else.
 
+**Data source — deliberately manual, not carrier-integrated (amended, new):** the tracking data behind both public and authenticated tracking is authored and maintained internally, through the admin platform — operations staff manually create and update tracking events (status changes, milestones, current location, ETA) per shipment. There is no live integration with carrier, ocean-schedule, airline-cargo, or port-system tracking APIs behind this feature.
+
+- *Why:* those integrations require real commercial relationships with carriers and their APIs, which this project doesn't have and isn't assuming. Building the tracking *product* — the data model, the public/portal UX, the milestone and exception surface — doesn't require that data originate externally; it requires that it exist and be structured correctly. Admin-authored data satisfies both the customer-facing experience and the underlying schema identically to API-sourced data.
+- This doesn't change the customer-facing feature: public reference-number lookup and authenticated portal tracking work exactly as specified. It changes only where the data comes from.
+- The Tracking events admin surface (already scoped as a custom-built core admin domain) is the *primary authoring interface* for shipment status, not a supplementary view onto externally-ingested data.
+- A live carrier/tracking-API integration remains a legitimate future enhancement, not a blocking dependency — this feature works end-to-end without it.
+
 5. Customer Portal — Single Unified Application (amended)
 
 The customer portal is the most important operational component. Architectural principle: this is built as one coherent application — one auth/session domain, one design system, one data model — with quote, book, track, documents, and reporting as routes inside that single app, not as separately built products stitched together at the navigation layer.
@@ -160,6 +167,8 @@ Design direction: premium, global, technological, precise, trustworthy, industri
 
 Goal: Kuehne+Nagel's operational breadth + a modern premium digital-product experience.
 
+**Independence from the reference site's language and rules (amended, new):** the "independent brand language" principle above extends beyond visual identity. This platform is not bound to K+N's specific marketing terminology, compliance framing, or operational rules where they don't fit this build — service names, disclaimer language, or process copy can diverge from the reference site's wording wherever a clearer or more accurate alternative fits better. K+N's structure and breadth are the reference; its specific copy and compliance posture are not obligations.
+
 Technical Architecture
 
 Preferred architecture: a modern TypeScript-based stack supporting both the high-performance public site and the authenticated logistics application.
@@ -192,7 +201,7 @@ Integration-ready rather than treating shipping operations as isolated website d
 
 Carrier APIs (ocean carrier schedules, airline cargo APIs, road transport providers) — primary source for Tier A rate data
 Customs systems, port systems
-Shipment tracking APIs
+- ~~Shipment tracking APIs~~ — deferred, not required. Tracking is admin-authored via the internal platform (see Shipment Tracking, above); a live integration is a future option, not a dependency.
 Mapping and geolocation providers
 Payment services
 Email/SMS/WhatsApp notification providers
@@ -240,3 +249,5 @@ Internationalisation Uniform multi-country/language support Three inconsistent p
 Navigation CTAs Not addressed Same five equal-weight CTAs repeated on every page regardless of context Contextual primary CTA per page; utility actions stay persistent but secondary
 Admin platform Newsroom/careers treated as core CMS work Both run on separate subdomains, consistent with bought/specialized platforms Buy careers/ATS and press distribution; build only the differentiated admin surfaces
 Rendering model Next.js + RSC "where beneficial" SSR/SSG shell with client-rendered islands for transactional widgets RSC-first shell; quote/track/location-search explicitly scoped as client islands
+Shipment tracking data source Implicitly assumed eventual live carrier/tracking-API integration No such integration exists or is planned as a dependency Tracking data is admin-authored via the internal platform; live integration is an optional future enhancement, not a blocker
+Reference-site language & compliance Implicitly treated K+N's terminology/compliance framing as a template to follow N/A — forward decision, not an audit finding Platform is free to diverge from K+N's specific marketing copy and compliance rules; only structure and breadth are the reference
