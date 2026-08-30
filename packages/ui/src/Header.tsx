@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import type { RefObject } from "react";
 import { buttonClassName } from "./Button";
 import { cx } from "./cx";
@@ -430,11 +431,18 @@ export function Header({ primaryAction = DEFAULT_PRIMARY_ACTION, className }: He
   const [openNavKey, setOpenNavKey] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
+  const pathname = usePathname();
   const trackLink = UTILITY_LINKS.find((link) => link.label === "Track shipment");
   // Unique per instance: a page can render more than one Header (e.g. the
   // style-guide's default-vs-overridden comparison), and duplicate DOM ids
   // would make aria-controls ambiguous.
   const mobileMenuId = useId();
+
+  // Detect current page and use contextual CTA when applicable
+  const resolvedPrimaryAction =
+    pathname.includes("/sea-freight") && primaryAction === DEFAULT_PRIMARY_ACTION
+      ? { label: "Get a quote for sea freight", href: "/get-a-quote" }
+      : primaryAction;
 
   return (
     <header className={cx("relative z-10 border-b border-border bg-surface", className)}>
@@ -497,8 +505,8 @@ export function Header({ primaryAction = DEFAULT_PRIMARY_ACTION, className }: He
             <SearchToggle />
           </div>
 
-          <a href={primaryAction.href} className={buttonClassName("primary", "sm")}>
-            {primaryAction.label}
+          <a href={resolvedPrimaryAction.href} className={buttonClassName("primary", "sm")}>
+            {resolvedPrimaryAction.label}
           </a>
 
           <button
