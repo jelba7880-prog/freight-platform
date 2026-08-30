@@ -29,6 +29,15 @@ export interface PrimaryNavItem extends NavLink {
 export interface ContentNavLink extends NavLink {
   slug: string;
   shortDescription: string;
+  /**
+   * Label for Header's contextual CTA when the visitor is on this entry's
+   * own page — e.g. "Get a quote for sea freight" on the Sea Freight
+   * service page. Absent means this entry's page doesn't override the
+   * site-wide default. Not a second href: the CTA always targets
+   * `DEFAULT_PRIMARY_ACTION.href` (there is one quote destination; only
+   * the label varies per service/industry). See `resolveContextualCta`.
+   */
+  ctaLabel?: string;
 }
 
 export const SERVICES: ContentNavLink[] = [
@@ -37,6 +46,7 @@ export const SERVICES: ContentNavLink[] = [
     label: "Sea freight",
     href: "/services/sea-freight",
     shortDescription: "Full container and consolidated ocean freight across major global trade lanes.",
+    ctaLabel: "Get a quote for sea freight",
   },
   {
     slug: "air-freight",
@@ -195,6 +205,25 @@ export const PORTAL_LINK: NavLink = { label: "Portal login", href: "/portal-logi
 
 /** Site-wide fallback when a page doesn't specify its own contextual CTA. */
 export const DEFAULT_PRIMARY_ACTION: NavLink = { label: "Get a quote", href: "/get-a-quote" };
+
+/**
+ * Resolves Header's contextual CTA purely from route data, so Header never
+ * needs a hardcoded route string or per-page conditional — adding a new
+ * page's CTA (Healthcare, say) means setting `ctaLabel` on its
+ * SERVICES/INDUSTRIES entry, not editing Header.tsx.
+ *
+ * A pure lookup: `path` must already be the canonical, locale-stripped
+ * path (matching the `href`s in this file exactly). This function has no
+ * opinion on locales or prefixes — that normalization is the caller's job
+ * (see `stripLocalePrefix`, used by `Header`) and deliberately doesn't
+ * live here, so this stays a plain data lookup.
+ */
+export function resolveContextualCta(path: string): NavLink | undefined {
+  const entry = [...SERVICES, ...INDUSTRIES].find(
+    (item) => item.ctaLabel !== undefined && item.href === path,
+  );
+  return entry ? { label: entry.ctaLabel!, href: DEFAULT_PRIMARY_ACTION.href } : undefined;
+}
 
 /**
  * Footer — Company layer. Careers and Newsroom point at their eventual

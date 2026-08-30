@@ -3,13 +3,15 @@
   "version": "0.0.0",
   "private": true,
   "license": "UNLICENSED",
+  "type": "module",
   "exports": {
     ".": "./src/index.ts",
     "./fonts": "./src/fonts.ts"
   },
   "scripts": {
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test src/*.test.ts"
   },
   "dependencies": {
     "geist": "^1.7.2"

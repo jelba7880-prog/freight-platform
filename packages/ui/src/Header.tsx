@@ -1,11 +1,19 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import type { RefObject } from "react";
 import { buttonClassName } from "./Button";
 import { cx } from "./cx";
 import type { NavLink, PrimaryNavItem } from "./nav-data";
-import { DEFAULT_PRIMARY_ACTION, PORTAL_LINK, PRIMARY_NAV, UTILITY_LINKS } from "./nav-data";
+import {
+  DEFAULT_PRIMARY_ACTION,
+  PORTAL_LINK,
+  PRIMARY_NAV,
+  resolveContextualCta,
+  UTILITY_LINKS,
+} from "./nav-data";
+import { stripLocalePrefix } from "./stripLocalePrefix";
 
 export interface PrimaryAction {
   label: string;
@@ -14,13 +22,26 @@ export interface PrimaryAction {
 
 export interface HeaderProps {
   /**
-   * The contextual, page-specific commercial CTA — the ONE thing this
-   * component lets a page configure. Everything else (utility actions,
-   * primary nav) is fixed content from ./nav-data, not a prop: a page
-   * cannot grow the utility row just by passing more props to Header.
-   * Defaults to a site-wide fallback when a page doesn't specify one.
+   * Site-wide fallback commercial CTA, shown when the current route has no
+   * matching `ctaLabel` in `SERVICES`/`INDUSTRIES` (see
+   * `resolveContextualCta` in ./nav-data, which Header calls itself from
+   * `usePathname()`). A page never passes this prop to get its own CTA —
+   * Header resolves that directly from route data; this is only ever set
+   * once, site-wide, by `AppShell`.
    */
   primaryAction?: PrimaryAction;
+  /**
+   * The current locale's routing key (e.g. `"global"`, `"us"`, `"de"`),
+   * used only to strip the matching prefix off `usePathname()` before the
+   * contextual-CTA lookup (see `stripLocalePrefix`). A plain prop rather
+   * than context: `AppShell` renders `Header` directly (no intermediate
+   * component in between) and nothing else in this package currently
+   * needs the locale value, so a context provider would add a second
+   * mechanism with no second consumer. Defaults to `""` (no prefix to
+   * strip) for callers that render `Header` outside `AppShell` — e.g. the
+   * style-guide's standalone previews.
+   */
+  locale?: string;
   className?: string;
 }
 
@@ -426,15 +447,33 @@ function UtilityLink({ link }: { link: NavLink }) {
   );
 }
 
-export function Header({ primaryAction = DEFAULT_PRIMARY_ACTION, className }: HeaderProps) {
+export function Header({
+  primaryAction = DEFAULT_PRIMARY_ACTION,
+  locale = "",
+  className,
+}: HeaderProps) {
   const [openNavKey, setOpenNavKey] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
+  const pathname = usePathname();
   const trackLink = UTILITY_LINKS.find((link) => link.label === "Track shipment");
   // Unique per instance: a page can render more than one Header (e.g. the
   // style-guide's default-vs-overridden comparison), and duplicate DOM ids
   // would make aria-controls ambiguous.
   const mobileMenuId = useId();
+
+  // `usePathname()` carries the current locale segment — for a statically
+  // prerendered page that's baked in at build time (e.g.
+  // `/global/services/sea-freight` for the default locale's internal
+  // rewrite; see DEFAULT_LOCALE in apps/web/lib/locale/config.ts), while a
+  // live client-side navigation reports the real, unprefixed browser URL.
+  // Strip exactly the known locale value (not a fixed segment count — see
+  // stripLocalePrefix) so the remainder matches nav-data.ts's hrefs, then
+  // look it up. A route match (via SERVICES/INDUSTRIES' `ctaLabel`) always
+  // wins over the site-wide fallback prop. This is a data lookup, not a
+  // route string or conditional living in this component.
+  const canonicalPath = stripLocalePrefix(pathname, locale);
+  const resolvedPrimaryAction = resolveContextualCta(canonicalPath) ?? primaryAction;
 
   return (
     <header className={cx("relative z-10 border-b border-border bg-surface", className)}>
@@ -497,8 +536,8 @@ export function Header({ primaryAction = DEFAULT_PRIMARY_ACTION, className }: He
             <SearchToggle />
           </div>
 
-          <a href={primaryAction.href} className={buttonClassName("primary", "sm")}>
-            {primaryAction.label}
+          <a href={resolvedPrimaryAction.href} className={buttonClassName("primary", "sm")}>
+            {resolvedPrimaryAction.label}
           </a>
 
           <button
