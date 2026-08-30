@@ -29,6 +29,15 @@ export interface PrimaryNavItem extends NavLink {
 export interface ContentNavLink extends NavLink {
   slug: string;
   shortDescription: string;
+  /**
+   * Label for Header's contextual CTA when the visitor is on this entry's
+   * own page — e.g. "Get a quote for sea freight" on the Sea Freight
+   * service page. Absent means this entry's page doesn't override the
+   * site-wide default. Not a second href: the CTA always targets
+   * `DEFAULT_PRIMARY_ACTION.href` (there is one quote destination; only
+   * the label varies per service/industry). See `resolveContextualCta`.
+   */
+  ctaLabel?: string;
 }
 
 export const SERVICES: ContentNavLink[] = [
@@ -37,6 +46,7 @@ export const SERVICES: ContentNavLink[] = [
     label: "Sea freight",
     href: "/services/sea-freight",
     shortDescription: "Full container and consolidated ocean freight across major global trade lanes.",
+    ctaLabel: "Get a quote for sea freight",
   },
   {
     slug: "air-freight",
@@ -195,6 +205,33 @@ export const PORTAL_LINK: NavLink = { label: "Portal login", href: "/portal-logi
 
 /** Site-wide fallback when a page doesn't specify its own contextual CTA. */
 export const DEFAULT_PRIMARY_ACTION: NavLink = { label: "Get a quote", href: "/get-a-quote" };
+
+/**
+ * Resolves Header's contextual CTA purely from route data, so Header never
+ * needs a hardcoded route string or per-page conditional — adding a new
+ * page's CTA (Healthcare, say) means setting `ctaLabel` on its
+ * SERVICES/INDUSTRIES entry, not editing Header.tsx.
+ *
+ * `pathname` is Header's own `usePathname()` value. For a statically
+ * prerendered page that carries the locale segment baked in at build time
+ * — including the internal default-locale rewrite prefix (see
+ * `DEFAULT_LOCALE` in apps/web/lib/locale/config.ts: `/services/sea-freight`
+ * prerenders with the pathname `/global/services/sea-freight`) — while a
+ * live client-side navigation reports the real, unprefixed browser URL.
+ * `packages/ui` can't depend on apps/web's locale config (it's shared with
+ * apps/portal and apps/admin too), so rather than recognizing specific
+ * locale codes, this tries the path as given, then with one leading
+ * segment stripped — either reading recovers the canonical href already
+ * in this file.
+ */
+export function resolveContextualCta(pathname: string): NavLink | undefined {
+  const stripped = pathname.replace(/^\/[^/]+/, "") || "/";
+  const candidates = pathname === stripped ? [pathname] : [pathname, stripped];
+  const entry = [...SERVICES, ...INDUSTRIES].find(
+    (item) => item.ctaLabel !== undefined && candidates.includes(item.href),
+  );
+  return entry ? { label: entry.ctaLabel!, href: DEFAULT_PRIMARY_ACTION.href } : undefined;
+}
 
 /**
  * Footer — Company layer. Careers and Newsroom point at their eventual

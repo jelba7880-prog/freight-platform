@@ -1,12 +1,18 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import type { RefObject } from "react";
 import { buttonClassName } from "./Button";
 import { cx } from "./cx";
 import type { NavLink, PrimaryNavItem } from "./nav-data";
-import { DEFAULT_PRIMARY_ACTION, PORTAL_LINK, PRIMARY_NAV, UTILITY_LINKS } from "./nav-data";
-import { usePageActionValue } from "./PageAction";
+import {
+  DEFAULT_PRIMARY_ACTION,
+  PORTAL_LINK,
+  PRIMARY_NAV,
+  resolveContextualCta,
+  UTILITY_LINKS,
+} from "./nav-data";
 
 export interface PrimaryAction {
   label: string;
@@ -15,13 +21,12 @@ export interface PrimaryAction {
 
 export interface HeaderProps {
   /**
-   * Site-wide fallback commercial CTA, shown when no page below has
-   * registered its own via `usePageAction`/`<PageAction>` (see
-   * ./PageAction). This can't be how an individual page sets its own CTA:
-   * Header is rendered by the shared layout, above the page, in the same
-   * pass — a page component has no way to hand a prop to an ancestor it
-   * doesn't render. The page-action context bridges that gap; this prop is
-   * only ever set once, site-wide, by `AppShell`.
+   * Site-wide fallback commercial CTA, shown when the current route has no
+   * matching `ctaLabel` in `SERVICES`/`INDUSTRIES` (see
+   * `resolveContextualCta` in ./nav-data, which Header calls itself from
+   * `usePathname()`). A page never passes this prop to get its own CTA —
+   * Header resolves that directly from route data; this is only ever set
+   * once, site-wide, by `AppShell`.
    */
   primaryAction?: PrimaryAction;
   className?: string;
@@ -433,18 +438,18 @@ export function Header({ primaryAction = DEFAULT_PRIMARY_ACTION, className }: He
   const [openNavKey, setOpenNavKey] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
+  const pathname = usePathname();
   const trackLink = UTILITY_LINKS.find((link) => link.label === "Track shipment");
   // Unique per instance: a page can render more than one Header (e.g. the
   // style-guide's default-vs-overridden comparison), and duplicate DOM ids
   // would make aria-controls ambiguous.
   const mobileMenuId = useId();
 
-  // A page-registered CTA (via `usePageAction`/`<PageAction>`) always wins
-  // over the site-wide fallback prop; `usePageActionValue()` returns null
-  // both when nothing's registered and when Header renders outside any
-  // `PageActionProvider` at all (e.g. the style-guide's manual previews).
-  const pageAction = usePageActionValue();
-  const resolvedPrimaryAction = pageAction ?? primaryAction;
+  // A route match (via SERVICES/INDUSTRIES' `ctaLabel`) always wins over
+  // the site-wide fallback prop. This is a data lookup, not a route
+  // string or conditional living in this component — see
+  // `resolveContextualCta` in ./nav-data.
+  const resolvedPrimaryAction = resolveContextualCta(pathname) ?? primaryAction;
 
   return (
     <header className={cx("relative z-10 border-b border-border bg-surface", className)}>
