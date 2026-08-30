@@ -28,8 +28,6 @@ export type { ManifestStripProps } from "./ManifestStrip";
 export { Header } from "./Header";
 export type { HeaderProps, PrimaryAction } from "./Header";
 
-export { LocaleProvider, useLocale } from "./locale";
-
 export { Footer } from "./Footer";
 export type { FooterProps } from "./Footer";
 

@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import type { RefObject } from "react";
 import { buttonClassName } from "./Button";
 import { cx } from "./cx";
-import { useLocale } from "./locale";
 import type { NavLink, PrimaryNavItem } from "./nav-data";
 import {
   DEFAULT_PRIMARY_ACTION,
@@ -31,6 +30,18 @@ export interface HeaderProps {
    * once, site-wide, by `AppShell`.
    */
   primaryAction?: PrimaryAction;
+  /**
+   * The current locale's routing key (e.g. `"global"`, `"us"`, `"de"`),
+   * used only to strip the matching prefix off `usePathname()` before the
+   * contextual-CTA lookup (see `stripLocalePrefix`). A plain prop rather
+   * than context: `AppShell` renders `Header` directly (no intermediate
+   * component in between) and nothing else in this package currently
+   * needs the locale value, so a context provider would add a second
+   * mechanism with no second consumer. Defaults to `""` (no prefix to
+   * strip) for callers that render `Header` outside `AppShell` — e.g. the
+   * style-guide's standalone previews.
+   */
+  locale?: string;
   className?: string;
 }
 
@@ -436,12 +447,15 @@ function UtilityLink({ link }: { link: NavLink }) {
   );
 }
 
-export function Header({ primaryAction = DEFAULT_PRIMARY_ACTION, className }: HeaderProps) {
+export function Header({
+  primaryAction = DEFAULT_PRIMARY_ACTION,
+  locale = "",
+  className,
+}: HeaderProps) {
   const [openNavKey, setOpenNavKey] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
-  const locale = useLocale();
   const trackLink = UTILITY_LINKS.find((link) => link.label === "Track shipment");
   // Unique per instance: a page can render more than one Header (e.g. the
   // style-guide's default-vs-overridden comparison), and duplicate DOM ids
