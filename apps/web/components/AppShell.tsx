@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Footer, Header } from "@freight/ui";
+import { Footer, Header, PageActionProvider } from "@freight/ui";
 
 /**
  * Shared chrome for both root layouts in the tree.
@@ -11,17 +11,16 @@ import { Footer, Header } from "@freight/ui";
  */
 export function AppShell({ children }: { children: ReactNode }) {
   return (
-    <>
-      {/*
-        Real per-page contextual CTAs (a Sea Freight page passing its own
-        primaryAction, etc.) need routes to actually exist first — out of
-        scope here. This wires the mechanism with a homepage-flavored CTA;
-        other pages fall back to Header's own DEFAULT_PRIMARY_ACTION until
-        they're built and can pass their own.
-      */}
+    // Wraps Header and the routed page together so a page anywhere in
+    // `children` can register its own contextual CTA (via `usePageAction`/
+    // `<PageAction>`) that Header — its sibling, not its parent — picks up.
+    // Without this provider, `primaryAction` below is the only CTA there
+    // could ever be: a page has no direct way to pass a prop to a
+    // component that a shared layout renders above it.
+    <PageActionProvider>
       <Header primaryAction={{ label: "Start a quote", href: "/get-a-quote" }} />
       <main className="flex-1">{children}</main>
       <Footer />
-    </>
+    </PageActionProvider>
   );
 }

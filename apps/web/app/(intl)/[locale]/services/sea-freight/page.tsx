@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Badge, buttonClassName, Card } from "@freight/ui";
+import { Badge, buttonClassName, Card, PageAction } from "@freight/ui";
 import { localePath } from "@/lib/locale/config";
 import { getLocale } from "@/lib/locale/server";
 
@@ -14,6 +14,8 @@ export default async function SeaFreightPage() {
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-expansive px-comfortable py-expansive">
+      <PageAction label="Get a quote for sea freight" href="/get-a-quote" />
+
       {/* Hero section */}
       <section className="grid grid-cols-1 items-center gap-loose lg:grid-cols-2">
         <div className="flex flex-col gap-cozy">

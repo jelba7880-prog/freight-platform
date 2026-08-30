@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
 import type { RefObject } from "react";
 import { buttonClassName } from "./Button";
 import { cx } from "./cx";
 import type { NavLink, PrimaryNavItem } from "./nav-data";
 import { DEFAULT_PRIMARY_ACTION, PORTAL_LINK, PRIMARY_NAV, UTILITY_LINKS } from "./nav-data";
+import { usePageActionValue } from "./PageAction";
 
 export interface PrimaryAction {
   label: string;
@@ -15,11 +15,13 @@ export interface PrimaryAction {
 
 export interface HeaderProps {
   /**
-   * The contextual, page-specific commercial CTA — the ONE thing this
-   * component lets a page configure. Everything else (utility actions,
-   * primary nav) is fixed content from ./nav-data, not a prop: a page
-   * cannot grow the utility row just by passing more props to Header.
-   * Defaults to a site-wide fallback when a page doesn't specify one.
+   * Site-wide fallback commercial CTA, shown when no page below has
+   * registered its own via `usePageAction`/`<PageAction>` (see
+   * ./PageAction). This can't be how an individual page sets its own CTA:
+   * Header is rendered by the shared layout, above the page, in the same
+   * pass — a page component has no way to hand a prop to an ancestor it
+   * doesn't render. The page-action context bridges that gap; this prop is
+   * only ever set once, site-wide, by `AppShell`.
    */
   primaryAction?: PrimaryAction;
   className?: string;
@@ -431,18 +433,18 @@ export function Header({ primaryAction = DEFAULT_PRIMARY_ACTION, className }: He
   const [openNavKey, setOpenNavKey] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
-  const pathname = usePathname();
   const trackLink = UTILITY_LINKS.find((link) => link.label === "Track shipment");
   // Unique per instance: a page can render more than one Header (e.g. the
   // style-guide's default-vs-overridden comparison), and duplicate DOM ids
   // would make aria-controls ambiguous.
   const mobileMenuId = useId();
 
-  // Detect current page and use contextual CTA when applicable
-  const resolvedPrimaryAction =
-    pathname.includes("/sea-freight") && primaryAction === DEFAULT_PRIMARY_ACTION
-      ? { label: "Get a quote for sea freight", href: "/get-a-quote" }
-      : primaryAction;
+  // A page-registered CTA (via `usePageAction`/`<PageAction>`) always wins
+  // over the site-wide fallback prop; `usePageActionValue()` returns null
+  // both when nothing's registered and when Header renders outside any
+  // `PageActionProvider` at all (e.g. the style-guide's manual previews).
+  const pageAction = usePageActionValue();
+  const resolvedPrimaryAction = pageAction ?? primaryAction;
 
   return (
     <header className={cx("relative z-10 border-b border-border bg-surface", className)}>
