@@ -212,23 +212,15 @@ export const DEFAULT_PRIMARY_ACTION: NavLink = { label: "Get a quote", href: "/g
  * page's CTA (Healthcare, say) means setting `ctaLabel` on its
  * SERVICES/INDUSTRIES entry, not editing Header.tsx.
  *
- * `pathname` is Header's own `usePathname()` value. For a statically
- * prerendered page that carries the locale segment baked in at build time
- * — including the internal default-locale rewrite prefix (see
- * `DEFAULT_LOCALE` in apps/web/lib/locale/config.ts: `/services/sea-freight`
- * prerenders with the pathname `/global/services/sea-freight`) — while a
- * live client-side navigation reports the real, unprefixed browser URL.
- * `packages/ui` can't depend on apps/web's locale config (it's shared with
- * apps/portal and apps/admin too), so rather than recognizing specific
- * locale codes, this tries the path as given, then with one leading
- * segment stripped — either reading recovers the canonical href already
- * in this file.
+ * A pure lookup: `path` must already be the canonical, locale-stripped
+ * path (matching the `href`s in this file exactly). This function has no
+ * opinion on locales or prefixes — that normalization is the caller's job
+ * (see `stripLocalePrefix`, used by `Header`) and deliberately doesn't
+ * live here, so this stays a plain data lookup.
  */
-export function resolveContextualCta(pathname: string): NavLink | undefined {
-  const stripped = pathname.replace(/^\/[^/]+/, "") || "/";
-  const candidates = pathname === stripped ? [pathname] : [pathname, stripped];
+export function resolveContextualCta(path: string): NavLink | undefined {
   const entry = [...SERVICES, ...INDUSTRIES].find(
-    (item) => item.ctaLabel !== undefined && candidates.includes(item.href),
+    (item) => item.ctaLabel !== undefined && item.href === path,
   );
   return entry ? { label: entry.ctaLabel!, href: DEFAULT_PRIMARY_ACTION.href } : undefined;
 }

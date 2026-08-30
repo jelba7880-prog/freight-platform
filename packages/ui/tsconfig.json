@@ -7,5 +7,11 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "noEmit": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  // *.test.ts files run directly via `node --experimental-strip-types`
+  // (see package.json's "test" script), not through this tsconfig: they
+  // need Node's own ESM resolution (an explicit ".ts" import extension,
+  // which "moduleResolution": "Bundler" above rejects) and Node's global
+  // test/assert modules, neither of which the shipped package needs.
+  "exclude": ["src/**/*.test.ts"]
 }

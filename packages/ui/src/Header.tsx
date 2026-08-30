@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { RefObject } from "react";
 import { buttonClassName } from "./Button";
 import { cx } from "./cx";
+import { useLocale } from "./locale";
 import type { NavLink, PrimaryNavItem } from "./nav-data";
 import {
   DEFAULT_PRIMARY_ACTION,
@@ -13,6 +14,7 @@ import {
   resolveContextualCta,
   UTILITY_LINKS,
 } from "./nav-data";
+import { stripLocalePrefix } from "./stripLocalePrefix";
 
 export interface PrimaryAction {
   label: string;
@@ -439,17 +441,25 @@ export function Header({ primaryAction = DEFAULT_PRIMARY_ACTION, className }: He
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
+  const locale = useLocale();
   const trackLink = UTILITY_LINKS.find((link) => link.label === "Track shipment");
   // Unique per instance: a page can render more than one Header (e.g. the
   // style-guide's default-vs-overridden comparison), and duplicate DOM ids
   // would make aria-controls ambiguous.
   const mobileMenuId = useId();
 
-  // A route match (via SERVICES/INDUSTRIES' `ctaLabel`) always wins over
-  // the site-wide fallback prop. This is a data lookup, not a route
-  // string or conditional living in this component — see
-  // `resolveContextualCta` in ./nav-data.
-  const resolvedPrimaryAction = resolveContextualCta(pathname) ?? primaryAction;
+  // `usePathname()` carries the current locale segment — for a statically
+  // prerendered page that's baked in at build time (e.g.
+  // `/global/services/sea-freight` for the default locale's internal
+  // rewrite; see DEFAULT_LOCALE in apps/web/lib/locale/config.ts), while a
+  // live client-side navigation reports the real, unprefixed browser URL.
+  // Strip exactly the known locale value (not a fixed segment count — see
+  // stripLocalePrefix) so the remainder matches nav-data.ts's hrefs, then
+  // look it up. A route match (via SERVICES/INDUSTRIES' `ctaLabel`) always
+  // wins over the site-wide fallback prop. This is a data lookup, not a
+  // route string or conditional living in this component.
+  const canonicalPath = stripLocalePrefix(pathname, locale);
+  const resolvedPrimaryAction = resolveContextualCta(canonicalPath) ?? primaryAction;
 
   return (
     <header className={cx("relative z-10 border-b border-border bg-surface", className)}>
