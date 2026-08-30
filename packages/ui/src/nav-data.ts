@@ -33,11 +33,17 @@ export interface ContentNavLink extends NavLink {
    * Label for Header's contextual CTA when the visitor is on this entry's
    * own page — e.g. "Get a quote for sea freight" on the Sea Freight
    * service page. Absent means this entry's page doesn't override the
-   * site-wide default. Not a second href: the CTA always targets
-   * `DEFAULT_PRIMARY_ACTION.href` (there is one quote destination; only
-   * the label varies per service/industry). See `resolveContextualCta`.
+   * site-wide default. The CTA targets `ctaHref` when present, falling
+   * back to `DEFAULT_PRIMARY_ACTION.href` otherwise. See
+   * `resolveContextualCta`.
    */
   ctaLabel?: string;
+  /**
+   * Href for the contextual CTA above. Absent means the CTA falls back to
+   * `DEFAULT_PRIMARY_ACTION.href` (the common case: most services/industries
+   * just want a differently-worded quote CTA, not a different destination).
+   */
+  ctaHref?: string;
 }
 
 export const SERVICES: ContentNavLink[] = [
@@ -152,6 +158,8 @@ export const INDUSTRIES: ContentNavLink[] = [
     label: "Healthcare",
     href: "/industries/healthcare",
     shortDescription: "Compliant, temperature-controlled logistics for pharma and medical devices.",
+    ctaLabel: "Talk to a Healthcare specialist",
+    ctaHref: "/contact",
   },
   {
     slug: "technology-semiconductors",
@@ -222,7 +230,9 @@ export function resolveContextualCta(path: string): NavLink | undefined {
   const entry = [...SERVICES, ...INDUSTRIES].find(
     (item) => item.ctaLabel !== undefined && item.href === path,
   );
-  return entry ? { label: entry.ctaLabel!, href: DEFAULT_PRIMARY_ACTION.href } : undefined;
+  return entry
+    ? { label: entry.ctaLabel!, href: entry.ctaHref ?? DEFAULT_PRIMARY_ACTION.href }
+    : undefined;
 }
 
 /**
