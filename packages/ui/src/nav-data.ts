@@ -59,6 +59,7 @@ export const SERVICES: ContentNavLink[] = [
     label: "Air freight",
     href: "/services/air-freight",
     shortDescription: "Time-critical air cargo with express, standard, and charter options worldwide.",
+    ctaLabel: "Get a quote for air freight",
   },
   {
     slug: "road-freight",
@@ -83,6 +84,7 @@ export const SERVICES: ContentNavLink[] = [
     label: "Cargo insurance",
     href: "/services/cargo-insurance",
     shortDescription: "Protect shipments in transit with coverage tailored to cargo value and risk.",
+    ctaLabel: "Get a quote for cargo insurance",
   },
   {
     slug: "ecommerce-logistics",
@@ -152,6 +154,8 @@ export const INDUSTRIES: ContentNavLink[] = [
     label: "Consumer goods",
     href: "/industries/consumer-goods",
     shortDescription: "Reliable, scalable logistics for fast-moving consumer goods brands.",
+    ctaLabel: "Talk to a Consumer Goods specialist",
+    ctaHref: "/contact",
   },
   {
     slug: "healthcare",
@@ -166,6 +170,8 @@ export const INDUSTRIES: ContentNavLink[] = [
     label: "Technology and semiconductors",
     href: "/industries/technology-semiconductors",
     shortDescription: "Secure, time-critical logistics for high-value tech and semiconductor cargo.",
+    ctaLabel: "Talk to a Technology and Semiconductors specialist",
+    ctaHref: "/contact",
   },
   {
     slug: "industrial",
