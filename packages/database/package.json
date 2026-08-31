@@ -3,17 +3,23 @@
   "version": "0.0.0",
   "private": true,
   "license": "UNLICENSED",
-  "main": "./src/client.ts",
-  "types": "./src/client.ts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "scripts": {
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.112.4"
+    "@neondatabase/serverless": "^1.1.0",
+    "drizzle-orm": "^0.45.2"
   },
   "devDependencies": {
     "@freight/config": "workspace:*",
+    "@types/node": "^26.3.0",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^9.39.5",
     "typescript": "^6.0.3"
   }
