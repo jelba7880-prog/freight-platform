@@ -16,7 +16,7 @@
  * `locale` empty (outside any locale-scoped tree, or a preview that never
  * seeds one) is a no-op: `pathname` is returned unchanged.
  */
-export function stripLocalePrefix(pathname: string, locale: string): string {
+export function stripLocalePrefix(pathname: string, locale: string): number {
   if (!locale) return pathname;
   const prefix = `/${locale}`;
   if (pathname === prefix) return "/";
