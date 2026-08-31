@@ -1,12 +1,12 @@
 We are building a modern global freight-forwarding and logistics platform inspired by the structure, customer journeys, information architecture, and operational capabilities of the Kuehne+Nagel website, while introducing a substantially more refined visual system, clearer user experience, and a more modern technical foundation.
 
-The platform will function as both a corporate logistics website and an operational digital shipping platform. It will allow customers to discover logistics services, understand available transportation options, request freight quotations, communicate with logistics specialists, locate facilities and offices, track shipments, and manage their shipments through a secure customer portal.
+The platform will function as both a corporate logistics website and an operational digital shipping platform. It will allow customers to discover logistics services, understand available transportation options, talk directly with logistics specialists to get pricing and book a shipment, locate facilities and offices, track shipments, and manage their shipments through a secure customer portal.
 
 The objective is not to create a simple company website. The objective is to build a digital logistics ecosystem in which the public website acts as the acquisition, information, and service-discovery layer while the authenticated customer platform handles actual shipment management.
 
 Core Product Structure
 
-The platform is organised around the same fundamental hierarchy Kuehne+Nagel uses — services, industries, quoting, tracking, and a customer portal — but several of these areas are specified more precisely below than a naive reading of the reference site would produce.
+The platform is organised around the same fundamental hierarchy Kuehne+Nagel uses — services, industries, specialist contact, tracking, and a customer portal — but several of these areas are specified more precisely below than a naive reading of the reference site would produce.
 
 1. Transportation & Logistics Services
 
@@ -37,7 +37,7 @@ Why: K+N's own service pages (checked against Sea Freight and Healthcare) follow
 Deep informational content (process detail, available options, comparisons, FAQs, glossaries) lives in a separate Guides & Reference content type (see Content & Knowledge Platform below) and is cross-linked from the service page, not embedded in it.
 Unlike K+N, we will ship real FAQ content — but as a collapsible block on the guide page, not stacked into the service page's above-the-fold flow.
 
-Each service page still ends in a clear conversion action — Get a Quote, Track Shipment, or Talk to an Expert — matching K+N's pattern.
+Each service page still ends in a clear conversion action — a contextual "Talk to a [Service] Specialist" as the dominant CTA, with Track Shipment as the secondary path — matching K+N's pattern of one dominant conversion action per page, though the specific action diverges from K+N's quote-first approach (see Pricing & Booking, below).
 
 2. Industry-Specific Solutions
 
@@ -53,23 +53,15 @@ Perishables
 
 This mirrors K+N's industry architecture, where services are connected to sector-specific expertise (certifications, compliance standards, named specialist partners). Industry pages follow the same short, benefit-led template as service pages for the same reason.
 
-3. Quotation Engine — Tiered Instant + RFQ (rewritten)
+3. Pricing & Booking — Direct Specialist Contact (rewritten again)
 
-The original spec assumed a single quotation workflow that, for any mode, would either produce an instant quote or fall back to a structured request. This is not how it can actually work, and specifying it as if it can sets engineering up to fail.
+The previous version of this section replaced a single naive quotation workflow with two explicit tiers: an instant, rate-engine-backed calculation for standard lanes (Tier A), falling back to a request-for-quote queue routed to a sales/ops team for everything else (Tier B). That model has itself been removed in favor of the simpler approach below — documented here, rather than silently rewritten, per this doc's own convention for tracking deviations.
 
-Root cause: instant quoting is a rate-data problem, not a form-building problem. Some modes have a maintained tariff/rate-card system behind them; most do not. K+N's own site proves this — Sea and Air route to dedicated calculator apps, while Road has no instant quote at all and routes straight to a plain lead-capture form. Project logistics, cold chain, and anything non-standard almost certainly work the same way.
+Why the tier split went away: it existed only to justify Tier A — a live rate/tariff engine maintained for a handful of standard lanes. Industry pages never had a Tier A path to begin with; they always led with "Talk to a specialist," and that model works just as well for services. Maintaining a second, calculator-backed path for a minority of lanes was real, ongoing engineering and operations cost for a benefit — a live number instead of a human response — that didn't hold up once every other service and every industry page already worked the same, simpler way.
 
-Amended design — two explicit tiers, decided per service before engineering starts:
+Amended design: every service and industry page's primary conversion path is a direct conversation with a specialist via a contact/inquiry route, not a self-service calculator. No Tier A/B distinction — every mode, standard or not, works identically.
 
-Tier Definition Applies to (initial assumption — confirm with ops before build)
-A — Instant / indicative quote Real-time calculation against a maintained rate/tariff engine Standard FCL/LCL sea lanes, common air lanes
-B — Request for Quote (RFQ) Structured intake form routed to a sales/ops queue with SLA tracking Road freight, project logistics, cold chain, e-commerce logistics, anything non-standard or requiring negotiated pricing
-
-The quote UI supports both fields:
-
-Origin, destination, shipment type, cargo details, weight, dimensions, number of packages, container requirements, preferred service, special handling requirements, shipping date, contact information.
-
-For Tier A, these fields feed a rating engine and return a live number. For Tier B, the same fields create a structured inquiry in the CRM/ops queue — but the UI must be honest about which one is happening; it should never imply a live calculation is running when the outcome is actually a human callback. K+N's own site has a small version of this problem worth avoiding: on the Sea Freight page, a "Talk to an expert" CTA actually routes to a quote form with a pre-set quote type — label and destination should always match.
+The inquiry form captures: origin, destination, shipment type, cargo details, weight, dimensions, number of packages, container requirements, preferred service, special handling requirements, shipping date, and contact information. Submitting it creates a structured inquiry routed to the sales/ops queue with SLA tracking — what a Tier B request used to produce, now the only path for every service. The UI stays honest about this throughout: no step should ever imply a live calculation is running when the outcome is actually a specialist's response.
 
 4. Shipment Tracking
 
@@ -78,7 +70,7 @@ Shipment tracking is a first-class feature, available in two forms:
 Public tracking — anonymous, reference-number-only lookup (no login required), returning current status, milestones, and ETA. Mirrors K+N's public tracking endpoint.
 Authenticated tracking (inside the customer portal) — full detail: current shipment status, origin, destination, milestones, current location, estimated arrival, transport mode, vessel/flight/truck information where available, shipment history, relevant documents, exceptions or delays, delivery status, plus proactive milestone alerts.
 
-Tracking is surfaced directly alongside quoting on the homepage and in the persistent header, matching K+N's real prioritisation of these two actions above everything else.
+Tracking is surfaced directly alongside the specialist-contact CTA on the homepage and in the persistent header, matching K+N's real prioritisation of these two actions above everything else.
 
 **Data source — deliberately manual, not carrier-integrated (amended, new):** the tracking data behind both public and authenticated tracking is authored and maintained internally, through the admin platform — operations staff manually create and update tracking events (status changes, milestones, current location, ETA) per shipment. There is no live integration with carrier, ocean-schedule, airline-cargo, or port-system tracking APIs behind this feature.
 
@@ -89,14 +81,14 @@ Tracking is surfaced directly alongside quoting on the homepage and in the persi
 
 5. Customer Portal — Single Unified Application (amended)
 
-The customer portal is the most important operational component. Architectural principle: this is built as one coherent application — one auth/session domain, one design system, one data model — with quote, book, track, documents, and reporting as routes inside that single app, not as separately built products stitched together at the navigation layer.
+The customer portal is the most important operational component. Architectural principle: this is built as one coherent application — one auth/session domain, one design system, one data model — with booking, tracking, documents, and reporting as routes inside that single app, not as separately built products stitched together at the navigation layer.
 
-Why this is called out explicitly: K+N's own myKN is not one app. It's a federation of route islands (/oq/ quote, /fs/ sea, /fa/ air, /ac/ auth, /cc/ dashboard, /public-tracking/, even a mode-specific news feed) — the product of a 10+ year incremental buildout, and myKN's own marketing copy admits it: customers are still being migrated off a predecessor product ("KN Login") that was never fully retired. That fragmentation is a legacy cost K+N is stuck with. We are not — being greenfield is the one advantage we have over the reference site, and the fastest way to squander it is to let "quote," "track," and "manage" become separately-owned surfaces that need a second rebuild in five years to unify.
+Why this is called out explicitly: K+N's own myKN is not one app. It's a federation of route islands (/oq/ quote, /fs/ sea, /fa/ air, /ac/ auth, /cc/ dashboard, /public-tracking/, even a mode-specific news feed) — the product of a 10+ year incremental buildout, and myKN's own marketing copy admits it: customers are still being migrated off a predecessor product ("KN Login") that was never fully retired. That fragmentation is a legacy cost K+N is stuck with. We are not — being greenfield is the one advantage we have over the reference site, and the fastest way to squander it is to let "book," "track," and "manage" become separately-owned surfaces that need a second rebuild in five years to unify.
 
 The customer portal allows registered customers to:
 
-Request and receive freight quotations (Tier A and Tier B, unified in one flow)
-Convert quotations into bookings
+Request pricing and booking help from a specialist through the portal
+Review and confirm the booking a specialist proposes
 Create and manage bookings
 Track shipments
 View shipment history
@@ -129,7 +121,7 @@ The Resources layer contains: Market insights, Industry insights, Success storie
 CTA hierarchy (amended, new): K+N repeats an identical five-action utility panel (Get a quote / Talk to an expert / Track / Find a location / Find a job) on every single page, regardless of context — a sea-freight page surfaces "Find a job" with the same visual weight as "Get a quote," which has nothing to do with a shipper's intent on that page.
 
 Root cause: the header/utility drawer is a shared component injected globally by the CMS templating layer, with no per-page-intent adaptation.
-What we do instead: keep lightweight global utility actions (track, contact, locations) persistent in the header, but make the primary CTA contextual and visually dominant per page — e.g. "Get a quote for Sea Freight" is the loud action on the sea-freight page; "Talk to an expert" is secondary; career links live only in the footer/Company nav, never sharing a drawer with commercial actions.
+What we do instead: keep lightweight global utility actions (track, contact, locations) persistent in the header, but make the primary CTA contextual and visually dominant per page — e.g. "Talk to a Sea Freight specialist" is the loud action on the sea-freight page, with "Track Shipment" as the secondary; career links live only in the footer/Company nav, never sharing a drawer with commercial actions.
 Content & Knowledge Platform
 
 The website functions as a logistics knowledge hub, structured around: industry intelligence, market developments, regulatory changes, customs information, shipping guides, case studies, customer success stories, educational resources, videos, webinars, company news.
@@ -157,7 +149,7 @@ Tier 1 (major markets): fully localized subsite — own hero, own contact info, 
 Tier 2 (secondary markets): lightweight localized landing page — local contact info and office list, content otherwise inherited from the global default. Route pattern: /countries/{country-slug}.
 Tier 3 (long-tail markets): no dedicated page — folded into the global Locations directory with a country filter only.
 
-Supports: multiple countries, multiple languages, region-specific content and services, local contact information, local quotation rules, local currencies, local regulatory information.
+Supports: multiple countries, multiple languages, region-specific content and services, local contact information, local pricing conventions, local currencies, local regulatory information.
 
 Visual Direction
 
@@ -179,17 +171,16 @@ Modern component architecture
 Server-side rendering / static generation where appropriate
 React Server Components where beneficial
 
-Rendering model (amended, new): the live site is a hybrid — an SSR/SSG marketing shell with client-rendered "islands" wherever something is genuinely transactional (animated stat counters, async location search, quote calculators). This validates the RSC-first plan, with one clarification worth stating explicitly so it isn't relitigated mid-build: quote calculators, the tracking widget, and location search-with-map are client components living inside an otherwise server-rendered site — don't force them into RSC, and don't let their presence justify over-hydrating the whole site into one SPA.
+Rendering model (amended, new): the live site is a hybrid — an SSR/SSG marketing shell with client-rendered "islands" wherever something is genuinely transactional (animated stat counters, async location search). This validates the RSC-first plan, with one clarification worth stating explicitly so it isn't relitigated mid-build: the tracking widget and location search-with-map are client components living inside an otherwise server-rendered site — don't force them into RSC, and don't let their presence justify over-hydrating the whole site into one SPA.
 
 Backend
 Next.js server-side APIs for application-specific operations
 PostgreSQL
 Supabase or an equivalent managed backend platform
 Secure authentication and role-based access control
-Rate/tariff engine as a first-class internal domain (not just an external integration) — this is what makes Tier A instant quoting possible at all; without a maintained internal rate table, "instant quote" collapses into Tier B for every mode.
 Core Data Domains
 
-Customers, Users, Offices, Locations, Services, Industries, Shipments, Tracking events, Quotes (with tier flag: instant vs. RFQ), Bookings, Cargo, Documents, Invoices, Notifications, Customer organizations, Logistics partners, Vehicles / vessels / flights where applicable, Rate cards / tariffs.
+Customers, Users, Offices, Locations, Services, Industries, Shipments, Tracking events, Bookings, Cargo, Documents, Invoices, Notifications, Customer organizations, Logistics partners, Vehicles / vessels / flights where applicable, Rate cards / tariffs.
 
 Infrastructure
 
@@ -199,7 +190,7 @@ Integrations
 
 Integration-ready rather than treating shipping operations as isolated website data:
 
-Carrier APIs (ocean carrier schedules, airline cargo APIs, road transport providers) — primary source for Tier A rate data
+Carrier APIs (ocean carrier schedules, airline cargo APIs, road transport providers)
 Customs systems, port systems
 - ~~Shipment tracking APIs~~ — deferred, not required. Tracking is admin-authored via the internal platform (see Shipment Tracking, above); a live integration is a future option, not a dependency.
 Mapping and geolocation providers
@@ -212,20 +203,20 @@ An internal administration system lets authorized staff manage the business with
 
 Custom-built (core to the product, no viable off-the-shelf substitute):
 
-Customers, Users, Quotes, Shipments, Bookings, Tracking events, Locations, Services, Industries, Content, Articles, Resources, Documents, Notifications, Contact inquiries, Staff permissions, Regional content
+Customers, Users, Shipments, Bookings, Tracking events, Locations, Services, Industries, Content, Articles, Resources, Documents, Notifications, Contact inquiries, Staff permissions, Regional content
 
 Buy, don't build (amended, new):
 
 Careers/ATS — K+N's own careers section runs on jobs.kuehne-nagel.com, almost certainly a third-party job board/ATS, not the core CMS. Embed or link out to a specialized platform rather than building bespoke application-tracking tooling.
 Newsroom / press distribution — K+N runs this on a separate newsroom.kuehne-nagel.com subdomain, consistent with specialized PR-distribution tooling rather than the core site's CMS. Evaluate a similar buy decision before committing engineering time to a bespoke press-release workflow.
 
-Why this matters: the original spec listed "Content, Articles, Newsroom, Staff permissions" as one undifferentiated admin surface to build. Treating careers and press distribution as core product work is a common overreach — both are well-served by mature, purpose-built vendors, and building them bespoke is time not spent on the parts of the admin platform that are actually differentiated (quotes, shipments, bookings, tracking).
+Why this matters: the original spec listed "Content, Articles, Newsroom, Staff permissions" as one undifferentiated admin surface to build. Treating careers and press distribution as core product work is a common overreach — both are well-served by mature, purpose-built vendors, and building them bespoke is time not spent on the parts of the admin platform that are actually differentiated (shipments, bookings, tracking).
 
 Role-based permissions support administrators, operations staff, customer-service teams, sales staff, logistics coordinators, and customers.
 
 End-to-End Customer Journey
 
-Discover a service → Calculate or request a quote (Tier A or Tier B) → Select a logistics option → Book shipment → Receive shipment reference → Track shipment → Receive status notifications → Access documents → Receive delivery confirmation → Review shipment history and analytics
+Discover a service → Talk to a specialist → Confirm booking → Receive shipment reference → Track shipment → Receive status notifications → Access documents → Receive delivery confirmation → Review shipment history and analytics
 
 The public website is the customer's entry point; the authenticated platform is the customer's ongoing logistics workspace.
 
@@ -233,15 +224,15 @@ Product Philosophy
 
 The project behaves less like a traditional freight company's website and more like a digital logistics company.
 
-The public experience answers: What can you ship, where can you ship it, how much will it cost, and how can you help me?
+The public experience answers: What can you ship, where can you ship it, how much will it cost (now answered through a direct conversation with a specialist, not a self-service calculator), and how can you help me?
 
 The operational product answers: Where is my shipment, what is happening to it, what do I need to do next, and where are all of my logistics documents and information?
 
-The result is a global freight and logistics platform combining corporate content, service discovery, quotation, booking, shipment visibility, customer management, location intelligence and operational analytics within one coherent digital ecosystem.
+The result is a global freight and logistics platform combining corporate content, service discovery, specialist consultation, booking, shipment visibility, customer management, location intelligence and operational analytics within one coherent digital ecosystem.
 
 Appendix: Key Decisions & Deviations from the K+N Reference
 Area Original assumption What the live site actually does Amended decision
-Quote engine One workflow produces instant quote or request, for any mode Sea/Air have real calculators; Road and non-standard cargo are lead-capture only Explicit two-tier model (Instant vs. RFQ), classified per service before build
+Quote engine One workflow produces instant quote or request, for any mode Sea/Air have real calculators; Road and non-standard cargo are lead-capture only Explicit two-tier model (Instant vs. RFQ), classified per service before build — later removed entirely: direct specialist contact (no tier distinction) replaced it, since industry pages already worked this way and the two-tier split added engineering complexity (a maintained rate/tariff engine) that a specialist-conversation model doesn't need
 Customer portal "Centralized platform" implied as one product myKN is a federation of route islands across quote/sea/air/auth/dashboard, still mid-migration off a predecessor product One unified app: one auth domain, one design system, one data model
 Service pages Process + options + FAQs + industries all on one page Short benefit-led template; deep content lives in a separate /how-to/ vertical Two content types: service pages (commercial) vs. guides (informational, with real FAQs)
 Locations "Interactive maps" as the headline UX improvement Search-first result list; map is a secondary static link, not a live default view Search-first primary, map as a secondary filtered-result view
