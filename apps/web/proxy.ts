@@ -50,9 +50,9 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   /*
-   * Everything except Next internals, the metadata files Next serves from
-   * the app root, and anything with a file extension (static assets) — none
-   * of those have a locale dimension.
+   * Everything except Next internals, API routes, the metadata files Next
+   * serves from the app root, and anything with a file extension (static
+   * assets) — none of those have a locale dimension.
    */
-  matcher: ["/((?!_next/|favicon\\.ico$|robots\\.txt$|sitemap\\.xml$|.*\\.[^/]+$).*)"],
+  matcher: ["/((?!_next/|api/|favicon\\.ico$|robots\\.txt$|sitemap\\.xml$|.*\\.[^/]+$).*)"],
 };

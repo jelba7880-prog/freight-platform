@@ -1,6 +1,13 @@
 import { drizzle } from "drizzle-orm/neon-http";
 
-import { DATABASE_URL } from "./env";
+import { requireEnv } from "./env";
 import * as schema from "./schema";
 
-export const db = drizzle(DATABASE_URL, { schema });
+let _db: ReturnType<typeof drizzle<typeof schema>> | undefined;
+
+export function getDb() {
+  if (!_db) {
+    _db = drizzle(requireEnv("DATABASE_URL"), { schema });
+  }
+  return _db;
+}

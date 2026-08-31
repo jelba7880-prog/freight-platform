@@ -10,5 +10,3 @@ export function requireEnv(name: string): string {
   }
   return value;
 }
-
-export const DATABASE_URL = requireEnv("DATABASE_URL");
