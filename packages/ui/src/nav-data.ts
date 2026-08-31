@@ -69,18 +69,24 @@ export const SERVICES: ContentNavLink[] = [
     label: "Road freight",
     href: "/services/road-freight",
     shortDescription: "Full-truckload, part-load, and cross-border road transport across regions.",
+    ctaLabel: "Talk to a Road Freight specialist",
+    ctaHref: "/contact",
   },
   {
     slug: "warehousing-fulfilment-distribution",
     label: "Warehousing, fulfilment and distribution",
     href: "/services/warehousing-fulfilment-distribution",
     shortDescription: "Storage, pick-and-pack, and last-mile distribution from a global facility network.",
+    ctaLabel: "Talk to a Warehousing, Fulfilment and Distribution specialist",
+    ctaHref: "/contact",
   },
   {
     slug: "customs-clearance",
     label: "Customs clearance",
     href: "/services/customs-clearance",
     shortDescription: "Import and export clearance handled by specialists who know local regulations.",
+    ctaLabel: "Talk to a Customs Clearance specialist",
+    ctaHref: "/contact",
   },
   {
     slug: "cargo-insurance",
@@ -95,6 +101,8 @@ export const SERVICES: ContentNavLink[] = [
     label: "E-commerce logistics",
     href: "/services/ecommerce-logistics",
     shortDescription: "Fulfilment and returns logistics built for high-volume online retail.",
+    ctaLabel: "Talk to an E-commerce Logistics specialist",
+    ctaHref: "/contact",
   },
   {
     slug: "project-logistics",
@@ -125,6 +133,8 @@ export const SERVICES: ContentNavLink[] = [
     label: "Cold-chain logistics",
     href: "/services/cold-chain-logistics",
     shortDescription: "Temperature-controlled transport and storage for sensitive, perishable cargo.",
+    ctaLabel: "Talk to a Cold-chain Logistics specialist",
+    ctaHref: "/contact",
   },
   {
     slug: "supply-chain-consulting",
@@ -152,6 +162,8 @@ export const INDUSTRIES: ContentNavLink[] = [
     label: "Automotive and mobility",
     href: "/industries/automotive-mobility",
     shortDescription: "Just-in-time and just-in-sequence logistics for automotive supply chains.",
+    ctaLabel: "Talk to an Automotive and Mobility specialist",
+    ctaHref: "/contact",
   },
   {
     slug: "consumer-goods",
@@ -182,6 +194,8 @@ export const INDUSTRIES: ContentNavLink[] = [
     label: "Industrial",
     href: "/industries/industrial",
     shortDescription: "Heavy machinery and industrial equipment logistics, door to door.",
+    ctaLabel: "Talk to an Industrial specialist",
+    ctaHref: "/contact",
   },
   {
     slug: "perishables",
