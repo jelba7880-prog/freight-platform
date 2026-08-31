@@ -13,14 +13,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Must run before `actions/setup-node`: its `cache: pnpm` resolves the
+      # pnpm store path by shelling out to `pnpm`, which doesn't exist on
+      # PATH yet at that point otherwise. The runner's preinstalled system
+      # Node already has corepack, so this doesn't need Node 20 to be set up
+      # first — the pnpm shim it creates stays on PATH after setup-node
+      # switches the active Node version.
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: pnpm
-
-      - name: Enable Corepack
-        run: corepack enable
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
