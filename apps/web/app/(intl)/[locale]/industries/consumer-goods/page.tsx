@@ -83,7 +83,7 @@ export default async function ConsumerGoodsPage() {
     ctaDescription:
       "Talk to a specialist who understands the retail schedules and seasonal demand your consumer goods supply chain runs on.",
     primaryCta: { label: "Talk to a Consumer Goods specialist", href: localePath(locale, "/contact") },
-    secondaryCta: { label: "Get a quote", href: localePath(locale, "/get-a-quote") },
+    secondaryCta: { label: "Track shipment", href: localePath(locale, "/track") },
   };
 
   return <ServiceIndustryTemplate content={content} />;

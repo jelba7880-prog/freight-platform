@@ -7,8 +7,8 @@ const LocaleContext = createContext<Locale>(DEFAULT_LOCALE);
 
 /**
  * Client-side counterpart to `getLocale()`. Server components read the
- * locale via `getLocale()`; client islands (quote calculators, location
- * search, the tracking widget) read it with `useLocale()`.
+ * locale via `getLocale()`; client islands (location search, the tracking
+ * widget) read it with `useLocale()`.
  */
 export function useLocale(): Locale {
   return use(LocaleContext);

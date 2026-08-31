@@ -3,9 +3,9 @@ import { cx } from "./cx";
 
 /**
  * Status pill mapped directly onto real domain states. This backs actual
- * Quote-tier and Shipment-status badges later — "in-transit" and "cleared"
- * are not decorative color options, they mean exactly what their names
- * say. Extend this union only when a new state actually exists.
+ * Shipment-status badges later — "in-transit" and "cleared" are not
+ * decorative color options, they mean exactly what their names say. Extend
+ * this union only when a new state actually exists.
  */
 export type BadgeVariant = "in-transit" | "cleared" | "neutral";
 

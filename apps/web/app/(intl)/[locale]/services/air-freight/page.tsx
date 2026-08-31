@@ -82,9 +82,9 @@ export default async function AirFreightPage() {
     ],
     ctaHeading: "Need to move cargo fast?",
     ctaDescription:
-      "Get a competitive quote for your air freight shipment. Our team will review your timeline and recommend the right service level.",
-    primaryCta: { label: "Get a quote for air freight", href: localePath(locale, "/get-a-quote") },
-    secondaryCta: { label: "Talk to an expert", href: localePath(locale, "/contact") },
+      "Talk to an air freight specialist about your timeline. Our team will review your deadline and recommend the right service level.",
+    primaryCta: { label: "Talk to an Air Freight specialist", href: localePath(locale, "/contact") },
+    secondaryCta: { label: "Track shipment", href: localePath(locale, "/track") },
   };
 
   return <ServiceIndustryTemplate content={content} />;

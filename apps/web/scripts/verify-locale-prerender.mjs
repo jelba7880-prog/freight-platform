@@ -20,8 +20,10 @@
  * tautology:
  *   - `data-locale`  — the layout, from its own `params` (control)
  *   - the page's hrefs — built with `localePath(await getLocale())` (subject)
- * If `getLocale()` regresses to the default, `us.html` links to
- * `/get-a-quote` while still carrying `data-locale="us"`, and this fails.
+ * If `getLocale()` regresses to the default, `us.html` links to `/track`
+ * while still carrying `data-locale="us"`, and this fails. `/track` is a
+ * good pick for this: it's `DEFAULT_PRIMARY_ACTION`'s href, so it's the
+ * link most pages on the site render.
  *
  * Run via `pnpm --filter @freight/web test:locale`, which builds first.
  */
@@ -39,7 +41,7 @@ const VARIANTS = [
 ];
 
 /** Paths the homepage links to that must carry the locale prefix. */
-const LOCALIZED_PATHS = ["/get-a-quote", "/track", "/services/sea-freight"];
+const LOCALIZED_PATHS = ["/track", "/services/sea-freight"];
 
 const failures = [];
 

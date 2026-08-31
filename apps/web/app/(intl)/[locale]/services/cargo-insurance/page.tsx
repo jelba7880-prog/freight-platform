@@ -81,9 +81,9 @@ export default async function CargoInsurancePage() {
     ],
     ctaHeading: "Protect your next shipment",
     ctaDescription:
-      "Get a quote for cargo insurance coverage tailored to your shipment's value and route. Our team will walk you through the options.",
-    primaryCta: { label: "Get a quote for cargo insurance", href: localePath(locale, "/get-a-quote") },
-    secondaryCta: { label: "Talk to an expert", href: localePath(locale, "/contact") },
+      "Talk to a cargo insurance specialist about coverage tailored to your shipment's value and route. Our team will walk you through the options.",
+    primaryCta: { label: "Talk to a Cargo Insurance specialist", href: localePath(locale, "/contact") },
+    secondaryCta: { label: "Track shipment", href: localePath(locale, "/track") },
   };
 
   return <ServiceIndustryTemplate content={content} />;

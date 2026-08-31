@@ -27,12 +27,12 @@ export default async function SeaFreightPage() {
     ],
     valuePropHeading: "Why choose sea freight with us",
     valuePropDescription:
-      "We handle everything from quoting to delivery, so you can focus on your supply chain. Our global network and local expertise mean your shipment gets the care and attention it deserves.",
+      "We handle everything from booking to delivery, so you can focus on your supply chain. Our global network and local expertise mean your shipment gets the care and attention it deserves.",
     valuePropItems: [
       {
-        title: "Transparent pricing",
+        title: "Consolidation options",
         description:
-          "Clear, itemized quotes that show every cost — no hidden fees, and rates competitive with industry standards.",
+          "Share container space through LCL when your volume doesn't need a full container, without giving up visibility into your portion of the load.",
       },
       {
         title: "Global coverage",
@@ -84,9 +84,9 @@ export default async function SeaFreightPage() {
     ],
     ctaHeading: "Ready to ship?",
     ctaDescription:
-      "Get a competitive quote for your sea freight shipment. Our team will review your needs and provide transparent pricing within hours.",
-    primaryCta: { label: "Get a quote for sea freight", href: localePath(locale, "/get-a-quote") },
-    secondaryCta: { label: "Talk to an expert", href: localePath(locale, "/contact") },
+      "Talk to a sea freight specialist about your shipment. Our team will review your needs and recommend the right routing and container option.",
+    primaryCta: { label: "Talk to a Sea Freight specialist", href: localePath(locale, "/contact") },
+    secondaryCta: { label: "Track shipment", href: localePath(locale, "/track") },
   };
 
   return <ServiceIndustryTemplate content={content} />;

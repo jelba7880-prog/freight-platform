@@ -85,7 +85,7 @@ export default async function HealthcarePage() {
     ctaDescription:
       "Talk to a specialist who understands the handling and documentation your pharmaceutical or medical device shipment requires.",
     primaryCta: { label: "Talk to a Healthcare specialist", href: localePath(locale, "/contact") },
-    secondaryCta: { label: "Get a quote", href: localePath(locale, "/get-a-quote") },
+    secondaryCta: { label: "Track shipment", href: localePath(locale, "/track") },
   };
 
   return <ServiceIndustryTemplate content={content} />;

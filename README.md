@@ -1,6 +1,6 @@
 # freight-platform
 
-Global freight logistics platform (Next.js/TS/Supabase) with a tiered instant+RFQ quote engine, one unified customer portal and locale-tiered i18n.
+Global freight logistics platform (Next.js/TS/Supabase) with a specialist-contact booking flow, one unified customer portal and locale-tiered i18n.
 
 This repo is a pnpm + Turborepo monorepo. It currently contains infrastructure/tooling scaffolding only — no pages, components, or business logic yet.
 
@@ -16,7 +16,7 @@ packages/
   ui/        Shared design system / component library (empty skeleton — wired up in a follow-up task)
   config/    Shared tsconfig, ESLint (flat config), and Tailwind config consumed by all three apps
   database/  Shared Supabase client + generated types (placeholder client only — no live project yet)
-  lib/       Shared domain types/utils (Quote, Shipment, Booking, etc.) — empty skeleton
+  lib/       Shared domain types/utils (Shipment, Booking, etc.) — empty skeleton
 ```
 
 ## Requirements
