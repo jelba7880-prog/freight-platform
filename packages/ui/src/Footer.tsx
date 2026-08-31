@@ -36,8 +36,8 @@ export function Footer({ className, ref, ...props }: FooterProps) {
         <div className="grid grid-cols-1 gap-comfortable sm:grid-cols-2">
           {/* Careers lives in this Company column only — per
               Project_Overview.md's CTA-hierarchy principle, career links
-              never share a row with commercial actions (quote/track/
-              contact), which live in Header instead. */}
+              never share a row with commercial actions (track/contact),
+              which live in Header instead. */}
           <LinkColumn title="Company" links={COMPANY_LINKS} />
           <LinkColumn title="Resources" links={RESOURCES_LINKS} />
         </div>

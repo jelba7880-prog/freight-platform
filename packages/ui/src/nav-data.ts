@@ -31,7 +31,7 @@ export interface ContentNavLink extends NavLink {
   shortDescription: string;
   /**
    * Label for Header's contextual CTA when the visitor is on this entry's
-   * own page — e.g. "Get a quote for sea freight" on the Sea Freight
+   * own page — e.g. "Talk to a Sea Freight specialist" on the Sea Freight
    * service page. Absent means this entry's page doesn't override the
    * site-wide default. The CTA targets `ctaHref` when present, falling
    * back to `DEFAULT_PRIMARY_ACTION.href` otherwise. See
@@ -41,7 +41,8 @@ export interface ContentNavLink extends NavLink {
   /**
    * Href for the contextual CTA above. Absent means the CTA falls back to
    * `DEFAULT_PRIMARY_ACTION.href` (the common case: most services/industries
-   * just want a differently-worded quote CTA, not a different destination).
+   * just want a differently-worded specialist CTA, not a different
+   * destination).
    */
   ctaHref?: string;
 }
@@ -52,14 +53,16 @@ export const SERVICES: ContentNavLink[] = [
     label: "Sea freight",
     href: "/services/sea-freight",
     shortDescription: "Full container and consolidated ocean freight across major global trade lanes.",
-    ctaLabel: "Get a quote for sea freight",
+    ctaLabel: "Talk to a Sea Freight specialist",
+    ctaHref: "/contact",
   },
   {
     slug: "air-freight",
     label: "Air freight",
     href: "/services/air-freight",
     shortDescription: "Time-critical air cargo with express, standard, and charter options worldwide.",
-    ctaLabel: "Get a quote for air freight",
+    ctaLabel: "Talk to an Air Freight specialist",
+    ctaHref: "/contact",
   },
   {
     slug: "road-freight",
@@ -84,7 +87,8 @@ export const SERVICES: ContentNavLink[] = [
     label: "Cargo insurance",
     href: "/services/cargo-insurance",
     shortDescription: "Protect shipments in transit with coverage tailored to cargo value and risk.",
-    ctaLabel: "Get a quote for cargo insurance",
+    ctaLabel: "Talk to a Cargo Insurance specialist",
+    ctaHref: "/contact",
   },
   {
     slug: "ecommerce-logistics",
@@ -218,7 +222,7 @@ export const UTILITY_LINKS: NavLink[] = [
 export const PORTAL_LINK: NavLink = { label: "Portal login", href: "/portal-login" };
 
 /** Site-wide fallback when a page doesn't specify its own contextual CTA. */
-export const DEFAULT_PRIMARY_ACTION: NavLink = { label: "Get a quote", href: "/get-a-quote" };
+export const DEFAULT_PRIMARY_ACTION: NavLink = { label: "Track shipment", href: "/track" };
 
 /**
  * Resolves Header's contextual CTA purely from route data, so Header never

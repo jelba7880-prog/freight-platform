@@ -83,7 +83,7 @@ export default async function TechnologySemiconductorsPage() {
     ctaDescription:
       "Talk to a specialist who understands the handling and timing that high-value tech and semiconductor cargo requires.",
     primaryCta: { label: "Talk to a Technology and Semiconductors specialist", href: localePath(locale, "/contact") },
-    secondaryCta: { label: "Get a quote", href: localePath(locale, "/get-a-quote") },
+    secondaryCta: { label: "Track shipment", href: localePath(locale, "/track") },
   };
 
   return <ServiceIndustryTemplate content={content} />;

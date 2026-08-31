@@ -7,7 +7,6 @@ import {
   ManifestStrip,
   PORTAL_LINK,
   SERVICES,
-  UTILITY_LINKS,
   type ContentNavLink,
 } from "@freight/ui";
 import { localePath, type Locale } from "@/lib/locale/config";
@@ -16,15 +15,7 @@ import { getLocale } from "@/lib/locale/server";
 export const metadata: Metadata = {
   title: "Freight Platform — Global freight forwarding & logistics",
   description:
-    "Sea, air, and road freight, customs, warehousing, and supply-chain consulting — quoted, booked, and tracked from one platform.",
-};
-
-// Fallback only guards the type-checker; UTILITY_LINKS always carries this
-// entry (see packages/ui/src/nav-data.ts), so it never actually triggers.
-// Mirrors the same lookup Header itself does for its mobile track icon.
-const TRACK_LINK = UTILITY_LINKS.find((link) => link.label === "Track shipment") ?? {
-  label: "Track shipment",
-  href: "/track",
+    "Sea, air, and road freight, customs, warehousing, and supply-chain consulting — booked and tracked from one platform, with a specialist behind every shipment.",
 };
 
 /** First letter of up to the first two words — a lightweight monogram in
@@ -72,7 +63,8 @@ export default async function Page() {
           </h1>
           <p className="max-w-lg text-base text-muted">
             Sea, air, and road freight, customs clearance, warehousing, and supply-chain
-            consulting — quoted, booked, and tracked from one platform.
+            consulting — booked and tracked from one platform, with a specialist behind
+            every shipment.
           </p>
           <div className="flex flex-wrap gap-cozy pt-tight">
             <a
@@ -81,8 +73,8 @@ export default async function Page() {
             >
               {DEFAULT_PRIMARY_ACTION.label}
             </a>
-            <a href={localePath(locale, TRACK_LINK.href)} className={buttonClassName("secondary", "md")}>
-              {TRACK_LINK.label}
+            <a href={localePath(locale, "/contact")} className={buttonClassName("secondary", "md")}>
+              Talk to an expert
             </a>
             <a href={localePath(locale, PORTAL_LINK.href)} className={buttonClassName("ghost", "md")}>
               {PORTAL_LINK.label}

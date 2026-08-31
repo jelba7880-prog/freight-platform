@@ -22,14 +22,14 @@ export async function AppShell({ children }: { children: ReactNode }) {
   return (
     <>
       {/*
-        primaryAction is only ever the site-wide fallback. A page's own
-        contextual CTA (e.g. Sea Freight's "Get a quote for sea freight")
-        is resolved by Header itself from the route and
-        SERVICES/INDUSTRIES' `ctaLabel` (see resolveContextualCta in
-        packages/ui/src/nav-data.ts) — a page never passes anything here
-        to get its own CTA shown.
+        primaryAction is left unset so Header falls back to its own default
+        param, DEFAULT_PRIMARY_ACTION. A page's own contextual CTA (e.g. Sea
+        Freight's "Talk to a Sea Freight specialist") is resolved by Header
+        itself from the route and SERVICES/INDUSTRIES' `ctaLabel` (see
+        resolveContextualCta in packages/ui/src/nav-data.ts) — a page never
+        passes anything here to get its own CTA shown.
       */}
-      <Header primaryAction={{ label: "Start a quote", href: "/get-a-quote" }} locale={locale} />
+      <Header locale={locale} />
       <main className="flex-1">{children}</main>
       <Footer />
     </>
