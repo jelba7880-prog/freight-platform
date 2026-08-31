@@ -16,16 +16,23 @@ jobs:
       # Must run before `actions/setup-node`: its `cache: pnpm` resolves the
       # pnpm store path by shelling out to `pnpm`, which doesn't exist on
       # PATH yet at that point otherwise. The runner's preinstalled system
-      # Node already has corepack, so this doesn't need Node 20 to be set up
-      # first — the pnpm shim it creates stays on PATH after setup-node
-      # switches the active Node version.
+      # Node already has corepack, so this doesn't need setup-node's own
+      # Node version to be active first — the pnpm shim it creates stays on
+      # PATH after setup-node switches the active Node version.
       - name: Enable Corepack
         run: corepack enable
 
+      # Node 22, not the 20 floor package.json's engines.node states: on
+      # Node 20.20.2 (the latest 20.x), `pnpm --filter @freight/ui test`
+      # fails with "node: bad option: --experimental-strip-types" — that
+      # flag doesn't exist before Node 22.6. engines.node's ">=20" doesn't
+      # actually hold for this test script; flagging that here rather than
+      # silently rewriting engines.node or the test script, which are
+      # outside a CI workflow's scope.
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
 
       - name: Install dependencies
