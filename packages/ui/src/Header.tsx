@@ -42,6 +42,15 @@ export interface HeaderProps {
    * style-guide's standalone previews.
    */
   locale?: string;
+  /**
+   * Resolves an internal `href` before it's rendered — e.g. prefixing it
+   * with the current locale segment. A plain prop rather than context, for
+   * the same reason `locale` above is: `AppShell` renders `Header` directly
+   * and nothing else in this package currently needs it. Defaults to the
+   * identity function so callers that render `Header` outside `AppShell` —
+   * e.g. the style-guide's standalone previews — keep unprefixed hrefs.
+   */
+  resolveHref?: (href: string) => string;
   className?: string;
 }
 
@@ -210,11 +219,13 @@ function NavDropdown({
   isOpen,
   onToggle,
   onClose,
+  resolveHref,
 }: {
   item: PrimaryNavItem;
   isOpen: boolean;
   onToggle: () => void;
   onClose: () => void;
+  resolveHref: (href: string) => string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -254,7 +265,7 @@ function NavDropdown({
           {item.items?.map((link) => (
             <a
               key={link.href}
-              href={link.href}
+              href={resolveHref(link.href)}
               className="rounded-sm px-tight py-tight font-sans text-sm text-foreground transition-colors duration-base hover:bg-background hover:text-beacon"
             >
               {link.label}
@@ -316,14 +327,20 @@ function SearchToggle() {
   );
 }
 
-function MobileNavAccordion({ item }: { item: PrimaryNavItem }) {
+function MobileNavAccordion({
+  item,
+  resolveHref,
+}: {
+  item: PrimaryNavItem;
+  resolveHref: (href: string) => string;
+}) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
 
   if (!item.items) {
     return (
       <a
-        href={item.href}
+        href={resolveHref(item.href)}
         className="block rounded-sm px-cozy py-snug font-sans text-base text-foreground"
       >
         {item.label}
@@ -350,7 +367,7 @@ function MobileNavAccordion({ item }: { item: PrimaryNavItem }) {
           {item.items.map((link) => (
             <a
               key={link.href}
-              href={link.href}
+              href={resolveHref(link.href)}
               className="rounded-sm px-cozy py-tight font-sans text-sm text-muted transition-colors duration-base hover:text-beacon"
             >
               {link.label}
@@ -366,10 +383,12 @@ function MobileMenu({
   open,
   onClose,
   triggerRef,
+  resolveHref,
 }: {
   open: boolean;
   onClose: () => void;
   triggerRef: RefObject<HTMLButtonElement | null>;
+  resolveHref: (href: string) => string;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
   useFocusTrap(open, panelRef);
@@ -418,17 +437,24 @@ function MobileMenu({
 
       <nav aria-label="Primary" className="flex flex-col gap-tight px-comfortable py-comfortable">
         {PRIMARY_NAV.map((item) => (
-          <MobileNavAccordion key={item.label} item={item} />
+          <MobileNavAccordion key={item.label} item={item} resolveHref={resolveHref} />
         ))}
       </nav>
 
       <div className="mt-auto flex flex-col gap-tight border-t border-border px-comfortable py-comfortable">
         {UTILITY_LINKS.filter((link) => link.label !== "Track shipment").map((link) => (
-          <a key={link.href} href={link.href} className="rounded-sm py-tight font-sans text-sm text-muted">
+          <a
+            key={link.href}
+            href={resolveHref(link.href)}
+            className="rounded-sm py-tight font-sans text-sm text-muted"
+          >
             {link.label}
           </a>
         ))}
-        <a href={PORTAL_LINK.href} className="rounded-sm py-tight font-sans text-sm font-medium text-foreground">
+        <a
+          href={resolveHref(PORTAL_LINK.href)}
+          className="rounded-sm py-tight font-sans text-sm font-medium text-foreground"
+        >
           {PORTAL_LINK.label}
         </a>
       </div>
@@ -436,10 +462,16 @@ function MobileMenu({
   );
 }
 
-function UtilityLink({ link }: { link: NavLink }) {
+function UtilityLink({
+  link,
+  resolveHref,
+}: {
+  link: NavLink;
+  resolveHref: (href: string) => string;
+}) {
   return (
     <a
-      href={link.href}
+      href={resolveHref(link.href)}
       className="font-sans text-xs text-muted transition-colors duration-base hover:text-foreground"
     >
       {link.label}
@@ -450,6 +482,7 @@ function UtilityLink({ link }: { link: NavLink }) {
 export function Header({
   primaryAction = DEFAULT_PRIMARY_ACTION,
   locale = "",
+  resolveHref = (href) => href,
   className,
 }: HeaderProps) {
   const [openNavKey, setOpenNavKey] = useState<string | null>(null);
@@ -484,11 +517,11 @@ export function Header({
           className="mx-auto flex max-w-6xl items-center justify-end gap-cozy px-comfortable py-tight"
         >
           {UTILITY_LINKS.map((link) => (
-            <UtilityLink key={link.href} link={link} />
+            <UtilityLink key={link.href} link={link} resolveHref={resolveHref} />
           ))}
           <SearchToggle />
           <a
-            href={PORTAL_LINK.href}
+            href={resolveHref(PORTAL_LINK.href)}
             className="font-sans text-xs font-medium text-foreground transition-colors duration-base hover:text-beacon"
           >
             {PORTAL_LINK.label}
@@ -498,7 +531,7 @@ export function Header({
 
       {/* Main bar: logo, primary nav, contextual CTA. */}
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-cozy px-comfortable py-snug">
-        <a href="/" className="font-display text-lg font-semibold text-foreground">
+        <a href={resolveHref("/")} className="font-display text-lg font-semibold text-foreground">
           Freight Platform
         </a>
 
@@ -511,9 +544,10 @@ export function Header({
                 isOpen={openNavKey === item.label}
                 onToggle={() => setOpenNavKey((k) => (k === item.label ? null : item.label))}
                 onClose={() => setOpenNavKey((k) => (k === item.label ? null : k))}
+                resolveHref={resolveHref}
               />
             ) : (
-              <a key={item.label} href={item.href} className={navLinkClass}>
+              <a key={item.label} href={resolveHref(item.href)} className={navLinkClass}>
                 {item.label}
               </a>
             ),
@@ -525,7 +559,7 @@ export function Header({
               opening the mobile menu, not just tucked inside it. */}
           {trackLink ? (
             <a
-              href={trackLink.href}
+              href={resolveHref(trackLink.href)}
               aria-label={trackLink.label}
               className="flex size-8 items-center justify-center rounded-sm text-muted transition-colors duration-base hover:text-foreground md:hidden"
             >
@@ -536,7 +570,7 @@ export function Header({
             <SearchToggle />
           </div>
 
-          <a href={resolvedPrimaryAction.href} className={buttonClassName("primary", "sm")}>
+          <a href={resolveHref(resolvedPrimaryAction.href)} className={buttonClassName("primary", "sm")}>
             {resolvedPrimaryAction.label}
           </a>
 
@@ -559,6 +593,7 @@ export function Header({
           open={mobileOpen}
           onClose={() => setMobileOpen(false)}
           triggerRef={mobileTriggerRef}
+          resolveHref={resolveHref}
         />
       </div>
     </header>
