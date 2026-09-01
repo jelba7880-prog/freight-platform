@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 
 import { getDb } from "./client";
 import * as schema from "./schema";
-import { createTrackingEvent } from "./queries";
+import { createShipment, createTrackingEvent, searchCustomersByEmail } from "./queries";
 
 const db = getDb();
 
@@ -27,15 +27,22 @@ async function statusOf(shipmentId: number) {
 }
 
 const createdShipmentIds: number[] = [];
+const createdCustomerIds: string[] = [];
 
 after(async () => {
   // Tracking events reference shipments with onDelete: "restrict", so
-  // events must go first.
+  // events must go first. Shipments go before customers so there's nothing
+  // left pointing at a customer row when it's deleted (harmless either way,
+  // since shipments.customerId is onDelete: "set null", but this keeps
+  // cleanup order obviously correct rather than relying on that).
   for (const shipmentId of createdShipmentIds) {
     await db
       .delete(schema.trackingEvents)
       .where(eq(schema.trackingEvents.shipmentId, shipmentId));
     await db.delete(schema.shipments).where(eq(schema.shipments.id, shipmentId));
+  }
+  for (const customerId of createdCustomerIds) {
+    await db.delete(schema.customers).where(eq(schema.customers.id, customerId));
   }
 });
 
@@ -101,4 +108,71 @@ test("milestone and exception events leave status unchanged", async () => {
   });
 
   assert.equal(await statusOf(shipment.id), "pending");
+});
+
+test("createShipment with no customer selected succeeds with a null customerId", async () => {
+  const created = await createShipment({
+    origin: "Test Origin",
+    destination: "Test Destination",
+    transportMode: "air",
+    estimatedArrival: null,
+    customerId: null,
+  });
+
+  const [row] = await db
+    .select({ id: schema.shipments.id, customerId: schema.shipments.customerId })
+    .from(schema.shipments)
+    .where(eq(schema.shipments.referenceNumber, created.referenceNumber))
+    .limit(1);
+  assert.ok(row);
+  createdShipmentIds.push(row.id);
+
+  assert.equal(row.customerId, null);
+});
+
+test("createShipment with a customer selected sets the FK correctly", async () => {
+  // Transient fixture: this environment's `customers` table is empty (no
+  // real portal sign-ins yet), so the only way to exercise the FK path is
+  // to create a customer row here and tear it down in `after` — nothing
+  // persists once the test run finishes.
+  const [customer] = await db
+    .insert(schema.customers)
+    .values({ name: "Test Customer", email: "queries-test-customer@example.com" })
+    .returning({ id: schema.customers.id });
+  assert.ok(customer);
+  createdCustomerIds.push(customer.id);
+
+  const created = await createShipment({
+    origin: "Test Origin",
+    destination: "Test Destination",
+    customerId: customer.id,
+  });
+
+  const [row] = await db
+    .select({ id: schema.shipments.id, customerId: schema.shipments.customerId })
+    .from(schema.shipments)
+    .where(eq(schema.shipments.referenceNumber, created.referenceNumber))
+    .limit(1);
+  assert.ok(row);
+  createdShipmentIds.push(row.id);
+
+  assert.equal(row.customerId, customer.id);
+});
+
+test("searchCustomersByEmail finds a prefix match and excludes non-matches", async () => {
+  const [customer] = await db
+    .insert(schema.customers)
+    .values({ name: "Searchable Customer", email: "search-target-customer@example.com" })
+    .returning({ id: schema.customers.id });
+  assert.ok(customer);
+  createdCustomerIds.push(customer.id);
+
+  const prefixMatches = await searchCustomersByEmail("search-target-customer@");
+  assert.ok(prefixMatches.some((match) => match.id === customer.id));
+
+  const nonMatches = await searchCustomersByEmail("no-such-customer-prefix@");
+  assert.ok(!nonMatches.some((match) => match.id === customer.id));
+
+  const emptyQueryMatches = await searchCustomersByEmail("   ");
+  assert.deepEqual(emptyQueryMatches, []);
 });
