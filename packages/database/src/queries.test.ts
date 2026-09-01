@@ -10,6 +10,7 @@ import {
   getShipmentForCustomer,
   listShipmentsForCustomer,
   searchCustomersByEmail,
+  searchLocations,
 } from "./queries";
 
 const db = getDb();
@@ -34,6 +35,7 @@ async function statusOf(shipmentId: number) {
 
 const createdShipmentIds: number[] = [];
 const createdCustomerIds: string[] = [];
+const createdLocationIds: number[] = [];
 
 after(async () => {
   // Tracking events reference shipments with onDelete: "restrict", so
@@ -49,6 +51,9 @@ after(async () => {
   }
   for (const customerId of createdCustomerIds) {
     await db.delete(schema.customers).where(eq(schema.customers.id, customerId));
+  }
+  for (const locationId of createdLocationIds) {
+    await db.delete(schema.locations).where(eq(schema.locations.id, locationId));
   }
 });
 
@@ -243,4 +248,72 @@ test("listShipmentsForCustomer and getShipmentForCustomer scope strictly to the 
   assert.equal(crossCustomerResult, null);
   assert.equal(nonexistentResult, null);
   assert.deepEqual(crossCustomerResult, nonexistentResult);
+});
+
+test("searchLocations with no filters returns nothing", async () => {
+  const results = await searchLocations({});
+  assert.deepEqual(results, []);
+
+  const whitespaceOnly = await searchLocations({ country: "  ", city: "  " });
+  assert.deepEqual(whitespaceOnly, []);
+});
+
+test("searchLocations narrows by each filter type in isolation, and combines two with AND not OR", async () => {
+  // Fixture: two offices sharing a country, but differing on city/postcode/
+  // service, so each filter's isolation and the AND-vs-OR case can both be
+  // proven from the same two rows.
+  const [officeX] = await db
+    .insert(schema.locations)
+    .values({
+      name: "Fixture Office X",
+      addressLine: "1 Fixture Street",
+      city: "Fixtureville",
+      country: "Fixtureland",
+      postcode: "FX100",
+      phone: "+1 555 0100",
+      services: ["sea-freight"],
+    })
+    .returning({ id: schema.locations.id });
+  const [officeY] = await db
+    .insert(schema.locations)
+    .values({
+      name: "Fixture Office Y",
+      addressLine: "2 Fixture Avenue",
+      city: "Othertown",
+      country: "Fixtureland",
+      postcode: "OT200",
+      phone: "+1 555 0200",
+      services: ["air-freight"],
+    })
+    .returning({ id: schema.locations.id });
+  assert.ok(officeX);
+  assert.ok(officeY);
+  createdLocationIds.push(officeX.id, officeY.id);
+
+  // country narrows to both (prefix match, shared country).
+  const byCountry = await searchLocations({ country: "Fixturel" });
+  assert.ok(byCountry.some((l) => l.id === officeX.id));
+  assert.ok(byCountry.some((l) => l.id === officeY.id));
+
+  // city narrows to X only.
+  const byCity = await searchLocations({ city: "Fixturev" });
+  assert.ok(byCity.some((l) => l.id === officeX.id));
+  assert.ok(!byCity.some((l) => l.id === officeY.id));
+
+  // postcode narrows to Y only.
+  const byPostcode = await searchLocations({ postcode: "OT2" });
+  assert.ok(byPostcode.some((l) => l.id === officeY.id));
+  assert.ok(!byPostcode.some((l) => l.id === officeX.id));
+
+  // service narrows to X only.
+  const byService = await searchLocations({ service: "sea-freight" });
+  assert.ok(byService.some((l) => l.id === officeX.id));
+  assert.ok(!byService.some((l) => l.id === officeY.id));
+
+  // Combining country (matches both) + service (matches only X) must apply
+  // AND: only X comes back, not Y — if this were OR, Y would appear too
+  // since it matches the country filter on its own.
+  const combined = await searchLocations({ country: "Fixturel", service: "sea-freight" });
+  assert.ok(combined.some((l) => l.id === officeX.id));
+  assert.ok(!combined.some((l) => l.id === officeY.id));
 });

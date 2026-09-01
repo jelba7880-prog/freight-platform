@@ -95,6 +95,28 @@ export const trackingEvents = pgTable(
 export type TrackingEvent = typeof trackingEvents.$inferSelect;
 export type NewTrackingEvent = typeof trackingEvents.$inferInsert;
 
+// Public marketing content (the /locations directory) — deliberately no
+// customerId/user linkage, unlike shipments. Not user data.
+export const locations = pgTable("locations", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  addressLine: text("address_line"),
+  city: text("city"),
+  country: text("country"),
+  postcode: text("postcode"),
+  phone: text("phone"),
+  // Slugs from packages/ui/src/nav-data.ts's SERVICES — kept as plain text
+  // here (not a Postgres enum) since that list is content the UI package
+  // owns and can grow independently of a schema migration.
+  services: text("services").array().notNull().default([]),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export type Location = typeof locations.$inferSelect;
+export type NewLocation = typeof locations.$inferInsert;
+
 // Auth.js (@auth/drizzle-adapter) tables. Column shapes match the
 // adapter's Postgres defaults exactly — only the physical table names are
 // customer-portal-specific — so `DrizzleAdapter(getDb(), { usersTable:

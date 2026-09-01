@@ -8,11 +8,14 @@ export {
   listShipments,
   listShipmentsForCustomer,
   searchCustomersByEmail,
+  searchLocations,
 } from "./queries";
 export type {
   CreateShipmentInput,
   CreateTrackingEventInput,
   CustomerSummary,
+  LocationSummary,
+  SearchLocationsFilters,
   ShipmentSummary,
   ShipmentWithEvents,
 } from "./queries";
@@ -23,11 +26,13 @@ export type {
   CustomerSession,
   CustomerVerificationToken,
   HealthCheck,
+  Location,
   NewCustomer,
   NewCustomerAccount,
   NewCustomerSession,
   NewCustomerVerificationToken,
   NewHealthCheck,
+  NewLocation,
   NewShipment,
   NewStaff,
   NewStaffAccount,
