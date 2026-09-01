@@ -13,7 +13,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:verify": "node scripts/verify.mjs",
-    "db:seed:shipment": "node scripts/seed-shipment.mjs"
+    "db:seed:shipment": "node scripts/seed-shipment.mjs",
+    "db:seed:locations": "node scripts/seed-locations.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

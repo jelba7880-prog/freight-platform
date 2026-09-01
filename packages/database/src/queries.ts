@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, ilike } from "drizzle-orm";
+import { and, arrayContains, asc, desc, eq, ilike } from "drizzle-orm";
 
 import { getDb } from "./client";
 import * as schema from "./schema";
@@ -274,6 +274,82 @@ export async function searchCustomersByEmail(
     .where(ilike(schema.customers.email, `${trimmed}%`))
     .orderBy(asc(schema.customers.email))
     .limit(10);
+}
+
+export interface SearchLocationsFilters {
+  country?: string;
+  city?: string;
+  postcode?: string;
+  /** A single services slug — see packages/ui/src/nav-data.ts's SERVICES. */
+  service?: string;
+}
+
+export interface LocationSummary {
+  id: number;
+  name: string;
+  addressLine: string | null;
+  city: string | null;
+  country: string | null;
+  postcode: string | null;
+  phone: string | null;
+  services: string[];
+}
+
+/**
+ * Filtered lookup for the public /locations directory. Every provided
+ * filter combines with AND — country+service narrows to offices in that
+ * country that also offer that service, not either condition alone.
+ * country/city/postcode are prefix matches (same ilike pattern as
+ * searchCustomersByEmail); service matches offices whose services array
+ * contains that exact slug. No filters provided returns [] rather than the
+ * whole table — same empty-guard principle as searchCustomersByEmail, so a
+ * bare page load doesn't dump every location.
+ */
+export async function searchLocations(
+  filters: SearchLocationsFilters,
+): Promise<LocationSummary[]> {
+  const db = getDb();
+
+  const conditions = [];
+
+  const country = filters.country?.trim();
+  if (country) {
+    conditions.push(ilike(schema.locations.country, `${country}%`));
+  }
+
+  const city = filters.city?.trim();
+  if (city) {
+    conditions.push(ilike(schema.locations.city, `${city}%`));
+  }
+
+  const postcode = filters.postcode?.trim();
+  if (postcode) {
+    conditions.push(ilike(schema.locations.postcode, `${postcode}%`));
+  }
+
+  const service = filters.service?.trim();
+  if (service) {
+    conditions.push(arrayContains(schema.locations.services, [service]));
+  }
+
+  if (conditions.length === 0) {
+    return [];
+  }
+
+  return db
+    .select({
+      id: schema.locations.id,
+      name: schema.locations.name,
+      addressLine: schema.locations.addressLine,
+      city: schema.locations.city,
+      country: schema.locations.country,
+      postcode: schema.locations.postcode,
+      phone: schema.locations.phone,
+      services: schema.locations.services,
+    })
+    .from(schema.locations)
+    .where(and(...conditions))
+    .orderBy(asc(schema.locations.name));
 }
 
 export interface CreateTrackingEventInput {
