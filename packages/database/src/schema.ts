@@ -68,7 +68,7 @@ export const trackingEvents = pgTable(
       .references(() => shipments.id, { onDelete: "restrict" }),
     eventType: text("event_type")
       .notNull()
-      .$type<"status_change" | "milestone" | "exception">(),
+      .$type<"arrival" | "departure" | "status_change" | "milestone" | "exception">(),
     location: text("location"),
     // Human-readable milestone text ops staff write.
     description: text("description"),
