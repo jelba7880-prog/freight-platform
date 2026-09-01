@@ -1,4 +1,4 @@
-import { asc, desc, eq, ilike } from "drizzle-orm";
+import { and, asc, desc, eq, ilike } from "drizzle-orm";
 
 import { getDb } from "./client";
 import * as schema from "./schema";
@@ -89,6 +89,62 @@ export async function getShipmentWithEvents(
 }
 
 /**
+ * Portal lookup for a customer's own shipment — like getShipmentWithEvents,
+ * but the initial lookup matches on customerId AND referenceNumber
+ * together, so a customer can never distinguish "doesn't exist" from
+ * "exists but isn't yours": both return null from this one query, before
+ * any tracking events are fetched.
+ */
+export async function getShipmentForCustomer(
+  customerId: string,
+  referenceNumber: string,
+): Promise<ShipmentWithEvents | null> {
+  const db = getDb();
+
+  const [shipment] = await db
+    .select({
+      id: schema.shipments.id,
+      referenceNumber: schema.shipments.referenceNumber,
+      origin: schema.shipments.origin,
+      destination: schema.shipments.destination,
+      transportMode: schema.shipments.transportMode,
+      status: schema.shipments.status,
+      estimatedArrival: schema.shipments.estimatedArrival,
+      createdAt: schema.shipments.createdAt,
+      updatedAt: schema.shipments.updatedAt,
+    })
+    .from(schema.shipments)
+    .where(
+      and(
+        eq(schema.shipments.customerId, customerId),
+        eq(schema.shipments.referenceNumber, referenceNumber),
+      ),
+    )
+    .limit(1);
+
+  if (!shipment) {
+    return null;
+  }
+
+  const events = await db
+    .select({
+      eventType: schema.trackingEvents.eventType,
+      location: schema.trackingEvents.location,
+      description: schema.trackingEvents.description,
+      occurredAt: schema.trackingEvents.occurredAt,
+      createdAt: schema.trackingEvents.createdAt,
+    })
+    .from(schema.trackingEvents)
+    .where(eq(schema.trackingEvents.shipmentId, shipment.id))
+    .orderBy(asc(schema.trackingEvents.occurredAt));
+
+  const { id, ...publicShipment } = shipment;
+  void id;
+
+  return { shipment: publicShipment, events };
+}
+
+/**
  * All shipments, most-recently-updated first — for the admin list view.
  * Deliberately light (no joined tracking events): the detail page is where
  * event history is fetched, via getShipmentWithEvents.
@@ -106,6 +162,30 @@ export async function listShipments(): Promise<ShipmentSummary[]> {
       updatedAt: schema.shipments.updatedAt,
     })
     .from(schema.shipments)
+    .orderBy(desc(schema.shipments.updatedAt));
+}
+
+/**
+ * A customer's own shipments, most-recently-updated first — the portal
+ * equivalent of listShipments, scoped to customerId so one customer can
+ * never see another's shipments in the list.
+ */
+export async function listShipmentsForCustomer(
+  customerId: string,
+): Promise<ShipmentSummary[]> {
+  const db = getDb();
+
+  return db
+    .select({
+      referenceNumber: schema.shipments.referenceNumber,
+      origin: schema.shipments.origin,
+      destination: schema.shipments.destination,
+      transportMode: schema.shipments.transportMode,
+      status: schema.shipments.status,
+      updatedAt: schema.shipments.updatedAt,
+    })
+    .from(schema.shipments)
+    .where(eq(schema.shipments.customerId, customerId))
     .orderBy(desc(schema.shipments.updatedAt));
 }
 

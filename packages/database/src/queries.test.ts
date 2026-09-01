@@ -4,7 +4,13 @@ import { eq } from "drizzle-orm";
 
 import { getDb } from "./client";
 import * as schema from "./schema";
-import { createShipment, createTrackingEvent, searchCustomersByEmail } from "./queries";
+import {
+  createShipment,
+  createTrackingEvent,
+  getShipmentForCustomer,
+  listShipmentsForCustomer,
+  searchCustomersByEmail,
+} from "./queries";
 
 const db = getDb();
 
@@ -175,4 +181,66 @@ test("searchCustomersByEmail finds a prefix match and excludes non-matches", asy
 
   const emptyQueryMatches = await searchCustomersByEmail("   ");
   assert.deepEqual(emptyQueryMatches, []);
+});
+
+test("listShipmentsForCustomer and getShipmentForCustomer scope strictly to the caller's own customerId", async () => {
+  // Transient fixtures again — see the comment on the FK test above.
+  const [customerA] = await db
+    .insert(schema.customers)
+    .values({ name: "Customer A", email: "customer-a@example.com" })
+    .returning({ id: schema.customers.id });
+  const [customerB] = await db
+    .insert(schema.customers)
+    .values({ name: "Customer B", email: "customer-b@example.com" })
+    .returning({ id: schema.customers.id });
+  assert.ok(customerA);
+  assert.ok(customerB);
+  createdCustomerIds.push(customerA.id, customerB.id);
+
+  const shipmentA = await createShipment({
+    origin: "A Origin",
+    destination: "A Destination",
+    customerId: customerA.id,
+  });
+  const shipmentB = await createShipment({
+    origin: "B Origin",
+    destination: "B Destination",
+    customerId: customerB.id,
+  });
+
+  const [rowA] = await db
+    .select({ id: schema.shipments.id })
+    .from(schema.shipments)
+    .where(eq(schema.shipments.referenceNumber, shipmentA.referenceNumber))
+    .limit(1);
+  const [rowB] = await db
+    .select({ id: schema.shipments.id })
+    .from(schema.shipments)
+    .where(eq(schema.shipments.referenceNumber, shipmentB.referenceNumber))
+    .limit(1);
+  assert.ok(rowA);
+  assert.ok(rowB);
+  createdShipmentIds.push(rowA.id, rowB.id);
+
+  // A's list shows only A's shipment, never B's.
+  const listForA = await listShipmentsForCustomer(customerA.id);
+  assert.ok(listForA.some((s) => s.referenceNumber === shipmentA.referenceNumber));
+  assert.ok(!listForA.some((s) => s.referenceNumber === shipmentB.referenceNumber));
+
+  const listForB = await listShipmentsForCustomer(customerB.id);
+  assert.ok(listForB.some((s) => s.referenceNumber === shipmentB.referenceNumber));
+  assert.ok(!listForB.some((s) => s.referenceNumber === shipmentA.referenceNumber));
+
+  // A can fetch A's own shipment by reference.
+  const ownResult = await getShipmentForCustomer(customerA.id, shipmentA.referenceNumber);
+  assert.ok(ownResult);
+  assert.equal(ownResult.shipment.referenceNumber, shipmentA.referenceNumber);
+
+  // A hitting B's reference gets null — same as a reference that doesn't
+  // exist at all, so the caller can't distinguish the two cases.
+  const crossCustomerResult = await getShipmentForCustomer(customerA.id, shipmentB.referenceNumber);
+  const nonexistentResult = await getShipmentForCustomer(customerA.id, "NOSUCHREFERENCE1");
+  assert.equal(crossCustomerResult, null);
+  assert.equal(nonexistentResult, null);
+  assert.deepEqual(crossCustomerResult, nonexistentResult);
 });
