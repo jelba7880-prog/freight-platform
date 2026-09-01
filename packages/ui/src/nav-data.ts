@@ -105,30 +105,6 @@ export const SERVICES: ContentNavLink[] = [
     ctaHref: "/contact",
   },
   {
-    slug: "project-logistics",
-    label: "Project logistics",
-    href: "/services/project-logistics",
-    shortDescription: "Engineering and coordination for oversized, heavy, and complex cargo moves.",
-  },
-  {
-    slug: "sustainable-logistics",
-    label: "Sustainable logistics",
-    href: "/services/sustainable-logistics",
-    shortDescription: "Lower-emission transport options and carbon reporting across your supply chain.",
-  },
-  {
-    slug: "integrated-logistics-4pl",
-    label: "Integrated logistics / 4PL",
-    href: "/services/integrated-logistics-4pl",
-    shortDescription: "End-to-end supply-chain management under a single point of accountability.",
-  },
-  {
-    slug: "order-management",
-    label: "Order management",
-    href: "/services/order-management",
-    shortDescription: "Centralized visibility and control across purchase orders and suppliers.",
-  },
-  {
     slug: "cold-chain-logistics",
     label: "Cold-chain logistics",
     href: "/services/cold-chain-logistics",
@@ -136,27 +112,9 @@ export const SERVICES: ContentNavLink[] = [
     ctaLabel: "Talk to a Cold-chain Logistics specialist",
     ctaHref: "/contact",
   },
-  {
-    slug: "supply-chain-consulting",
-    label: "Supply-chain consulting",
-    href: "/services/supply-chain-consulting",
-    shortDescription: "Network design and optimization guidance from logistics specialists.",
-  },
-  {
-    slug: "digital-logistics-services",
-    label: "Digital logistics services",
-    href: "/services/digital-logistics-services",
-    shortDescription: "Tools and platforms that bring real-time visibility to your shipments.",
-  },
 ];
 
 export const INDUSTRIES: ContentNavLink[] = [
-  {
-    slug: "aerospace",
-    label: "Aerospace",
-    href: "/industries/aerospace",
-    shortDescription: "Certified handling for aircraft parts, tooling, and AOG shipments.",
-  },
   {
     slug: "automotive-mobility",
     label: "Automotive and mobility",
@@ -196,12 +154,6 @@ export const INDUSTRIES: ContentNavLink[] = [
     shortDescription: "Heavy machinery and industrial equipment logistics, door to door.",
     ctaLabel: "Talk to an Industrial specialist",
     ctaHref: "/contact",
-  },
-  {
-    slug: "perishables",
-    label: "Perishables",
-    href: "/industries/perishables",
-    shortDescription: "Cold-chain expertise for food, flowers, and other perishable goods.",
   },
 ];
 
