@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
 import {
   buttonClassName,
-  Card,
+  ContentCard,
   DEFAULT_PRIMARY_ACTION,
   INDUSTRIES,
   ManifestStrip,
   PORTAL_LINK,
   SERVICES,
-  type ContentNavLink,
 } from "@freight/ui";
-import { localePath, type Locale } from "@/lib/locale/config";
+import { localePath } from "@/lib/locale/config";
 import { getLocale } from "@/lib/locale/server";
 
 export const metadata: Metadata = {
@@ -17,36 +16,6 @@ export const metadata: Metadata = {
   description:
     "Sea, air, and road freight, customs, warehousing, and supply-chain consulting — booked and tracked from one platform, with a specialist behind every shipment.",
 };
-
-/** First letter of up to the first two words — a lightweight monogram in
- * place of a bespoke icon set, which doesn't exist yet for these entries. */
-function initials(label: string): string {
-  return label
-    .split(/[\s,/]+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((word) => word[0]?.toUpperCase() ?? "")
-    .join("");
-}
-
-function ContentCard({ entry, locale }: { entry: ContentNavLink; locale: Locale }) {
-  return (
-    <a href={localePath(locale, entry.href)} className="block h-full">
-      <Card className="flex h-full flex-col gap-cozy transition-colors duration-base hover:border-mist">
-        <span
-          aria-hidden="true"
-          className="flex size-10 items-center justify-center rounded-md border border-border bg-background font-mono text-sm font-medium text-foreground"
-        >
-          {initials(entry.label)}
-        </span>
-        <div className="flex flex-col gap-tight">
-          <h3 className="font-display text-lg font-semibold text-foreground">{entry.label}</h3>
-          <p className="text-sm text-muted">{entry.shortDescription}</p>
-        </div>
-      </Card>
-    </a>
-  );
-}
 
 export default async function Page() {
   const locale = await getLocale();
@@ -94,7 +63,11 @@ export default async function Page() {
         </div>
         <div className="grid grid-cols-1 gap-cozy sm:grid-cols-2 lg:grid-cols-3">
           {SERVICES.map((service) => (
-            <ContentCard key={service.slug} entry={service} locale={locale} />
+            <ContentCard
+              key={service.slug}
+              entry={service}
+              resolveHref={(href) => localePath(locale, href)}
+            />
           ))}
         </div>
       </section>
@@ -108,7 +81,11 @@ export default async function Page() {
         </div>
         <div className="grid grid-cols-1 gap-cozy sm:grid-cols-2 lg:grid-cols-3">
           {INDUSTRIES.map((industry) => (
-            <ContentCard key={industry.slug} entry={industry} locale={locale} />
+            <ContentCard
+              key={industry.slug}
+              entry={industry}
+              resolveHref={(href) => localePath(locale, href)}
+            />
           ))}
         </div>
       </section>
