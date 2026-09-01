@@ -2,9 +2,11 @@ export { getDb } from "./client";
 export {
   createShipment,
   createTrackingEvent,
+  getShipmentForCustomer,
   getShipmentIdByReference,
   getShipmentWithEvents,
   listShipments,
+  listShipmentsForCustomer,
   searchCustomersByEmail,
 } from "./queries";
 export type {

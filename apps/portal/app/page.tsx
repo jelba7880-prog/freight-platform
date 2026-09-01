@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { auth, signIn, signOut } from "@/auth";
 
 export default async function Page() {
@@ -21,6 +22,9 @@ export default async function Page() {
   return (
     <main>
       <p>Signed in as {session.user.email}</p>
+      <p>
+        <Link href="/shipments">My shipments</Link>
+      </p>
       <form
         action={async () => {
           "use server";
