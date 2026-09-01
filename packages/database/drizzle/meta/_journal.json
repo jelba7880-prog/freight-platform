@@ -15,6 +15,13 @@
       "when": 1788214881846,
       "tag": "0001_sturdy_whirlwind",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788237435456,
+      "tag": "0002_romantic_blue_blade",
+      "breakpoints": true
     }
   ]
 }

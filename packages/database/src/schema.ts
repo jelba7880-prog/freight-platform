@@ -1,4 +1,14 @@
-import { index, integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  index,
+  integer,
+  pgTable,
+  primaryKey,
+  serial,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
+
+import { randomUUID } from "node:crypto";
 
 import { generateReferenceNumber } from "./ids";
 
@@ -78,3 +88,71 @@ export const trackingEvents = pgTable(
 
 export type TrackingEvent = typeof trackingEvents.$inferSelect;
 export type NewTrackingEvent = typeof trackingEvents.$inferInsert;
+
+// Auth.js (@auth/drizzle-adapter) tables. Column shapes match the
+// adapter's Postgres defaults exactly — only the physical table names are
+// customer-portal-specific — so `DrizzleAdapter(getDb(), { usersTable:
+// customers, ... })` in apps/portal/auth.ts works unmodified.
+export const customers = pgTable("customers", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => randomUUID()),
+  name: text("name"),
+  email: text("email").unique(),
+  emailVerified: timestamp("emailVerified", { mode: "date" }),
+  image: text("image"),
+});
+
+export type Customer = typeof customers.$inferSelect;
+export type NewCustomer = typeof customers.$inferInsert;
+
+export const customerAccounts = pgTable(
+  "customer_accounts",
+  {
+    userId: text("userId")
+      .notNull()
+      .references(() => customers.id, { onDelete: "cascade" }),
+    type: text("type").notNull(),
+    provider: text("provider").notNull(),
+    providerAccountId: text("providerAccountId").notNull(),
+    refresh_token: text("refresh_token"),
+    access_token: text("access_token"),
+    expires_at: integer("expires_at"),
+    token_type: text("token_type"),
+    scope: text("scope"),
+    id_token: text("id_token"),
+    session_state: text("session_state"),
+  },
+  (table) => [
+    primaryKey({ columns: [table.provider, table.providerAccountId] }),
+  ],
+);
+
+export type CustomerAccount = typeof customerAccounts.$inferSelect;
+export type NewCustomerAccount = typeof customerAccounts.$inferInsert;
+
+export const customerSessions = pgTable("customer_sessions", {
+  sessionToken: text("sessionToken").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => customers.id, { onDelete: "cascade" }),
+  expires: timestamp("expires", { mode: "date" }).notNull(),
+});
+
+export type CustomerSession = typeof customerSessions.$inferSelect;
+export type NewCustomerSession = typeof customerSessions.$inferInsert;
+
+export const customerVerificationTokens = pgTable(
+  "customer_verification_tokens",
+  {
+    identifier: text("identifier").notNull(),
+    token: text("token").notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.identifier, table.token] })],
+);
+
+export type CustomerVerificationToken =
+  typeof customerVerificationTokens.$inferSelect;
+export type NewCustomerVerificationToken =
+  typeof customerVerificationTokens.$inferInsert;
