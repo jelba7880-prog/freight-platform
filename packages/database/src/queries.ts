@@ -1,4 +1,4 @@
-import { and, arrayContains, asc, desc, eq, ilike } from "drizzle-orm";
+import { and, arrayContains, asc, desc, eq, ilike, or } from "drizzle-orm";
 
 import { getDb } from "./client";
 import * as schema from "./schema";
@@ -350,6 +350,48 @@ export async function searchLocations(
     .from(schema.locations)
     .where(and(...conditions))
     .orderBy(asc(schema.locations.name));
+}
+
+/**
+ * Free-text lookup for the public /search page — distinct from
+ * searchLocations' structured filters, which AND every provided field
+ * together. Here there's a single box, so the right semantics are OR: a
+ * location matches if the term appears anywhere in name, city, country, or
+ * postcode. Contains match (not prefix), same empty-guard principle as
+ * searchLocations/searchCustomersByEmail, capped at 10 results.
+ */
+export async function searchLocationsByText(term: string): Promise<LocationSummary[]> {
+  const db = getDb();
+
+  const trimmed = term.trim();
+  if (!trimmed) {
+    return [];
+  }
+
+  const pattern = `%${trimmed}%`;
+
+  return db
+    .select({
+      id: schema.locations.id,
+      name: schema.locations.name,
+      addressLine: schema.locations.addressLine,
+      city: schema.locations.city,
+      country: schema.locations.country,
+      postcode: schema.locations.postcode,
+      phone: schema.locations.phone,
+      services: schema.locations.services,
+    })
+    .from(schema.locations)
+    .where(
+      or(
+        ilike(schema.locations.name, pattern),
+        ilike(schema.locations.city, pattern),
+        ilike(schema.locations.country, pattern),
+        ilike(schema.locations.postcode, pattern),
+      ),
+    )
+    .orderBy(asc(schema.locations.name))
+    .limit(10);
 }
 
 export interface CreateTrackingEventInput {

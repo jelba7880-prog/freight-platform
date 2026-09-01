@@ -1,10 +1,8 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { Card, Input, SERVICES, buttonClassName } from "@freight/ui";
-import type { LocationSummary } from "@freight/database";
 import { searchLocations } from "@freight/database";
 
-import { localePath } from "@/lib/locale/config";
+import { LocationCard } from "@/components/LocationCard";
 import { getLocale } from "@/lib/locale/server";
 
 export const metadata: Metadata = {
@@ -12,16 +10,6 @@ export const metadata: Metadata = {
   description:
     "Find our offices by country, city, postcode, or service — with contact details and services offered at each location.",
 };
-
-const SERVICE_LABELS: Record<string, string> = Object.fromEntries(
-  SERVICES.map((service) => [service.slug, service.label]),
-);
-
-function fullAddress(location: LocationSummary): string {
-  return [location.addressLine, location.city, location.postcode, location.country]
-    .filter(Boolean)
-    .join(", ");
-}
 
 function LocationsFilterForm({
   country,
@@ -110,40 +98,7 @@ export default async function LocationsPage({
         <ul className="flex flex-col gap-cozy">
           {results.map((location) => (
             <li key={location.id}>
-              <Card>
-                <div className="flex flex-col gap-cozy">
-                  <h2 className="font-display text-lg font-semibold text-foreground">
-                    {location.name}
-                  </h2>
-                  <dl className="grid grid-cols-1 gap-cozy sm:grid-cols-2">
-                    <div className="flex flex-col gap-tight">
-                      <dt className="font-sans text-xs uppercase tracking-wide text-muted">
-                        Address
-                      </dt>
-                      <dd className="text-sm text-foreground">{fullAddress(location) || "—"}</dd>
-                    </div>
-                    <div className="flex flex-col gap-tight">
-                      <dt className="font-sans text-xs uppercase tracking-wide text-muted">
-                        Phone
-                      </dt>
-                      <dd className="text-sm text-foreground">{location.phone ?? "—"}</dd>
-                    </div>
-                  </dl>
-                  {location.services.length > 0 ? (
-                    <div className="flex flex-wrap gap-tight">
-                      {location.services.map((slug) => (
-                        <Link
-                          key={slug}
-                          href={localePath(locale, `/services/${slug}`)}
-                          className="rounded-full border border-border px-snug py-[0.1875rem] font-sans text-xs font-medium text-muted transition-colors duration-base ease-standard hover:border-beacon hover:text-beacon"
-                        >
-                          {SERVICE_LABELS[slug] ?? slug}
-                        </Link>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
-              </Card>
+              <LocationCard location={location} locale={locale} />
             </li>
           ))}
         </ul>

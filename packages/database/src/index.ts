@@ -9,6 +9,7 @@ export {
   listShipmentsForCustomer,
   searchCustomersByEmail,
   searchLocations,
+  searchLocationsByText,
 } from "./queries";
 export type {
   CreateShipmentInput,
