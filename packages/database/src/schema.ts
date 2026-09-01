@@ -156,3 +156,70 @@ export type CustomerVerificationToken =
   typeof customerVerificationTokens.$inferSelect;
 export type NewCustomerVerificationToken =
   typeof customerVerificationTokens.$inferInsert;
+
+// Same Auth.js shape as the customer tables above, staff-prefixed for
+// apps/admin/auth.ts — this is exactly why the generic Auth.js table names
+// were reserved rather than reused.
+export const staff = pgTable("staff", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => randomUUID()),
+  name: text("name"),
+  email: text("email").unique(),
+  emailVerified: timestamp("emailVerified", { mode: "date" }),
+  image: text("image"),
+});
+
+export type Staff = typeof staff.$inferSelect;
+export type NewStaff = typeof staff.$inferInsert;
+
+export const staffAccounts = pgTable(
+  "staff_accounts",
+  {
+    userId: text("userId")
+      .notNull()
+      .references(() => staff.id, { onDelete: "cascade" }),
+    type: text("type").notNull(),
+    provider: text("provider").notNull(),
+    providerAccountId: text("providerAccountId").notNull(),
+    refresh_token: text("refresh_token"),
+    access_token: text("access_token"),
+    expires_at: integer("expires_at"),
+    token_type: text("token_type"),
+    scope: text("scope"),
+    id_token: text("id_token"),
+    session_state: text("session_state"),
+  },
+  (table) => [
+    primaryKey({ columns: [table.provider, table.providerAccountId] }),
+  ],
+);
+
+export type StaffAccount = typeof staffAccounts.$inferSelect;
+export type NewStaffAccount = typeof staffAccounts.$inferInsert;
+
+export const staffSessions = pgTable("staff_sessions", {
+  sessionToken: text("sessionToken").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => staff.id, { onDelete: "cascade" }),
+  expires: timestamp("expires", { mode: "date" }).notNull(),
+});
+
+export type StaffSession = typeof staffSessions.$inferSelect;
+export type NewStaffSession = typeof staffSessions.$inferInsert;
+
+export const staffVerificationTokens = pgTable(
+  "staff_verification_tokens",
+  {
+    identifier: text("identifier").notNull(),
+    token: text("token").notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.identifier, table.token] })],
+);
+
+export type StaffVerificationToken =
+  typeof staffVerificationTokens.$inferSelect;
+export type NewStaffVerificationToken =
+  typeof staffVerificationTokens.$inferInsert;
