@@ -1,7 +1,8 @@
-import { asc, eq } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 
 import { getDb } from "./client";
 import * as schema from "./schema";
+import type { Shipment } from "./schema";
 
 export interface ShipmentWithEvents {
   shipment: {
@@ -21,12 +22,21 @@ export interface ShipmentWithEvents {
     updatedAt: Date;
   };
   events: {
-    eventType: "status_change" | "milestone" | "exception";
+    eventType: "arrival" | "departure" | "status_change" | "milestone" | "exception";
     location: string | null;
     description: string | null;
     occurredAt: Date;
     createdAt: Date;
   }[];
+}
+
+export interface ShipmentSummary {
+  referenceNumber: string;
+  origin: string | null;
+  destination: string | null;
+  transportMode: "sea" | "air" | "road" | null;
+  status: Shipment["status"];
+  updatedAt: Date;
 }
 
 /**
@@ -76,4 +86,122 @@ export async function getShipmentWithEvents(
   void id;
 
   return { shipment: publicShipment, events };
+}
+
+/**
+ * All shipments, most-recently-updated first — for the admin list view.
+ * Deliberately light (no joined tracking events): the detail page is where
+ * event history is fetched, via getShipmentWithEvents.
+ */
+export async function listShipments(): Promise<ShipmentSummary[]> {
+  const db = getDb();
+
+  return db
+    .select({
+      referenceNumber: schema.shipments.referenceNumber,
+      origin: schema.shipments.origin,
+      destination: schema.shipments.destination,
+      transportMode: schema.shipments.transportMode,
+      status: schema.shipments.status,
+      updatedAt: schema.shipments.updatedAt,
+    })
+    .from(schema.shipments)
+    .orderBy(desc(schema.shipments.updatedAt));
+}
+
+/**
+ * Resolves the public referenceNumber to the internal id, for admin
+ * mutations (createTrackingEvent) that need the FK but only ever see the
+ * reference number from the URL — the same id-never-leaves-the-server
+ * boundary getShipmentWithEvents enforces for reads.
+ */
+export async function getShipmentIdByReference(
+  referenceNumber: string,
+): Promise<number | null> {
+  const db = getDb();
+
+  const [shipment] = await db
+    .select({ id: schema.shipments.id })
+    .from(schema.shipments)
+    .where(eq(schema.shipments.referenceNumber, referenceNumber))
+    .limit(1);
+
+  return shipment?.id ?? null;
+}
+
+export interface CreateTrackingEventInput {
+  shipmentId: number;
+  eventType: "arrival" | "departure" | "status_change" | "milestone" | "exception";
+  location?: string | null;
+  description?: string | null;
+  occurredAt: Date;
+}
+
+// Fixed forward progression a real shipment's status moves through.
+// "delayed" is a side branch, not a step in it — a delayed shipment stays
+// delayed until someone clears it explicitly, logging more movement events
+// doesn't do that on its own. "delivered" is the end of the line.
+const NEXT_STATUS: Record<Shipment["status"], Shipment["status"]> = {
+  pending: "in_transit",
+  in_transit: "customs_clearance",
+  customs_clearance: "out_for_delivery",
+  out_for_delivery: "delivered",
+  delivered: "delivered",
+  delayed: "delayed",
+};
+
+// milestone/exception events annotate the shipment's journey without
+// asserting a new status themselves, so they don't move status.
+const STATUS_ADVANCING_EVENT_TYPES = new Set<CreateTrackingEventInput["eventType"]>([
+  "arrival",
+  "departure",
+  "status_change",
+]);
+
+function advanceStatus(current: Shipment["status"]): Shipment["status"] {
+  return NEXT_STATUS[current];
+}
+
+/**
+ * Logs a tracking event and, when it represents real movement
+ * (arrival/departure/status_change), advances the parent shipment's status
+ * and updatedAt in the same call — so the shipment card can never say
+ * "pending" while its own event history already says "arrived".
+ */
+export async function createTrackingEvent(
+  input: CreateTrackingEventInput,
+): Promise<void> {
+  const db = getDb();
+
+  await db.insert(schema.trackingEvents).values({
+    shipmentId: input.shipmentId,
+    eventType: input.eventType,
+    location: input.location ?? null,
+    description: input.description ?? null,
+    occurredAt: input.occurredAt,
+  });
+
+  if (!STATUS_ADVANCING_EVENT_TYPES.has(input.eventType)) {
+    return;
+  }
+
+  const [shipment] = await db
+    .select({ status: schema.shipments.status })
+    .from(schema.shipments)
+    .where(eq(schema.shipments.id, input.shipmentId))
+    .limit(1);
+
+  if (!shipment) {
+    return;
+  }
+
+  const nextStatus = advanceStatus(shipment.status);
+  if (nextStatus === shipment.status) {
+    return;
+  }
+
+  await db
+    .update(schema.shipments)
+    .set({ status: nextStatus, updatedAt: new Date() })
+    .where(eq(schema.shipments.id, input.shipmentId));
 }

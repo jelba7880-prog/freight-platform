@@ -1,6 +1,15 @@
 export { getDb } from "./client";
-export { getShipmentWithEvents } from "./queries";
-export type { ShipmentWithEvents } from "./queries";
+export {
+  createTrackingEvent,
+  getShipmentIdByReference,
+  getShipmentWithEvents,
+  listShipments,
+} from "./queries";
+export type {
+  CreateTrackingEventInput,
+  ShipmentSummary,
+  ShipmentWithEvents,
+} from "./queries";
 export * as schema from "./schema";
 export type {
   Customer,

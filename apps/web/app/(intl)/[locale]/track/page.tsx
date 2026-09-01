@@ -27,6 +27,8 @@ const STATUS_BADGE_VARIANTS: Record<ShipmentWithEvents["shipment"]["status"], Ba
 };
 
 const EVENT_TYPE_LABELS: Record<ShipmentWithEvents["events"][number]["eventType"], string> = {
+  arrival: "Arrival",
+  departure: "Departure",
   status_change: "Status change",
   milestone: "Milestone",
   exception: "Exception",
