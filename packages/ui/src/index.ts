@@ -16,6 +16,9 @@ export type { BadgeProps, BadgeVariant } from "./Badge";
 export { Card } from "./Card";
 export type { CardProps } from "./Card";
 
+export { ContentCard } from "./ContentCard";
+export type { ContentCardProps } from "./ContentCard";
+
 export { ServiceIndustryTemplate } from "./ServiceIndustryTemplate";
 export type { ServiceIndustryTemplateProps, ServiceIndustryContent } from "./ServiceIndustryTemplate";
 
