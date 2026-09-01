@@ -277,7 +277,7 @@ function NavDropdown({
   );
 }
 
-function SearchToggle() {
+function SearchToggle({ resolveHref }: { resolveHref: (href: string) => string }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -306,7 +306,7 @@ function SearchToggle() {
       {open ? (
         <form
           id={formId}
-          action="/search"
+          action={resolveHref("/search")}
           method="get"
           className="absolute right-0 top-full z-20 mt-tight w-64 rounded-lg border border-border bg-surface p-tight shadow-lg"
         >
@@ -519,7 +519,7 @@ export function Header({
           {UTILITY_LINKS.map((link) => (
             <UtilityLink key={link.href} link={link} resolveHref={resolveHref} />
           ))}
-          <SearchToggle />
+          <SearchToggle resolveHref={resolveHref} />
           <a
             href={resolveHref(PORTAL_LINK.href)}
             className="font-sans text-xs font-medium text-foreground transition-colors duration-base hover:text-beacon"
@@ -567,7 +567,7 @@ export function Header({
             </a>
           ) : null}
           <div className="md:hidden">
-            <SearchToggle />
+            <SearchToggle resolveHref={resolveHref} />
           </div>
 
           <a href={resolveHref(resolvedPrimaryAction.href)} className={buttonClassName("primary", "sm")}>

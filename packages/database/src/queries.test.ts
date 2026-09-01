@@ -11,6 +11,7 @@ import {
   listShipmentsForCustomer,
   searchCustomersByEmail,
   searchLocations,
+  searchLocationsByText,
 } from "./queries";
 
 const db = getDb();
@@ -316,4 +317,67 @@ test("searchLocations narrows by each filter type in isolation, and combines two
   const combined = await searchLocations({ country: "Fixturel", service: "sea-freight" });
   assert.ok(combined.some((l) => l.id === officeX.id));
   assert.ok(!combined.some((l) => l.id === officeY.id));
+});
+
+test("searchLocationsByText matches on each field individually and combines with OR, not AND", async () => {
+  // Fixture: two offices with nothing in common except a shared, unique
+  // token in the name — every other field is distinct, so each field's
+  // match can be proven in isolation, and the OR-vs-AND case is proven by a
+  // term that matches office P only via city and office Q only via
+  // country: an AND semantics (like searchLocations') would return neither.
+  const [officeP] = await db
+    .insert(schema.locations)
+    .values({
+      name: "Freetext Office Pxyzzy",
+      addressLine: "1 Freetext Street",
+      city: "Quuxborough",
+      country: "Wibbleland",
+      postcode: "FT100",
+      phone: "+1 555 0300",
+      services: [],
+    })
+    .returning({ id: schema.locations.id });
+  const [officeQ] = await db
+    .insert(schema.locations)
+    .values({
+      name: "Freetext Office Qxyzzy",
+      addressLine: "2 Freetext Avenue",
+      city: "Wobbleburg",
+      country: "Quuxania",
+      postcode: "FT200",
+      phone: "+1 555 0400",
+      services: [],
+    })
+    .returning({ id: schema.locations.id });
+  assert.ok(officeP);
+  assert.ok(officeQ);
+  createdLocationIds.push(officeP.id, officeQ.id);
+
+  const byName = await searchLocationsByText("xyzzy");
+  assert.ok(byName.some((l) => l.id === officeP.id));
+  assert.ok(byName.some((l) => l.id === officeQ.id));
+
+  const byCity = await searchLocationsByText("Quuxborough");
+  assert.ok(byCity.some((l) => l.id === officeP.id));
+  assert.ok(!byCity.some((l) => l.id === officeQ.id));
+
+  const byCountry = await searchLocationsByText("Wibbleland");
+  assert.ok(byCountry.some((l) => l.id === officeP.id));
+  assert.ok(!byCountry.some((l) => l.id === officeQ.id));
+
+  const byPostcode = await searchLocationsByText("FT200");
+  assert.ok(byPostcode.some((l) => l.id === officeQ.id));
+  assert.ok(!byPostcode.some((l) => l.id === officeP.id));
+
+  // "quux" matches office P only via its city ("Quuxborough") and office Q
+  // only via its country ("Quuxania") — no field matches both rows. OR
+  // semantics returns both; AND semantics (like searchLocations') would
+  // return neither, since no single field on either row satisfies more
+  // than one condition.
+  const orMatch = await searchLocationsByText("quux");
+  assert.ok(orMatch.some((l) => l.id === officeP.id));
+  assert.ok(orMatch.some((l) => l.id === officeQ.id));
+
+  const emptyQueryMatches = await searchLocationsByText("   ");
+  assert.deepEqual(emptyQueryMatches, []);
 });
