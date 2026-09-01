@@ -46,6 +46,12 @@ export const shipments = pgTable("shipments", {
       | "delayed"
     >(),
   estimatedArrival: timestamp("estimated_arrival", { withTimezone: true }),
+  // Optional — a shipment can exist with no portal customer attached (e.g.
+  // logged for a walk-in/offline booking). Cleared rather than blocked if
+  // the customer record is ever removed.
+  customerId: text("customer_id").references(() => customers.id, {
+    onDelete: "set null",
+  }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

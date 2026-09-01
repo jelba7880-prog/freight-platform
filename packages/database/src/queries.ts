@@ -1,4 +1,4 @@
-import { asc, desc, eq } from "drizzle-orm";
+import { asc, desc, eq, ilike } from "drizzle-orm";
 
 import { getDb } from "./client";
 import * as schema from "./schema";
@@ -127,6 +127,73 @@ export async function getShipmentIdByReference(
     .limit(1);
 
   return shipment?.id ?? null;
+}
+
+export interface CreateShipmentInput {
+  origin?: string | null;
+  destination?: string | null;
+  transportMode?: "sea" | "air" | "road" | null;
+  estimatedArrival?: Date | null;
+  // Optional — a shipment can be created with no portal customer attached.
+  customerId?: string | null;
+}
+
+/**
+ * Creates a shipment for the admin "new shipment" form. referenceNumber and
+ * status are never taken as input — referenceNumber comes from the schema's
+ * $defaultFn (see ./ids.ts), status always starts at its "pending" default.
+ */
+export async function createShipment(
+  input: CreateShipmentInput,
+): Promise<{ referenceNumber: string }> {
+  const db = getDb();
+
+  const [shipment] = await db
+    .insert(schema.shipments)
+    .values({
+      origin: input.origin ?? null,
+      destination: input.destination ?? null,
+      transportMode: input.transportMode ?? null,
+      estimatedArrival: input.estimatedArrival ?? null,
+      customerId: input.customerId ?? null,
+    })
+    .returning({ referenceNumber: schema.shipments.referenceNumber });
+
+  // A single-row insert always returns exactly one row.
+  return shipment!;
+}
+
+export interface CustomerSummary {
+  id: string;
+  name: string | null;
+  email: string | null;
+}
+
+/**
+ * Prefix match on email for the admin shipment-creation customer picker —
+ * exact/prefix only, no fuzzy search needed for a small lookup like this.
+ * Empty query returns no results rather than the whole customers table.
+ */
+export async function searchCustomersByEmail(
+  emailPrefix: string,
+): Promise<CustomerSummary[]> {
+  const db = getDb();
+
+  const trimmed = emailPrefix.trim();
+  if (!trimmed) {
+    return [];
+  }
+
+  return db
+    .select({
+      id: schema.customers.id,
+      name: schema.customers.name,
+      email: schema.customers.email,
+    })
+    .from(schema.customers)
+    .where(ilike(schema.customers.email, `${trimmed}%`))
+    .orderBy(asc(schema.customers.email))
+    .limit(10);
 }
 
 export interface CreateTrackingEventInput {

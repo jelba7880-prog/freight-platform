@@ -29,6 +29,13 @@
       "when": 1788238542723,
       "tag": "0003_faithful_electro",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1788271592129,
+      "tag": "0004_famous_mauler",
+      "breakpoints": true
     }
   ]
 }

@@ -1,12 +1,16 @@
 export { getDb } from "./client";
 export {
+  createShipment,
   createTrackingEvent,
   getShipmentIdByReference,
   getShipmentWithEvents,
   listShipments,
+  searchCustomersByEmail,
 } from "./queries";
 export type {
+  CreateShipmentInput,
   CreateTrackingEventInput,
+  CustomerSummary,
   ShipmentSummary,
   ShipmentWithEvents,
 } from "./queries";
