@@ -150,11 +150,13 @@ const NEXT_STATUS: Record<Shipment["status"], Shipment["status"]> = {
   delayed: "delayed",
 };
 
-// milestone/exception events annotate the shipment's journey without
-// asserting a new status themselves, so they don't move status.
+// arrival/departure are granular location history — a shipment can log many
+// of them at intermediate stops without ever changing stage — and
+// milestone/exception annotate the journey without asserting a new status.
+// Only status_change is the admin's explicit declaration that the shipment
+// has moved to its next stage, so it's the sole event type that advances
+// shipments.status.
 const STATUS_ADVANCING_EVENT_TYPES = new Set<CreateTrackingEventInput["eventType"]>([
-  "arrival",
-  "departure",
   "status_change",
 ]);
 
@@ -163,10 +165,11 @@ function advanceStatus(current: Shipment["status"]): Shipment["status"] {
 }
 
 /**
- * Logs a tracking event and, when it represents real movement
- * (arrival/departure/status_change), advances the parent shipment's status
- * and updatedAt in the same call — so the shipment card can never say
- * "pending" while its own event history already says "arrived".
+ * Logs a tracking event and, only when it's a status_change, advances the
+ * parent shipment's status and updatedAt in the same call. arrival/departure/
+ * milestone/exception are logged as pure history with no side effect on
+ * shipments.status — that field only moves on the admin's explicit
+ * status_change declaration.
  */
 export async function createTrackingEvent(
   input: CreateTrackingEventInput,
