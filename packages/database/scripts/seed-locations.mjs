@@ -20,7 +20,7 @@ const OFFICES = [
     country: "China",
     postcode: "200002",
     phone: "+86 21 5049 8800",
-    services: ["sea-freight", "customs-clearance", "supply-chain-consulting"],
+    services: ["sea-freight", "customs-clearance", "cargo-insurance"],
   },
   {
     name: "Singapore Regional Hub",
@@ -65,7 +65,7 @@ const OFFICES = [
     country: "United Kingdom",
     postcode: "E14 4QJ",
     phone: "+44 20 7093 4400",
-    services: ["air-freight", "road-freight", "supply-chain-consulting"],
+    services: ["air-freight", "road-freight", "warehousing-fulfilment-distribution"],
   },
   {
     name: "Los Angeles Basin Office",
@@ -101,7 +101,7 @@ const OFFICES = [
     country: "Brazil",
     postcode: "04794-000",
     phone: "+55 11 3040 9500",
-    services: ["sea-freight", "customs-clearance", "project-logistics"],
+    services: ["sea-freight", "customs-clearance", "cargo-insurance"],
   },
   {
     name: "Dubai Jebel Ali Office",
@@ -110,7 +110,7 @@ const OFFICES = [
     country: "United Arab Emirates",
     postcode: "17041",
     phone: "+971 4 881 5600",
-    services: ["sea-freight", "air-freight", "project-logistics", "integrated-logistics-4pl"],
+    services: ["sea-freight", "air-freight", "warehousing-fulfilment-distribution", "customs-clearance"],
   },
   {
     name: "Nairobi Regional Office",
@@ -128,7 +128,7 @@ const OFFICES = [
     country: "Australia",
     postcode: "2036",
     phone: "+61 2 9666 3400",
-    services: ["sea-freight", "air-freight", "sustainable-logistics"],
+    services: ["sea-freight", "air-freight", "cold-chain-logistics"],
   },
 ];
 
