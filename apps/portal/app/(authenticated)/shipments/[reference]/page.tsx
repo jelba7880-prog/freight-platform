@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Badge, Card } from "@freight/ui";
 import { getShipmentForCustomer } from "@freight/database";
@@ -15,13 +15,11 @@ export default async function ShipmentDetailPage({
 }: {
   params: Promise<{ reference: string }>;
 }) {
+  // The (authenticated) layout above already redirects unauthenticated
+  // requests before this page renders, so session.user is guaranteed here.
   const session = await auth();
-  if (!session?.user) {
-    redirect("/api/auth/signin");
-  }
-
   const { reference } = await params;
-  const result = await getShipmentForCustomer(session.user.id, reference);
+  const result = await getShipmentForCustomer(session!.user.id, reference);
 
   // A reference that doesn't exist and one that belongs to someone else
   // must be indistinguishable — getShipmentForCustomer already returns

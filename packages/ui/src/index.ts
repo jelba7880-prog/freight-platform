@@ -4,8 +4,8 @@
  * below. Row selection/pagination/filtering/column resizing on Table, and
  * forms beyond Input, are deliberately out of scope for this pass —
  * follow-ups once these are reviewed. Header/Footer are wired into
- * apps/web only; apps/portal and apps/admin get their own nav in a later
- * task.
+ * apps/web only; apps/portal uses AppShell instead (see its own doc
+ * comment for why). apps/admin gets its nav in a later task.
  */
 export { Button, buttonClassName } from "./Button";
 export type { ButtonProps, ButtonVariant, ButtonSize } from "./Button";
@@ -33,6 +33,9 @@ export type { ManifestStripProps } from "./ManifestStrip";
 
 export { Header } from "./Header";
 export type { HeaderProps, PrimaryAction } from "./Header";
+
+export { AppShell } from "./AppShell";
+export type { AppShellProps, AppShellNavItem } from "./AppShell";
 
 export { Footer } from "./Footer";
 export type { FooterProps } from "./Footer";

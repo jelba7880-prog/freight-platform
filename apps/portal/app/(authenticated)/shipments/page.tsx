@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { Card } from "@freight/ui";
 import { listShipmentsForCustomer } from "@freight/database";
@@ -11,12 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default async function ShipmentsPage() {
+  // The (authenticated) layout above already redirects unauthenticated
+  // requests before this page renders, so session.user is guaranteed here.
   const session = await auth();
-  if (!session?.user) {
-    redirect("/api/auth/signin");
-  }
-
-  const shipments = await listShipmentsForCustomer(session.user.id);
+  const shipments = await listShipmentsForCustomer(session!.user.id);
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-comfortable px-comfortable py-expansive">
