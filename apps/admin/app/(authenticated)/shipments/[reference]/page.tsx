@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Badge, Card, Input, buttonClassName } from "@freight/ui";
-import { getShipmentWithEvents } from "@freight/database";
+import { getShipmentIdByReference, getShipmentWithEvents, listDocumentsForShipment } from "@freight/database";
 
-import { EVENT_TYPE_LABELS, STATUS_BADGE_VARIANTS, STATUS_LABELS, formatDate } from "@/lib/shipment-labels";
+import { DOCUMENT_TYPE_LABELS, EVENT_TYPE_LABELS, STATUS_BADGE_VARIANTS, STATUS_LABELS, formatDate } from "@/lib/shipment-labels";
 import { logTrackingEvent } from "./actions";
+import { uploadDocument } from "./document-actions";
+import { DocumentsList } from "./DocumentsList";
 
 export const metadata: Metadata = {
   title: "Shipment | Freight Platform Admin",
@@ -18,13 +20,20 @@ export default async function ShipmentDetailPage({
   // The (authenticated) layout above already redirects unauthenticated
   // requests before this page renders.
   const { reference } = await params;
-  const result = await getShipmentWithEvents(reference);
+  // getShipmentWithEvents strips the internal id from its return value (see
+  // its own doc comment) — resolved separately here since the documents
+  // list is looked up by that id, not the public reference number.
+  const [result, shipmentId] = await Promise.all([
+    getShipmentWithEvents(reference),
+    getShipmentIdByReference(reference),
+  ]);
 
-  if (!result) {
+  if (!result || shipmentId === null) {
     notFound();
   }
 
   const { shipment, events } = result;
+  const documents = await listDocumentsForShipment(shipmentId);
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-comfortable px-comfortable py-expansive">
@@ -153,6 +162,60 @@ export default async function ShipmentDetailPage({
 
             <button type="submit" className={buttonClassName("primary", "md")}>
               Log event
+            </button>
+          </form>
+        </div>
+      </Card>
+
+      <Card>
+        <div className="flex flex-col gap-cozy">
+          <h3 className="font-display text-lg font-semibold text-foreground">Documents</h3>
+          <DocumentsList documents={documents} referenceNumber={shipment.referenceNumber} />
+        </div>
+      </Card>
+
+      <Card>
+        <div className="flex flex-col gap-cozy">
+          <h3 className="font-display text-lg font-semibold text-foreground">Upload a document</h3>
+          <form action={uploadDocument} className="flex flex-col gap-cozy">
+            <input type="hidden" name="referenceNumber" value={shipment.referenceNumber} />
+
+            <div className="flex flex-col gap-tight">
+              <label htmlFor="documentType" className="font-sans text-sm font-medium text-foreground">
+                Document type
+              </label>
+              <select
+                id="documentType"
+                name="documentType"
+                required
+                defaultValue="other"
+                className="h-10 rounded-sm border border-border bg-surface px-cozy font-sans text-sm text-foreground transition-colors duration-base ease-standard focus:border-beacon"
+              >
+                {(Object.keys(DOCUMENT_TYPE_LABELS) as (keyof typeof DOCUMENT_TYPE_LABELS)[]).map(
+                  (documentType) => (
+                    <option key={documentType} value={documentType}>
+                      {DOCUMENT_TYPE_LABELS[documentType]}
+                    </option>
+                  ),
+                )}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-tight">
+              <label htmlFor="file" className="font-sans text-sm font-medium text-foreground">
+                File
+              </label>
+              <input
+                id="file"
+                name="file"
+                type="file"
+                required
+                className="font-sans text-sm text-foreground file:mr-cozy file:rounded-sm file:border-0 file:bg-border/40 file:px-cozy file:py-tight file:font-sans file:text-sm file:text-foreground"
+              />
+            </div>
+
+            <button type="submit" className={buttonClassName("primary", "md")}>
+              Upload
             </button>
           </form>
         </div>

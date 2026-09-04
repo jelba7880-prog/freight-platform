@@ -95,6 +95,50 @@ export const trackingEvents = pgTable(
 export type TrackingEvent = typeof trackingEvents.$inferSelect;
 export type NewTrackingEvent = typeof trackingEvents.$inferInsert;
 
+export const documents = pgTable(
+  "documents",
+  {
+    id: serial("id").primaryKey(),
+    shipmentId: integer("shipment_id")
+      .notNull()
+      // Same reasoning as trackingEvents.shipmentId — a document's audit
+      // trail must never silently disappear if a shipment row is deleted.
+      .references(() => shipments.id, { onDelete: "restrict" }),
+    documentType: text("document_type")
+      .notNull()
+      .default("other")
+      .$type<
+        | "bill_of_lading"
+        | "commercial_invoice"
+        | "packing_list"
+        | "customs_declaration"
+        | "certificate_of_origin"
+        | "other"
+      >(),
+    // Original uploaded filename, for display — not used to derive the blob
+    // pathname (see blobPathname below).
+    fileName: text("file_name").notNull(),
+    // The Vercel Blob pathname — the source of truth for later get()/
+    // presignUrl() calls. Deliberately not a stored full URL: private blob
+    // URLs require a signed token to be useful anyway, so a bare URL column
+    // would just be stale, misleading copy sitting next to the real thing.
+    blobPathname: text("blob_pathname").notNull().unique(),
+    contentType: text("content_type"),
+    fileSizeBytes: integer("file_size_bytes"),
+    uploadedAt: timestamp("uploaded_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    // Fast "all documents for this shipment" lookups — same rationale as
+    // trackingEvents' index.
+    index("documents_shipment_id_idx").on(table.shipmentId),
+  ],
+);
+
+export type Document = typeof documents.$inferSelect;
+export type NewDocument = typeof documents.$inferInsert;
+
 // Public marketing content (the /locations directory) — deliberately no
 // customerId/user linkage, unlike shipments. Not user data.
 export const locations = pgTable("locations", {
