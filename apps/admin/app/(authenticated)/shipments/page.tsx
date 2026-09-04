@@ -1,10 +1,8 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { Card, buttonClassName } from "@freight/ui";
 import { listShipments } from "@freight/database";
 
-import { auth } from "@/auth";
 import { ShipmentsTable } from "./ShipmentsTable";
 
 export const metadata: Metadata = {
@@ -12,11 +10,8 @@ export const metadata: Metadata = {
 };
 
 export default async function ShipmentsPage() {
-  const session = await auth();
-  if (!session?.user) {
-    redirect("/api/auth/signin");
-  }
-
+  // The (authenticated) layout above already redirects unauthenticated
+  // requests before this page renders.
   const shipments = await listShipments();
 
   return (
