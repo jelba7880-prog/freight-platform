@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Badge, Card } from "@freight/ui";
-import { getShipmentForCustomer } from "@freight/database";
+import { getShipmentForCustomer, listDocumentsForCustomerShipment } from "@freight/database";
 
 import { auth } from "@/auth";
 import { EVENT_TYPE_LABELS, STATUS_BADGE_VARIANTS, STATUS_LABELS, formatDate } from "@/lib/shipment-labels";
+import { DocumentsList } from "./DocumentsList";
 
 export const metadata: Metadata = {
   title: "Shipment | Freight Platform Portal",
@@ -19,7 +20,13 @@ export default async function ShipmentDetailPage({
   // requests before this page renders, so session.user is guaranteed here.
   const session = await auth();
   const { reference } = await params;
-  const result = await getShipmentForCustomer(session!.user.id, reference);
+  // listDocumentsForCustomerShipment carries the same customerId +
+  // referenceNumber double-key as getShipmentForCustomer, so it's safe to
+  // run in parallel rather than gated behind the shipment lookup below.
+  const [result, documents] = await Promise.all([
+    getShipmentForCustomer(session!.user.id, reference),
+    listDocumentsForCustomerShipment(session!.user.id, reference),
+  ]);
 
   // A reference that doesn't exist and one that belongs to someone else
   // must be indistinguishable — getShipmentForCustomer already returns
@@ -103,6 +110,13 @@ export default async function ShipmentDetailPage({
           ) : (
             <p className="text-sm text-muted">No tracking events yet.</p>
           )}
+        </div>
+      </Card>
+
+      <Card>
+        <div className="flex flex-col gap-cozy">
+          <h3 className="font-display text-lg font-semibold text-foreground">Documents</h3>
+          <DocumentsList documents={documents} />
         </div>
       </Card>
     </div>
