@@ -8,6 +8,16 @@ const nextConfig: NextConfig = {
   // step) — both need Next's own compiler to process them, which only
   // happens for packages listed here.
   transpilePackages: ["@freight/ui", "@freight/database"],
+  experimental: {
+    serverActions: {
+      // uploadDocument (document-actions.ts) submits the file through this
+      // server action. Next's default 1MB cap is well under what a real
+      // shipment document (a scanned bill of lading, a multi-page customs
+      // declaration PDF) commonly runs, so the default would silently
+      // reject legitimate uploads.
+      bodySizeLimit: "10mb",
+    },
+  },
 };
 
 export default nextConfig;
