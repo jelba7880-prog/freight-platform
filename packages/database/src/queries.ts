@@ -696,3 +696,49 @@ export async function markNotificationRead(
       ),
     );
 }
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export interface CreateContactInquiryInput {
+  name: string;
+  email: string;
+  company?: string | null;
+  phone?: string | null;
+  message: string;
+}
+
+/**
+ * Inserts a public /contact submission. Unlike every other write in this
+ * file, there's no auth check to lean on here — the contact form is
+ * unauthenticated and reachable by anything that can POST to it, not just
+ * this app's own UI — so name/email/message are validated server-side
+ * before the insert rather than trusting that the form's client-side
+ * validation ran. Throws a plain, user-presentable Error on invalid input;
+ * the calling server action is responsible for turning that into the
+ * form's error state.
+ */
+export async function createContactInquiry(input: CreateContactInquiryInput): Promise<void> {
+  const name = input.name.trim();
+  const email = input.email.trim();
+  const message = input.message.trim();
+
+  if (!name) {
+    throw new Error("Name is required.");
+  }
+  if (!email || !EMAIL_PATTERN.test(email)) {
+    throw new Error("A valid email address is required.");
+  }
+  if (!message) {
+    throw new Error("Message is required.");
+  }
+
+  const db = getDb();
+
+  await db.insert(schema.contactInquiries).values({
+    name,
+    email,
+    company: input.company?.trim() || null,
+    phone: input.phone?.trim() || null,
+    message,
+  });
+}

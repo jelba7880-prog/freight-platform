@@ -224,6 +224,25 @@ export const locations = pgTable("locations", {
 export type Location = typeof locations.$inferSelect;
 export type NewLocation = typeof locations.$inferInsert;
 
+// Public /contact submissions — no customerId/user linkage (same reasoning
+// as locations above): a visitor doesn't need an account to reach this
+// page. No topic/source column: CTA-context-passing (which page/service the
+// inquiry came from) is deferred scope, and nothing populates it yet.
+export const contactInquiries = pgTable("contact_inquiries", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  company: text("company"),
+  phone: text("phone"),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export type ContactInquiry = typeof contactInquiries.$inferSelect;
+export type NewContactInquiry = typeof contactInquiries.$inferInsert;
+
 // Auth.js (@auth/drizzle-adapter) tables. Column shapes match the
 // adapter's Postgres defaults exactly — only the physical table names are
 // customer-portal-specific — so `DrizzleAdapter(getDb(), { usersTable:
