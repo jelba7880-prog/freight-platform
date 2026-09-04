@@ -1,9 +1,8 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Badge, Card, Input, buttonClassName } from "@freight/ui";
 import { getShipmentWithEvents } from "@freight/database";
 
-import { auth } from "@/auth";
 import { EVENT_TYPE_LABELS, STATUS_BADGE_VARIANTS, STATUS_LABELS, formatDate } from "@/lib/shipment-labels";
 import { logTrackingEvent } from "./actions";
 
@@ -16,11 +15,8 @@ export default async function ShipmentDetailPage({
 }: {
   params: Promise<{ reference: string }>;
 }) {
-  const session = await auth();
-  if (!session?.user) {
-    redirect("/api/auth/signin");
-  }
-
+  // The (authenticated) layout above already redirects unauthenticated
+  // requests before this page renders.
   const { reference } = await params;
   const result = await getShipmentWithEvents(reference);
 
