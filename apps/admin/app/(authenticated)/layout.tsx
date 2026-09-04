@@ -16,6 +16,7 @@ export default async function AuthenticatedLayout({ children }: { children: Reac
       navItems={[
         { label: "Shipments", href: "/shipments" },
         { label: "Customers", href: "/customers" },
+        { label: "Inquiries", href: "/contact-inquiries" },
       ]}
       userEmail={session.user.email ?? ""}
       signOutAction={async () => {

@@ -2,7 +2,7 @@ import { and, arrayContains, asc, count, desc, eq, ilike, or } from "drizzle-orm
 
 import { getDb } from "./client";
 import * as schema from "./schema";
-import type { Document, Shipment } from "./schema";
+import type { ContactInquiry, Document, Shipment } from "./schema";
 
 export interface ShipmentWithEvents {
   shipment: {
@@ -741,4 +741,49 @@ export async function createContactInquiry(input: CreateContactInquiryInput): Pr
     phone: input.phone?.trim() || null,
     message,
   });
+}
+
+/**
+ * Every /contact submission, most recent first — unlike
+ * listCustomersWithShipmentCounts, this table does have a real recency
+ * column, so it's used directly rather than falling back to email. No
+ * pagination — same dataset-size assumption as every other admin list in
+ * this codebase (listShipments, listCustomersWithShipmentCounts).
+ */
+export async function listContactInquiries(): Promise<ContactInquiry[]> {
+  const db = getDb();
+
+  return db.select().from(schema.contactInquiries).orderBy(desc(schema.contactInquiries.createdAt));
+}
+
+/**
+ * Single inquiry lookup for the admin /contact-inquiries/[id] detail page.
+ * Returns null if not found — same notFound() trigger pattern as every
+ * other admin detail page (getShipmentWithEvents, getCustomerById).
+ */
+export async function getContactInquiryById(id: number): Promise<ContactInquiry | null> {
+  const db = getDb();
+
+  const [inquiry] = await db
+    .select()
+    .from(schema.contactInquiries)
+    .where(eq(schema.contactInquiries.id, id))
+    .limit(1);
+
+  return inquiry ?? null;
+}
+
+/**
+ * Marks an inquiry handled. Unlike markNotificationRead, there's no
+ * customer-ownership scoping to do here — this is an admin-only action
+ * behind the (authenticated) staff layout, and any staff member can
+ * legitimately act on any inquiry, not just ones tied to their own account.
+ */
+export async function markContactInquiryHandled(id: number): Promise<void> {
+  const db = getDb();
+
+  await db
+    .update(schema.contactInquiries)
+    .set({ handledAt: new Date() })
+    .where(eq(schema.contactInquiries.id, id));
 }

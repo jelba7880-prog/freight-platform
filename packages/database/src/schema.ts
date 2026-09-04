@@ -238,6 +238,11 @@ export const contactInquiries = pgTable("contact_inquiries", {
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
+  // null means unhandled — same convention as notifications.readAt. No
+  // staffId/handledBy column: nothing else in this schema attributes a
+  // write to a specific staff member yet (createShipment, logTrackingEvent
+  // don't either), so this doesn't introduce that precedent.
+  handledAt: timestamp("handled_at", { withTimezone: true }),
 });
 
 export type ContactInquiry = typeof contactInquiries.$inferSelect;
