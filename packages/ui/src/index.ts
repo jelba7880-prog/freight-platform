@@ -2,7 +2,7 @@
  * Shared design system / component library: tokens live in
  * packages/config/tailwind, font loading in ./fonts, and the primitives
  * below. Row selection/pagination/filtering/column resizing on Table, and
- * forms beyond Input, are deliberately out of scope for this pass —
+ * forms beyond Input/Textarea, are deliberately out of scope for this pass —
  * follow-ups once these are reviewed. Header/Footer are wired into
  * apps/web only; apps/portal uses AppShell instead (see its own doc
  * comment for why). apps/admin gets its nav in a later task.
@@ -24,6 +24,9 @@ export type { ServiceIndustryTemplateProps, ServiceIndustryContent } from "./Ser
 
 export { Input } from "./Input";
 export type { InputProps } from "./Input";
+
+export { Textarea } from "./Textarea";
+export type { TextareaProps } from "./Textarea";
 
 export { Table } from "./Table";
 export type { TableProps, Column, ColumnAlign, SortState, SortDirection } from "./Table";

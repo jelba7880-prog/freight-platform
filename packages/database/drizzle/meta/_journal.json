@@ -57,6 +57,13 @@
       "when": 1788497872165,
       "tag": "0007_broken_black_bird",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1788544127855,
+      "tag": "0008_bent_molly_hayes",
+      "breakpoints": true
     }
   ]
 }

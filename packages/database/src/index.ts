@@ -1,5 +1,6 @@
 export { getDb } from "./client";
 export {
+  createContactInquiry,
   createShipment,
   createTrackingEvent,
   getCustomerById,
@@ -19,6 +20,7 @@ export {
   searchLocationsByText,
 } from "./queries";
 export type {
+  CreateContactInquiryInput,
   CreateShipmentInput,
   CreateTrackingEventInput,
   CustomerSummary,
@@ -37,6 +39,7 @@ export {
 } from "./storage";
 export * as schema from "./schema";
 export type {
+  ContactInquiry,
   Customer,
   CustomerAccount,
   CustomerSession,
@@ -44,6 +47,7 @@ export type {
   Document,
   HealthCheck,
   Location,
+  NewContactInquiry,
   NewCustomer,
   NewCustomerAccount,
   NewCustomerSession,
