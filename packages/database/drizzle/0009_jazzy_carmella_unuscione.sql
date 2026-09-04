@@ -1,0 +1,1 @@
+ALTER TABLE "contact_inquiries" ADD COLUMN "handled_at" timestamp with time zone;
