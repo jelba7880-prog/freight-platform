@@ -13,7 +13,10 @@ export default async function AuthenticatedLayout({ children }: { children: Reac
   return (
     <AppShell
       brand="Freight Platform Admin"
-      navItems={[{ label: "Shipments", href: "/shipments" }]}
+      navItems={[
+        { label: "Shipments", href: "/shipments" },
+        { label: "Customers", href: "/customers" },
+      ]}
       userEmail={session.user.email ?? ""}
       signOutAction={async () => {
         "use server";

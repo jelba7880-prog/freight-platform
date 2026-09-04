@@ -1,4 +1,4 @@
-import { and, arrayContains, asc, desc, eq, ilike, or } from "drizzle-orm";
+import { and, arrayContains, asc, count, desc, eq, ilike, or } from "drizzle-orm";
 
 import { getDb } from "./client";
 import * as schema from "./schema";
@@ -274,6 +274,58 @@ export async function searchCustomersByEmail(
     .where(ilike(schema.customers.email, `${trimmed}%`))
     .orderBy(asc(schema.customers.email))
     .limit(10);
+}
+
+export interface CustomerWithShipmentCount {
+  id: string;
+  name: string | null;
+  email: string | null;
+  shipmentCount: number;
+}
+
+/**
+ * Every customer, alphabetical by email, with how many shipments each has
+ * — for the admin /customers list. LEFT JOIN (not INNER): a customer who
+ * signed in but hasn't shipped anything yet must still show up, with a
+ * count of 0, since looking that customer up is a legitimate admin task.
+ * customers has no createdAt/updatedAt column (it's the Auth.js adapter's
+ * user table), so email is the only stable, meaningful sort key available.
+ */
+export async function listCustomersWithShipmentCounts(): Promise<CustomerWithShipmentCount[]> {
+  const db = getDb();
+
+  return db
+    .select({
+      id: schema.customers.id,
+      name: schema.customers.name,
+      email: schema.customers.email,
+      shipmentCount: count(schema.shipments.id),
+    })
+    .from(schema.customers)
+    .leftJoin(schema.shipments, eq(schema.shipments.customerId, schema.customers.id))
+    .groupBy(schema.customers.id)
+    .orderBy(asc(schema.customers.email));
+}
+
+/**
+ * Single customer lookup for the admin /customers/[id] detail page.
+ * Returns null if not found — same notFound() trigger pattern as the
+ * shipment detail lookups.
+ */
+export async function getCustomerById(customerId: string): Promise<CustomerSummary | null> {
+  const db = getDb();
+
+  const [customer] = await db
+    .select({
+      id: schema.customers.id,
+      name: schema.customers.name,
+      email: schema.customers.email,
+    })
+    .from(schema.customers)
+    .where(eq(schema.customers.id, customerId))
+    .limit(1);
+
+  return customer ?? null;
 }
 
 export interface SearchLocationsFilters {
