@@ -139,6 +139,69 @@ export const documents = pgTable(
 export type Document = typeof documents.$inferSelect;
 export type NewDocument = typeof documents.$inferInsert;
 
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: serial("id").primaryKey(),
+    // Unlike shipments.customerId's onDelete: "set null" — a shipment can
+    // meaningfully exist with no owning customer (a walk-in booking), but a
+    // notification cannot: its entire reason to exist is being something a
+    // specific customer sees. If that customer is gone, cascade it away
+    // rather than leave an orphaned row or block the customer's deletion.
+    customerId: text("customer_id")
+      .notNull()
+      .references(() => customers.id, { onDelete: "cascade" }),
+    // Unlike trackingEvents.shipmentId's onDelete: "restrict" — trackingEvents
+    // is an audit trail that must never silently vanish. Notifications are
+    // an ephemeral read-state feed, not a record of truth: if a shipment
+    // were ever deleted, its notifications should go with it, not block
+    // the deletion.
+    shipmentId: integer("shipment_id")
+      .notNull()
+      .references(() => shipments.id, { onDelete: "cascade" }),
+    // No delete path exists for tracking events today, so this is a
+    // correctness-not-urgency choice. "set null" (not "cascade" or
+    // "restrict"): newStatus below already snapshots what happened
+    // independently of this row, so the notification stays fully
+    // meaningful without it — this FK is just a traceability pointer back
+    // to the originating event, not load-bearing. Losing that pointer
+    // shouldn't silently delete a customer's (possibly already-read)
+    // notification, and an ephemeral read-state row is exactly the kind of
+    // thing that must never block deleting an audit-trail row, the same
+    // reasoning shipmentId above already applies one level up.
+    trackingEventId: integer("tracking_event_id").references(() => trackingEvents.id, {
+      onDelete: "set null",
+    }),
+    // Snapshot of what status this notification is about, captured at
+    // generation time. Never read shipments.status live when rendering a
+    // notification — it can keep advancing after this row was created, and
+    // the notification must describe what happened at *that* moment.
+    newStatus: text("new_status")
+      .notNull()
+      .$type<
+        | "pending"
+        | "in_transit"
+        | "customs_clearance"
+        | "out_for_delivery"
+        | "delivered"
+        | "delayed"
+      >(),
+    // null means unread.
+    readAt: timestamp("read_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    // "my notifications" lookups — same rationale as every other
+    // customerId/shipmentId index in this schema.
+    index("notifications_customer_id_idx").on(table.customerId),
+  ],
+);
+
+export type Notification = typeof notifications.$inferSelect;
+export type NewNotification = typeof notifications.$inferInsert;
+
 // Public marketing content (the /locations directory) — deliberately no
 // customerId/user linkage, unlike shipments. Not user data.
 export const locations = pgTable("locations", {
