@@ -427,6 +427,66 @@ export async function listDocumentsForShipment(shipmentId: number): Promise<Docu
     .orderBy(desc(schema.documents.uploadedAt));
 }
 
+/**
+ * Portal counterpart to listDocumentsForShipment — joins through shipments
+ * and matches on customerId AND referenceNumber together, same double-key
+ * reasoning as getShipmentForCustomer: a customer must not be able to tell
+ * "shipment doesn't exist" from "shipment exists but isn't yours" from
+ * "shipment is yours but has no documents" apart. All three return [].
+ */
+export async function listDocumentsForCustomerShipment(
+  customerId: string,
+  referenceNumber: string,
+): Promise<DocumentSummary[]> {
+  const db = getDb();
+
+  return db
+    .select({
+      id: schema.documents.id,
+      documentType: schema.documents.documentType,
+      fileName: schema.documents.fileName,
+      contentType: schema.documents.contentType,
+      fileSizeBytes: schema.documents.fileSizeBytes,
+      uploadedAt: schema.documents.uploadedAt,
+    })
+    .from(schema.documents)
+    .innerJoin(schema.shipments, eq(schema.documents.shipmentId, schema.shipments.id))
+    .where(
+      and(
+        eq(schema.shipments.customerId, customerId),
+        eq(schema.shipments.referenceNumber, referenceNumber),
+      ),
+    )
+    .orderBy(desc(schema.documents.uploadedAt));
+}
+
+/**
+ * Whether `documentId` belongs to a shipment owned by `customerId` — the
+ * ownership check getDocumentDownloadUrl's own doc comment says callers are
+ * responsible for. Written once here so every caller (today's portal
+ * download action, any future one) shares it rather than inlining the join.
+ */
+export async function isDocumentAccessibleToCustomer(
+  customerId: string,
+  documentId: number,
+): Promise<boolean> {
+  const db = getDb();
+
+  const [row] = await db
+    .select({ id: schema.documents.id })
+    .from(schema.documents)
+    .innerJoin(schema.shipments, eq(schema.documents.shipmentId, schema.shipments.id))
+    .where(
+      and(
+        eq(schema.documents.id, documentId),
+        eq(schema.shipments.customerId, customerId),
+      ),
+    )
+    .limit(1);
+
+  return row !== undefined;
+}
+
 export interface CreateTrackingEventInput {
   shipmentId: number;
   eventType: "arrival" | "departure" | "status_change" | "milestone" | "exception";

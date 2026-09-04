@@ -5,6 +5,8 @@ export {
   getShipmentForCustomer,
   getShipmentIdByReference,
   getShipmentWithEvents,
+  isDocumentAccessibleToCustomer,
+  listDocumentsForCustomerShipment,
   listDocumentsForShipment,
   listShipments,
   listShipmentsForCustomer,
