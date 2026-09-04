@@ -534,20 +534,23 @@ export async function createTrackingEvent(
 ): Promise<void> {
   const db = getDb();
 
-  await db.insert(schema.trackingEvents).values({
-    shipmentId: input.shipmentId,
-    eventType: input.eventType,
-    location: input.location ?? null,
-    description: input.description ?? null,
-    occurredAt: input.occurredAt,
-  });
+  const [trackingEvent] = await db
+    .insert(schema.trackingEvents)
+    .values({
+      shipmentId: input.shipmentId,
+      eventType: input.eventType,
+      location: input.location ?? null,
+      description: input.description ?? null,
+      occurredAt: input.occurredAt,
+    })
+    .returning({ id: schema.trackingEvents.id });
 
   if (!STATUS_ADVANCING_EVENT_TYPES.has(input.eventType)) {
     return;
   }
 
   const [shipment] = await db
-    .select({ status: schema.shipments.status })
+    .select({ status: schema.shipments.status, customerId: schema.shipments.customerId })
     .from(schema.shipments)
     .where(eq(schema.shipments.id, input.shipmentId))
     .limit(1);
@@ -565,4 +568,79 @@ export async function createTrackingEvent(
     .update(schema.shipments)
     .set({ status: nextStatus, updatedAt: new Date() })
     .where(eq(schema.shipments.id, input.shipmentId));
+
+  // Only a real forward advance on a shipment with an owning customer is a
+  // customer-meaningful moment — same reasoning NEXT_STATUS/
+  // STATUS_ADVANCING_EVENT_TYPES already give for excluding arrival/
+  // departure/milestone/exception and no-op status_changes above. No
+  // customerId means no one to notify (a walk-in booking), not an error.
+  if (shipment.customerId !== null) {
+    await db.insert(schema.notifications).values({
+      customerId: shipment.customerId,
+      shipmentId: input.shipmentId,
+      // A single-row insert always returns exactly one row.
+      trackingEventId: trackingEvent!.id,
+      newStatus: nextStatus,
+    });
+  }
+}
+
+export interface NotificationSummary {
+  id: number;
+  shipmentReferenceNumber: string;
+  newStatus: Shipment["status"];
+  readAt: Date | null;
+  createdAt: Date;
+}
+
+/**
+ * A customer's own notifications, most recent first. Returns
+ * shipmentReferenceNumber (joined from shipments) and newStatus as raw
+ * data — not a pre-rendered message string. The portal renders the
+ * sentence itself via its own STATUS_LABELS, same reasoning
+ * DOCUMENT_TYPE_LABELS/formatFileSize already follow: label mappings are
+ * UI copy, not something the database layer should own or duplicate.
+ */
+export async function listNotificationsForCustomer(
+  customerId: string,
+): Promise<NotificationSummary[]> {
+  const db = getDb();
+
+  return db
+    .select({
+      id: schema.notifications.id,
+      shipmentReferenceNumber: schema.shipments.referenceNumber,
+      newStatus: schema.notifications.newStatus,
+      readAt: schema.notifications.readAt,
+      createdAt: schema.notifications.createdAt,
+    })
+    .from(schema.notifications)
+    .innerJoin(schema.shipments, eq(schema.notifications.shipmentId, schema.shipments.id))
+    .where(eq(schema.notifications.customerId, customerId))
+    .orderBy(desc(schema.notifications.createdAt));
+}
+
+/**
+ * Marks a notification read, scoped to its owning customer — same
+ * ownership-scoping discipline as isDocumentAccessibleToCustomer. Silently
+ * no-ops (no error, no distinguishing return value) when the notification
+ * doesn't exist or isn't the caller's: same indistinguishability already
+ * established for shipments and documents, so a caller can't probe for
+ * other customers' notification ids by their error behavior.
+ */
+export async function markNotificationRead(
+  customerId: string,
+  notificationId: number,
+): Promise<void> {
+  const db = getDb();
+
+  await db
+    .update(schema.notifications)
+    .set({ readAt: new Date() })
+    .where(
+      and(
+        eq(schema.notifications.id, notificationId),
+        eq(schema.notifications.customerId, customerId),
+      ),
+    );
 }

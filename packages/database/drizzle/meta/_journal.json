@@ -50,6 +50,13 @@
       "when": 1788491336882,
       "tag": "0006_overconfident_sauron",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1788497872165,
+      "tag": "0007_broken_black_bird",
+      "breakpoints": true
     }
   ]
 }
