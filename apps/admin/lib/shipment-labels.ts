@@ -1,4 +1,4 @@
-import type { Shipment, TrackingEvent } from "@freight/database";
+import type { Document, Shipment, TrackingEvent } from "@freight/database";
 import type { BadgeVariant } from "@freight/ui";
 
 // Mirrors apps/web's /track page labels — kept as a separate copy since
@@ -29,6 +29,34 @@ export const EVENT_TYPE_LABELS: Record<TrackingEvent["eventType"], string> = {
   milestone: "Milestone",
   exception: "Exception",
 };
+
+export const DOCUMENT_TYPE_LABELS: Record<Document["documentType"], string> = {
+  bill_of_lading: "Bill of lading",
+  commercial_invoice: "Commercial invoice",
+  packing_list: "Packing list",
+  customs_declaration: "Customs declaration",
+  certificate_of_origin: "Certificate of origin",
+  other: "Other",
+};
+
+export function formatFileSize(bytes: number | null): string {
+  if (bytes === null) {
+    return "—";
+  }
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+
+  const units = ["KB", "MB", "GB"];
+  let value = bytes / 1024;
+  let unitIndex = 0;
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+
+  return `${value.toFixed(1)} ${units[unitIndex]}`;
+}
 
 export function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("en", {

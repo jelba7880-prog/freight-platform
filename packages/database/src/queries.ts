@@ -2,7 +2,7 @@ import { and, arrayContains, asc, desc, eq, ilike, or } from "drizzle-orm";
 
 import { getDb } from "./client";
 import * as schema from "./schema";
-import type { Shipment } from "./schema";
+import type { Document, Shipment } from "./schema";
 
 export interface ShipmentWithEvents {
   shipment: {
@@ -392,6 +392,39 @@ export async function searchLocationsByText(term: string): Promise<LocationSumma
     )
     .orderBy(asc(schema.locations.name))
     .limit(10);
+}
+
+export interface DocumentSummary {
+  id: number;
+  documentType: Document["documentType"];
+  fileName: string;
+  contentType: string | null;
+  fileSizeBytes: number | null;
+  uploadedAt: Date;
+}
+
+/**
+ * All documents for a shipment, most-recently-uploaded first — admin sees
+ * everything, no customer scoping, same as listShipments. blobPathname is
+ * deliberately left out of this shape: the page never needs it directly,
+ * only a documentId to hand to getDocumentDownloadUrl/deleteShipmentDocument
+ * in ./storage, which look it up themselves.
+ */
+export async function listDocumentsForShipment(shipmentId: number): Promise<DocumentSummary[]> {
+  const db = getDb();
+
+  return db
+    .select({
+      id: schema.documents.id,
+      documentType: schema.documents.documentType,
+      fileName: schema.documents.fileName,
+      contentType: schema.documents.contentType,
+      fileSizeBytes: schema.documents.fileSizeBytes,
+      uploadedAt: schema.documents.uploadedAt,
+    })
+    .from(schema.documents)
+    .where(eq(schema.documents.shipmentId, shipmentId))
+    .orderBy(desc(schema.documents.uploadedAt));
 }
 
 export interface CreateTrackingEventInput {

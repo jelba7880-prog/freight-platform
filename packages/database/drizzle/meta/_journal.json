@@ -43,6 +43,13 @@
       "when": 1788275306906,
       "tag": "0005_bizarre_gauntlet",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1788491336882,
+      "tag": "0006_overconfident_sauron",
+      "breakpoints": true
     }
   ]
 }
