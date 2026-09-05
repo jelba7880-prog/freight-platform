@@ -160,8 +160,10 @@ export const INDUSTRIES: ContentNavLink[] = [
 /**
  * Primary navigation: Services -> Industries -> Solutions -> Digital
  * Services -> Locations -> Company -> Resources. Only Services and
- * Industries carry real dropdown content for this pass; the rest are
- * top-level links (stub routes, 404 cleanly for now).
+ * Industries carry real dropdown content for this pass; Locations and
+ * Company route to real pages too (Company's own 8 sub-pages included).
+ * Solutions, Digital Services, and Resources remain stub routes that 404
+ * cleanly for now.
  */
 export const PRIMARY_NAV: PrimaryNavItem[] = [
   { label: "Services", href: "/services", items: SERVICES },
@@ -177,7 +179,7 @@ export const PRIMARY_NAV: PrimaryNavItem[] = [
  * Persistent utility actions — lightweight, fixed weight, always present.
  * Deliberately NOT a Header prop (see file comment). Search isn't listed
  * here: it's a disclosure (icon -> input), handled separately in Header.
- * Track/Locations/Contact route to stub pages that 404 cleanly for now.
+ * Track, Locations, and Contact all route to real pages.
  */
 export const UTILITY_LINKS: NavLink[] = [
   { label: "Track shipment", href: "/track" },
@@ -185,7 +187,10 @@ export const UTILITY_LINKS: NavLink[] = [
   { label: "Talk to an expert", href: "/contact" },
 ];
 
-export const PORTAL_LINK: NavLink = { label: "Portal login", href: "/portal-login" };
+export const PORTAL_LINK: NavLink = {
+  label: "Portal login",
+  href: "https://freight-platform-portal.vercel.app",
+};
 
 /** Site-wide fallback when a page doesn't specify its own contextual CTA. */
 export const DEFAULT_PRIMARY_ACTION: NavLink = { label: "Track shipment", href: "/track" };

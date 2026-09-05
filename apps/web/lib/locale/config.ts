@@ -89,8 +89,16 @@ export function isNonLocalizedSegment(value: string): boolean {
  *
  * Use this rather than hand-concatenating a prefix, so that the day a Tier 1
  * market ships, internal links follow the visitor's locale automatically.
+ *
+ * An absolute URL (e.g. the portal's own origin) is returned unchanged: it
+ * already points somewhere outside this locale tree, so prefixing it would
+ * produce a nonsense path like `/us/https://...` instead of leaving it
+ * alone. Every internal link goes through this one function, so the check
+ * lives here rather than at each call site that might pass one through.
  */
 export function localePath(locale: Locale, path = "/"): string {
+  if (/^https?:\/\//.test(path)) return path;
+
   const normalized = path.startsWith("/") ? path : `/${path}`;
   if (locale === DEFAULT_LOCALE) return normalized;
   return normalized === "/" ? `/${locale}` : `/${locale}${normalized}`;
