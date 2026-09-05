@@ -22,6 +22,16 @@ export type { ContentCardProps } from "./ContentCard";
 export { ServiceIndustryTemplate } from "./ServiceIndustryTemplate";
 export type { ServiceIndustryTemplateProps, ServiceIndustryContent } from "./ServiceIndustryTemplate";
 
+export { CompanyPageTemplate } from "./CompanyPageTemplate";
+export type {
+  CompanyPageTemplateProps,
+  CompanyPageContent,
+  CompanySection,
+  CompanyProseSection,
+  CompanyPeopleSection,
+  CompanyPersonEntry,
+} from "./CompanyPageTemplate";
+
 export { Input } from "./Input";
 export type { InputProps } from "./Input";
 
