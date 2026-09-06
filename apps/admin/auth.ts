@@ -3,6 +3,11 @@ import { getDb, schema } from "@freight/database";
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 
+const ALLOWED_ADMIN_EMAILS = (process.env.AUTH_ADMIN_ALLOWED_EMAILS ?? "")
+  .split(",")
+  .map((email) => email.trim().toLowerCase())
+  .filter(Boolean);
+
 export const { handlers, auth, signIn, signOut } = NextAuth(() => ({
   // Auth.js falls back to AUTH_SECRET when `secret` is unset — set it
   // explicitly so admin sessions never end up signed with the portal's
@@ -25,9 +30,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => ({
   session: { strategy: "database" },
   callbacks: {
     // Reject the sign-in outright — not just hiding UI afterward — for
-    // any Google account outside the company Workspace domain.
+    // any Google account not on the admin allowlist.
     async signIn({ profile }) {
-      return profile?.hd === process.env.AUTH_ADMIN_ALLOWED_DOMAIN;
+      if (!profile?.email) return false;
+      return ALLOWED_ADMIN_EMAILS.includes(profile.email.toLowerCase());
     },
   },
 }));
