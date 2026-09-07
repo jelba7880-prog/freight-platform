@@ -476,7 +476,7 @@ export default function StyleGuidePage() {
 
       <Section
         title="Footer"
-        description="Company layer (About, Leadership, Sustainability, Corporate governance, Compliance, Careers, Investor information, Newsroom) and Resources layer (Market insights, Industry insights, Success stories, How-to guides, Webinars, Logistics knowledge, Regulatory information, Glossaries, Shipping references), pulled directly from Project_Overview.md. Careers lives here only — never alongside Header's commercial actions."
+        description="Company layer (About, Leadership, Sustainability, Corporate governance, Compliance, Careers, Investor information, Newsroom), pulled directly from Project_Overview.md. Careers lives here only — never alongside Header's commercial actions."
       >
         <div className="rounded-lg border border-border shadow-sm">
           <Footer />

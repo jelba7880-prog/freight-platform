@@ -1,0 +1,19 @@
+#!/bin/sh
+# Strip leftover Claude Code attribution lines from commit messages.
+# Addresses a known Claude Code bug where the attribution setting in
+# .claude/settings.json doesn't fully suppress Claude-Session trailers.
+
+msgfile="$1"
+
+# Remove lines matching Claude Code attributions (in place).
+sed -i \
+  -e '/^🤖 Generated with \[Claude Code\]/d' \
+  -e '/^Generated with Claude Code/d' \
+  -e '/^Co-Authored-By: Claude/d' \
+  -e '/^Claude-Session:/d' \
+  "$msgfile"
+
+# Trim trailing blank lines so the message doesn't end with empty lines.
+sed -i -e :a -e '/^\s*$/d;N;ba' "$msgfile" || true
+
+exit 0

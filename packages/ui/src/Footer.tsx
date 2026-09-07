@@ -1,7 +1,7 @@
 import type { HTMLAttributes, Ref } from "react";
 import { cx } from "./cx";
 import type { NavLink } from "./nav-data";
-import { COMPANY_LINKS, RESOURCES_LINKS } from "./nav-data";
+import { COMPANY_LINKS } from "./nav-data";
 
 export interface FooterProps extends HTMLAttributes<HTMLElement> {
   ref?: Ref<HTMLElement>;
@@ -51,13 +51,12 @@ export function Footer({ className, ref, resolveHref = (href) => href, ...props 
   return (
     <footer ref={ref} className={cx("border-t border-border bg-surface", className)} {...props}>
       <div className="mx-auto flex max-w-6xl flex-col gap-loose px-comfortable py-loose">
-        <div className="grid grid-cols-1 gap-comfortable sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-comfortable">
           {/* Careers lives in this Company column only — per
               Project_Overview.md's CTA-hierarchy principle, career links
               never share a row with commercial actions (track/contact),
               which live in Header instead. */}
           <LinkColumn title="Company" links={COMPANY_LINKS} resolveHref={resolveHref} />
-          <LinkColumn title="Resources" links={RESOURCES_LINKS} resolveHref={resolveHref} />
         </div>
 
         <div className="flex flex-col gap-tight border-t border-border pt-comfortable sm:flex-row sm:items-center sm:justify-between">

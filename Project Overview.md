@@ -112,11 +112,9 @@ Amended design: search-first as the primary interaction — country / city / pos
 
 Global Navigation & Information Architecture
 
-Primary navigation: Services → Industries → Solutions → Digital Services → Locations → Company → Resources
+Primary navigation: Services → Industries → Solutions → Digital Services → Locations → Company
 
 The Company layer contains: About, Leadership, Sustainability, Corporate governance, Compliance, Careers, Investor information, Newsroom.
-
-The Resources layer contains: Market insights, Industry insights, Success stories, How-to guides, Webinars, Logistics knowledge, Regulatory information, Glossaries, Shipping references.
 
 CTA hierarchy (amended, new): K+N repeats an identical five-action utility panel (Get a quote / Talk to an expert / Track / Find a location / Find a job) on every single page, regardless of context — a sea-freight page surfaces "Find a job" with the same visual weight as "Get a quote," which has nothing to do with a shipper's intent on that page.
 
