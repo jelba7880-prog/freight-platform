@@ -159,11 +159,10 @@ export const INDUSTRIES: ContentNavLink[] = [
 
 /**
  * Primary navigation: Services -> Industries -> Solutions -> Digital
- * Services -> Locations -> Company -> Resources. Only Services and
- * Industries carry real dropdown content for this pass; Locations and
- * Company route to real pages too (Company's own 8 sub-pages included).
- * Solutions, Digital Services, and Resources remain stub routes that 404
- * cleanly for now.
+ * Services -> Locations -> Company. Only Services and Industries carry
+ * real dropdown content for this pass; Locations and Company route to
+ * real pages too (Company's own 8 sub-pages included). Solutions and
+ * Digital Services remain stub routes that 404 cleanly for now.
  */
 export const PRIMARY_NAV: PrimaryNavItem[] = [
   { label: "Services", href: "/services", items: SERVICES },
@@ -172,7 +171,6 @@ export const PRIMARY_NAV: PrimaryNavItem[] = [
   { label: "Digital Services", href: "/digital-services" },
   { label: "Locations", href: "/locations" },
   { label: "Company", href: "/company" },
-  { label: "Resources", href: "/resources" },
 ];
 
 /**
@@ -232,17 +230,4 @@ export const COMPANY_LINKS: NavLink[] = [
   { label: "Careers", href: "/careers" },
   { label: "Investor information", href: "/company/investors" },
   { label: "Newsroom", href: "/newsroom" },
-];
-
-/** Footer — Resources layer (the informational/SEO knowledge hub). */
-export const RESOURCES_LINKS: NavLink[] = [
-  { label: "Market insights", href: "/resources/market-insights" },
-  { label: "Industry insights", href: "/resources/industry-insights" },
-  { label: "Success stories", href: "/resources/success-stories" },
-  { label: "How-to guides", href: "/resources/how-to-guides" },
-  { label: "Webinars", href: "/resources/webinars" },
-  { label: "Logistics knowledge", href: "/resources/logistics-knowledge" },
-  { label: "Regulatory information", href: "/resources/regulatory-information" },
-  { label: "Glossaries", href: "/resources/glossaries" },
-  { label: "Shipping references", href: "/resources/shipping-references" },
 ];
