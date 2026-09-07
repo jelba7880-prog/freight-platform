@@ -4,13 +4,22 @@ import { Badge, Card, Input, buttonClassName } from "@freight/ui";
 import { getShipmentIdByReference, getShipmentWithEvents, listDocumentsForShipment } from "@freight/database";
 
 import { DOCUMENT_TYPE_LABELS, EVENT_TYPE_LABELS, STATUS_BADGE_VARIANTS, STATUS_LABELS, formatDate } from "@/lib/shipment-labels";
-import { logTrackingEvent } from "./actions";
+import { logTrackingEvent, markDelayed, resumeStatus } from "./actions";
 import { uploadDocument } from "./document-actions";
 import { DocumentsList } from "./DocumentsList";
 
 export const metadata: Metadata = {
   title: "Shipment | Freight Platform Admin",
 };
+
+// The four statuses a delayed shipment can resume into — never "pending" or
+// "delayed" itself, same restriction resumeShipmentStatus enforces server-side.
+const RESUME_STATUS_OPTIONS = [
+  "in_transit",
+  "customs_clearance",
+  "out_for_delivery",
+  "delivered",
+] as const;
 
 export default async function ShipmentDetailPage({
   params,
@@ -164,6 +173,76 @@ export default async function ShipmentDetailPage({
               Log event
             </button>
           </form>
+        </div>
+      </Card>
+
+      <Card>
+        <div className="flex flex-col gap-cozy">
+          {shipment.status !== "delayed" ? (
+            <>
+              <h3 className="font-display text-lg font-semibold text-foreground">
+                Mark as delayed
+              </h3>
+              <form action={markDelayed} className="flex flex-col gap-cozy">
+                <input type="hidden" name="referenceNumber" value={shipment.referenceNumber} />
+
+                <div className="flex flex-col gap-tight">
+                  <label
+                    htmlFor="delayDescription"
+                    className="font-sans text-sm font-medium text-foreground"
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    id="delayDescription"
+                    name="description"
+                    rows={3}
+                    placeholder="e.g. Delayed due to customs inspection"
+                    className="rounded-sm border border-border bg-surface px-cozy py-snug font-sans text-sm text-foreground placeholder:text-muted transition-colors duration-base ease-standard focus:border-beacon"
+                  />
+                </div>
+
+                <button type="submit" className={buttonClassName("primary", "md")}>
+                  Mark as delayed
+                </button>
+              </form>
+            </>
+          ) : (
+            <>
+              <h3 className="font-display text-lg font-semibold text-foreground">
+                Resume shipment
+              </h3>
+              <form action={resumeStatus} className="flex flex-col gap-cozy">
+                <input type="hidden" name="referenceNumber" value={shipment.referenceNumber} />
+
+                <div className="flex flex-col gap-tight">
+                  <label
+                    htmlFor="newStatus"
+                    className="font-sans text-sm font-medium text-foreground"
+                  >
+                    Resume to
+                  </label>
+                  <select
+                    id="newStatus"
+                    name="newStatus"
+                    required
+                    defaultValue="in_transit"
+                    className="h-10 rounded-sm border border-border bg-surface px-cozy font-sans text-sm text-foreground transition-colors duration-base ease-standard focus:border-beacon"
+                  >
+                    {RESUME_STATUS_OPTIONS.map((status) => (
+                      <option key={status} value={status}>
+                        {STATUS_LABELS[status]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <button type="submit" className={buttonClassName("primary", "md")}>
+                  Resume
+                </button>
+              </form>
+            </>
+          )}
         </div>
       </Card>
 

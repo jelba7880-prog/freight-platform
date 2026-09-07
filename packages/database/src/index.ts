@@ -18,6 +18,8 @@ export {
   listShipmentsForCustomer,
   markContactInquiryHandled,
   markNotificationRead,
+  markShipmentDelayed,
+  resumeShipmentStatus,
   searchCustomersByEmail,
   searchLocations,
   searchLocationsByText,
