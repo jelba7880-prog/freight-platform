@@ -637,6 +637,142 @@ export async function createTrackingEvent(
   }
 }
 
+/**
+ * Marks a shipment delayed — an explicit admin override, not a natural
+ * forward advance, so this writes shipments.status directly rather than
+ * going through createTrackingEvent's status_change/NEXT_STATUS path. The
+ * inserted exception event's description is how "delayed from X" gets
+ * recorded in prose, since the prior stage isn't kept structurally once
+ * status flips to "delayed". No-ops if the shipment isn't found — same
+ * defensive pattern getShipmentIdByReference callers already rely on.
+ */
+export async function markShipmentDelayed(
+  shipmentId: number,
+  description?: string | null,
+): Promise<void> {
+  const db = getDb();
+
+  const [shipment] = await db
+    .select({ customerId: schema.shipments.customerId })
+    .from(schema.shipments)
+    .where(eq(schema.shipments.id, shipmentId))
+    .limit(1);
+
+  if (!shipment) {
+    return;
+  }
+
+  const now = new Date();
+
+  await db
+    .update(schema.shipments)
+    .set({ status: "delayed", updatedAt: now })
+    .where(eq(schema.shipments.id, shipmentId));
+
+  const [trackingEvent] = await db
+    .insert(schema.trackingEvents)
+    .values({
+      shipmentId,
+      eventType: "exception",
+      description: description ?? null,
+      occurredAt: now,
+    })
+    .returning({ id: schema.trackingEvents.id });
+
+  // Same reasoning as createTrackingEvent's notification insert — no
+  // customerId means no one to notify (a walk-in booking), not an error.
+  if (shipment.customerId !== null) {
+    await db.insert(schema.notifications).values({
+      customerId: shipment.customerId,
+      shipmentId,
+      // A single-row insert always returns exactly one row.
+      trackingEventId: trackingEvent!.id,
+      newStatus: "delayed",
+    });
+  }
+}
+
+type ResumeTargetStatus = "in_transit" | "customs_clearance" | "out_for_delivery" | "delivered";
+
+function isResumeTargetStatus(status: Shipment["status"]): status is ResumeTargetStatus {
+  return (
+    status === "in_transit" ||
+    status === "customs_clearance" ||
+    status === "out_for_delivery" ||
+    status === "delivered"
+  );
+}
+
+// Raw status label strings for the resumed-from-delayed tracking event's
+// description only — not STATUS_LABELS, which is admin UI copy that this
+// package must not import (see resumeShipmentStatus's own doc comment).
+const RESUME_STATUS_DESCRIPTIONS: Record<ResumeTargetStatus, string> = {
+  in_transit: "in transit",
+  customs_clearance: "customs clearance",
+  out_for_delivery: "out for delivery",
+  delivered: "delivered",
+};
+
+/**
+ * Resumes a delayed shipment onto one of the genuine forward stages —
+ * also an explicit admin override rather than a NEXT_STATUS advance, since
+ * it can jump past intermediate stages (e.g. straight to "delivered")
+ * instead of moving one step at a time. Only accepts "in_transit" |
+ * "customs_clearance" | "out_for_delivery" | "delivered" as newStatus:
+ * resuming INTO delayed or back to pending doesn't make sense here, so
+ * both are rejected. No-ops if the shipment isn't found — same defensive
+ * pattern getShipmentIdByReference callers already rely on.
+ */
+export async function resumeShipmentStatus(
+  shipmentId: number,
+  newStatus: Shipment["status"],
+): Promise<void> {
+  if (!isResumeTargetStatus(newStatus)) {
+    throw new Error("Invalid resume status");
+  }
+
+  const db = getDb();
+
+  const [shipment] = await db
+    .select({ customerId: schema.shipments.customerId })
+    .from(schema.shipments)
+    .where(eq(schema.shipments.id, shipmentId))
+    .limit(1);
+
+  if (!shipment) {
+    return;
+  }
+
+  const now = new Date();
+
+  await db
+    .update(schema.shipments)
+    .set({ status: newStatus, updatedAt: now })
+    .where(eq(schema.shipments.id, shipmentId));
+
+  const [trackingEvent] = await db
+    .insert(schema.trackingEvents)
+    .values({
+      shipmentId,
+      eventType: "status_change",
+      description: `Resumed from delayed to ${RESUME_STATUS_DESCRIPTIONS[newStatus]}`,
+      occurredAt: now,
+    })
+    .returning({ id: schema.trackingEvents.id });
+
+  // Same reasoning as createTrackingEvent's notification insert — no
+  // customerId means no one to notify (a walk-in booking), not an error.
+  if (shipment.customerId !== null) {
+    await db.insert(schema.notifications).values({
+      customerId: shipment.customerId,
+      shipmentId,
+      // A single-row insert always returns exactly one row.
+      trackingEventId: trackingEvent!.id,
+      newStatus,
+    });
+  }
+}
+
 export interface NotificationSummary {
   id: number;
   shipmentReferenceNumber: string;
