@@ -158,17 +158,14 @@ export const INDUSTRIES: ContentNavLink[] = [
 ];
 
 /**
- * Primary navigation: Services -> Industries -> Solutions -> Digital
- * Services -> Locations -> Company. Only Services and Industries carry
- * real dropdown content for this pass; Locations and Company route to
- * real pages too (Company's own 8 sub-pages included). Solutions and
- * Digital Services remain stub routes that 404 cleanly for now.
+ * Primary navigation: Services -> Industries -> Locations -> Company.
+ * Only Services and Industries carry real dropdown content for this pass;
+ * Locations and Company route to real pages too (Company's own 8 sub-pages
+ * included).
  */
 export const PRIMARY_NAV: PrimaryNavItem[] = [
   { label: "Services", href: "/services", items: SERVICES },
   { label: "Industries", href: "/industries", items: INDUSTRIES },
-  { label: "Solutions", href: "/solutions" },
-  { label: "Digital Services", href: "/digital-services" },
   { label: "Locations", href: "/locations" },
   { label: "Company", href: "/company" },
 ];

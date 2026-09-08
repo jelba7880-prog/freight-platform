@@ -112,7 +112,7 @@ Amended design: search-first as the primary interaction — country / city / pos
 
 Global Navigation & Information Architecture
 
-Primary navigation: Services → Industries → Solutions → Digital Services → Locations → Company
+Primary navigation: Services → Industries → Locations → Company
 
 The Company layer contains: About, Leadership, Sustainability, Corporate governance, Compliance, Careers, Investor information, Newsroom.
 
