@@ -175,12 +175,25 @@ export function ManifestStrip({
 
     function addRow() {
       const newRow = generateRow("entering");
+      let exitingId: string | undefined;
 
       setRows((prev) => {
-        const next = [newRow, ...prev];
-        return next.length > maxRows
-          ? next.map((row, i) => (i >= maxRows ? { ...row, phase: "exiting" as const } : row))
-          : next;
+        // Insertion is authoritative for row count, not the cleanup timer
+        // below: if a prior cycle's "exiting" row is still here because its
+        // own timer got throttled (e.g. a backgrounded tab), drop it here
+        // synchronously instead of letting it pile up with newer ones.
+        const settled = prev.filter((row) => row.phase !== "exiting");
+        const next = [newRow, ...settled];
+        if (next.length <= maxRows) return next;
+
+        // Overflow: the array holds one extra row (maxRows + 1) only for the
+        // duration of its fade-out transition, removed by id below — never
+        // by a time-based sweep, so a delayed timer can't let rows stack up.
+        const oldest = next[next.length - 1]!;
+        exitingId = oldest.id;
+        return next.map((row) =>
+          row.id === oldest.id ? { ...row, phase: "exiting" as const } : row,
+        );
       });
 
       // Double rAF: guarantees the "entering" (pre-transition) styles paint
@@ -194,11 +207,14 @@ export function ManifestStrip({
         });
       });
 
-      const cleanupId = browserSetTimeout(() => {
-        timeouts.delete(cleanupId);
-        setRows((prev) => prev.filter((row) => row.phase !== "exiting"));
-      }, TRANSITION_MS + 40);
-      timeouts.add(cleanupId);
+      if (exitingId !== undefined) {
+        const id = exitingId;
+        const cleanupId = browserSetTimeout(() => {
+          timeouts.delete(cleanupId);
+          setRows((prev) => prev.filter((row) => row.id !== id));
+        }, TRANSITION_MS + 40);
+        timeouts.add(cleanupId);
+      }
     }
 
     scheduleNext();
