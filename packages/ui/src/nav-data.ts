@@ -103,22 +103,6 @@ export const SERVICES: ContentNavLink[] = [
     ctaLabel: "Talk to a Cargo Insurance specialist",
     ctaHref: "/contact",
   },
-  {
-    slug: "ecommerce-logistics",
-    label: "E-commerce logistics",
-    href: "/services/ecommerce-logistics",
-    shortDescription: "Fulfilment and returns logistics built for high-volume online retail.",
-    ctaLabel: "Talk to an E-commerce Logistics specialist",
-    ctaHref: "/contact",
-  },
-  {
-    slug: "cold-chain-logistics",
-    label: "Cold-chain logistics",
-    href: "/services/cold-chain-logistics",
-    shortDescription: "Temperature-controlled transport and storage for sensitive, perishable cargo.",
-    ctaLabel: "Talk to a Cold-chain Logistics specialist",
-    ctaHref: "/contact",
-  },
 ];
 
 export const INDUSTRIES: ContentNavLink[] = [
