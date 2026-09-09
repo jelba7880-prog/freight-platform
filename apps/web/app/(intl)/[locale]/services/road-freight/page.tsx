@@ -4,7 +4,7 @@ import { localePath } from "@/lib/locale/config";
 import { getLocale } from "@/lib/locale/server";
 
 export const metadata: Metadata = {
-  title: "Road Freight | Freight Platform",
+  title: "Road Freight | Meridian Freight",
   description:
     "Full-truckload, part-load, and cross-border road transport across regions. Flexible capacity and door-to-door coverage for every shipment size.",
 };

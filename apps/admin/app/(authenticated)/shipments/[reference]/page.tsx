@@ -9,7 +9,7 @@ import { uploadDocument } from "./document-actions";
 import { DocumentsList } from "./DocumentsList";
 
 export const metadata: Metadata = {
-  title: "Shipment | Freight Platform Admin",
+  title: "Shipment | Meridian Freight Admin",
 };
 
 // The four statuses a delayed shipment can resume into — never "pending" or

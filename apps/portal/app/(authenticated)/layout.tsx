@@ -12,7 +12,7 @@ export default async function AuthenticatedLayout({ children }: { children: Reac
 
   return (
     <AppShell
-      brand="Freight Platform"
+      brand="Meridian Freight"
       navItems={[
         { label: "My shipments", href: "/shipments" },
         { label: "Notifications", href: "/notifications" },

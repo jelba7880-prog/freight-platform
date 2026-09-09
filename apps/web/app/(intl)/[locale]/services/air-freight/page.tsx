@@ -4,7 +4,7 @@ import { localePath } from "@/lib/locale/config";
 import { getLocale } from "@/lib/locale/server";
 
 export const metadata: Metadata = {
-  title: "Air Freight | Freight Platform",
+  title: "Air Freight | Meridian Freight",
   description:
     "Time-critical air cargo with express, standard, and charter options worldwide. Fast transit, global airport coverage, and dedicated handling for urgent shipments.",
 };

@@ -19,7 +19,7 @@ export interface ManifestStripProps {
   className?: string;
 }
 
-type Status = "in-transit" | "cleared";
+type Status = "in-transit" | "cleared" | "delivered" | "loading";
 type Phase = "entering" | "idle" | "exiting";
 
 interface ManifestRow {
@@ -72,8 +72,12 @@ function randomReference(): { reference: string; coordinateLabel: string } {
 }
 
 function randomStatus(): Status {
-  // Roughly 70/30 in-transit vs cleared.
-  return Math.random() < 0.7 ? "in-transit" : "cleared";
+  // Roughly 55/20/15/10 in-transit / cleared / delivered / loading.
+  const roll = Math.random();
+  if (roll < 0.55) return "in-transit";
+  if (roll < 0.75) return "cleared";
+  if (roll < 0.9) return "delivered";
+  return "loading";
 }
 
 function formatTimestamp(date: Date): string {
@@ -128,6 +132,13 @@ function usePrefersReducedMotion(): boolean {
 const statusStyles: Record<Status, { dot: string; text: string; label: string }> = {
   "in-transit": { dot: "bg-beacon", text: "text-beacon", label: "In transit" },
   cleared: { dot: "bg-cleared", text: "text-cleared", label: "Cleared" },
+  // Delivered reuses the cleared/teal token — it's the same "done" family
+  // as cleared, just a later milestone, not a distinct accent.
+  delivered: { dot: "bg-cleared", text: "text-cleared", label: "Delivered" },
+  // Loading has no natural home in the palette (ink/steel/paper/mist/
+  // beacon/cleared/danger) — it borrows the neutral muted token rather
+  // than introduce a new hue outside the design system.
+  loading: { dot: "bg-muted", text: "text-muted", label: "Loading" },
 };
 
 const rowPhaseStyles: Record<Phase, string> = {

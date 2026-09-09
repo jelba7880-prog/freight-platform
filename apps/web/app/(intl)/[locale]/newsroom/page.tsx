@@ -4,8 +4,8 @@ import { localePath } from "@/lib/locale/config";
 import { getLocale } from "@/lib/locale/server";
 
 export const metadata: Metadata = {
-  title: "Newsroom | Freight Platform",
-  description: "Press and media coverage of Freight Platform isn't compiled here yet — reach out directly.",
+  title: "Newsroom | Meridian Freight",
+  description: "Press and media coverage of Meridian Freight isn't compiled here yet — reach out directly.",
 };
 
 export default async function NewsroomPage() {
@@ -20,7 +20,7 @@ export default async function NewsroomPage() {
         type: "prose",
         heading: "Press inquiries",
         paragraphs: [
-          "If you're a journalist or media contact looking for information, comment, or an interview with Freight Platform, reach out through our contact form and let us know your deadline. A member of our team will follow up directly.",
+          "If you're a journalist or media contact looking for information, comment, or an interview with Meridian Freight, reach out through our contact form and let us know your deadline. A member of our team will follow up directly.",
         ],
       },
     ],

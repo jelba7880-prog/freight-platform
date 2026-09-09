@@ -61,10 +61,10 @@ export function Footer({ className, ref, resolveHref = (href) => href, ...props 
 
         <div className="flex flex-col gap-tight border-t border-border pt-comfortable sm:flex-row sm:items-center sm:justify-between">
           <span className="font-display text-sm font-semibold text-foreground">
-            Freight Platform
+            Meridian Freight
           </span>
           <p className="font-mono text-xs text-muted">
-            &copy; {new Date().getFullYear()} Freight Platform. All rights reserved.
+            &copy; {new Date().getFullYear()} Meridian Freight. All rights reserved.
           </p>
         </div>
       </div>

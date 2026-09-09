@@ -8,7 +8,7 @@ import { EVENT_TYPE_LABELS, STATUS_BADGE_VARIANTS, STATUS_LABELS, formatDate } f
 import { DocumentsList } from "./DocumentsList";
 
 export const metadata: Metadata = {
-  title: "Shipment | Freight Platform Portal",
+  title: "Shipment | Meridian Freight Portal",
 };
 
 export default async function ShipmentDetailPage({

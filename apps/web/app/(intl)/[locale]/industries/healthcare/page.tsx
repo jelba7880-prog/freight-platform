@@ -4,7 +4,7 @@ import { localePath } from "@/lib/locale/config";
 import { getLocale } from "@/lib/locale/server";
 
 export const metadata: Metadata = {
-  title: "Healthcare | Freight Platform",
+  title: "Healthcare | Meridian Freight",
   description:
     "Compliant, temperature-controlled logistics for pharma and medical devices. Specialized packaging, documentation, and chain-of-custody handling built for regulated shipments.",
 };

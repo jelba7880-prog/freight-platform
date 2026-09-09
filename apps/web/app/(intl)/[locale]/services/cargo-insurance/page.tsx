@@ -4,7 +4,7 @@ import { localePath } from "@/lib/locale/config";
 import { getLocale } from "@/lib/locale/server";
 
 export const metadata: Metadata = {
-  title: "Cargo Insurance | Freight Platform",
+  title: "Cargo Insurance | Meridian Freight",
   description:
     "Protect shipments in transit with coverage tailored to cargo value and risk. Coverage options that give you peace of mind, alongside every mode of transport we offer.",
 };

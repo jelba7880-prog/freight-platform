@@ -6,7 +6,7 @@ import { LocationCard } from "@/components/LocationCard";
 import { getLocale } from "@/lib/locale/server";
 
 export const metadata: Metadata = {
-  title: "Locations | Freight Platform",
+  title: "Locations | Meridian Freight",
   description:
     "Find our offices by country, city, postcode, or service — with contact details and services offered at each location.",
 };

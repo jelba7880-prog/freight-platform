@@ -4,7 +4,7 @@ import type { ShipmentWithEvents } from "@freight/database";
 import { getShipmentWithEvents } from "@freight/database";
 
 export const metadata: Metadata = {
-  title: "Track shipment | Freight Platform",
+  title: "Track shipment | Meridian Freight",
   description: "Look up a shipment's current status and tracking history by reference number.",
 };
 

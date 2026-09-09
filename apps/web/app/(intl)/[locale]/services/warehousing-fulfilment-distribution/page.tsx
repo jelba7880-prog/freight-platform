@@ -4,7 +4,7 @@ import { localePath } from "@/lib/locale/config";
 import { getLocale } from "@/lib/locale/server";
 
 export const metadata: Metadata = {
-  title: "Warehousing, Fulfilment and Distribution | Freight Platform",
+  title: "Warehousing, Fulfilment and Distribution | Meridian Freight",
   description:
     "Storage, pick-and-pack, and last-mile distribution from a global facility network. Scalable space and fulfilment operations built around your inventory.",
 };

@@ -45,6 +45,13 @@ export interface ContentNavLink extends NavLink {
    * destination).
    */
   ctaHref?: string;
+  /**
+   * Short capability chips shown on the industries index page's detail rows
+   * (e.g. "JIT / JIS", "Milk-run inbound"). Optional and currently populated
+   * for INDUSTRIES only — SERVICES entries don't render a row layout that
+   * uses them yet.
+   */
+  tags?: string[];
 }
 
 export const SERVICES: ContentNavLink[] = [
@@ -122,6 +129,7 @@ export const INDUSTRIES: ContentNavLink[] = [
     shortDescription: "Just-in-time and just-in-sequence logistics for automotive supply chains.",
     ctaLabel: "Talk to an Automotive and Mobility specialist",
     ctaHref: "/contact",
+    tags: ["JIT / JIS", "Milk-run inbound", "Returnable packaging"],
   },
   {
     slug: "consumer-goods",
@@ -130,6 +138,7 @@ export const INDUSTRIES: ContentNavLink[] = [
     shortDescription: "Reliable, scalable logistics for fast-moving consumer goods brands.",
     ctaLabel: "Talk to a Consumer Goods specialist",
     ctaHref: "/contact",
+    tags: ["Peak capacity", "Retail compliance", "Multi-channel"],
   },
   {
     slug: "healthcare",
@@ -138,6 +147,7 @@ export const INDUSTRIES: ContentNavLink[] = [
     shortDescription: "Compliant, temperature-controlled logistics for pharma and medical devices.",
     ctaLabel: "Talk to a Healthcare specialist",
     ctaHref: "/contact",
+    tags: ["GDP certified", "2–8 °C validated", "Excursion reporting"],
   },
   {
     slug: "technology-semiconductors",
@@ -146,6 +156,7 @@ export const INDUSTRIES: ContentNavLink[] = [
     shortDescription: "Secure, time-critical logistics for high-value tech and semiconductor cargo.",
     ctaLabel: "Talk to a Technology and Semiconductors specialist",
     ctaHref: "/contact",
+    tags: ["Chain of custody", "ESD handling", "Charter on demand"],
   },
   {
     slug: "industrial",
@@ -154,6 +165,7 @@ export const INDUSTRIES: ContentNavLink[] = [
     shortDescription: "Heavy machinery and industrial equipment logistics, door to door.",
     ctaLabel: "Talk to an Industrial specialist",
     ctaHref: "/contact",
+    tags: ["Out-of-gauge", "Breakbulk", "Lift planning"],
   },
 ];
 

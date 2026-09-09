@@ -4,7 +4,7 @@ import { localePath } from "@/lib/locale/config";
 import { getLocale } from "@/lib/locale/server";
 
 export const metadata: Metadata = {
-  title: "E-commerce Logistics | Freight Platform",
+  title: "E-commerce Logistics | Meridian Freight",
   description:
     "Fulfilment and returns logistics built for high-volume online retail. Order accuracy and fast turnaround from a network built for e-commerce demand.",
 };

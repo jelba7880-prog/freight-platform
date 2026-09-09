@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { CompanyPageTemplate, type CompanyPageContent } from "@freight/ui";
 
 export const metadata: Metadata = {
-  title: "Leadership | Freight Platform",
+  title: "Leadership | Meridian Freight",
   description:
-    "The executive team leading Freight Platform's global freight forwarding and logistics operations.",
+    "The executive team leading Meridian Freight's global freight forwarding and logistics operations.",
 };
 
 export default function LeadershipPage() {
@@ -20,7 +20,7 @@ export default function LeadershipPage() {
           {
             name: "Elena Marchetti",
             title: "Chief Executive Officer",
-            bio: "Two decades in ocean carrier commercial operations before founding Freight Platform to fix the handoffs between forwarders, carriers, and customs brokers.",
+            bio: "Two decades in ocean carrier commercial operations before founding Meridian Freight to fix the handoffs between forwarders, carriers, and customs brokers.",
           },
           {
             name: "Kwame Asante",
@@ -35,7 +35,7 @@ export default function LeadershipPage() {
           {
             name: "Lars Eriksson",
             title: "Chief Technology Officer",
-            bio: "Spent a decade building tracking and booking systems for supply-chain software vendors before taking on Freight Platform's own technology stack.",
+            bio: "Spent a decade building tracking and booking systems for supply-chain software vendors before taking on Meridian Freight's own technology stack.",
           },
           {
             name: "Naomi Cohen-Reyes",

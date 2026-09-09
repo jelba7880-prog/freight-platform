@@ -6,7 +6,7 @@ import { auth } from "@/auth";
 import { NotificationsList } from "./NotificationsList";
 
 export const metadata: Metadata = {
-  title: "Notifications | Freight Platform Portal",
+  title: "Notifications | Meridian Freight Portal",
 };
 
 export default async function NotificationsPage() {

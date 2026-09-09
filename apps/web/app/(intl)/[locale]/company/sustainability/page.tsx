@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { CompanyPageTemplate, type CompanyPageContent } from "@freight/ui";
 
 export const metadata: Metadata = {
-  title: "Sustainability | Freight Platform",
+  title: "Sustainability | Meridian Freight",
   description:
-    "How Freight Platform approaches emissions reporting, low-carbon transport options, and sustainable packaging across our freight network.",
+    "How Meridian Freight approaches emissions reporting, low-carbon transport options, and sustainable packaging across our freight network.",
 };
 
 export default function SustainabilityPage() {

@@ -5,7 +5,7 @@ import { listContactInquiries } from "@freight/database";
 import { ContactInquiriesTable } from "./ContactInquiriesTable";
 
 export const metadata: Metadata = {
-  title: "Contact inquiries | Freight Platform Admin",
+  title: "Contact inquiries | Meridian Freight Admin",
 };
 
 export default async function ContactInquiriesPage() {
