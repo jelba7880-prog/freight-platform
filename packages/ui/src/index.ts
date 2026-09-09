@@ -44,6 +44,9 @@ export type { TableProps, Column, ColumnAlign, SortState, SortDirection } from "
 export { ManifestStrip } from "./ManifestStrip";
 export type { ManifestStripProps } from "./ManifestStrip";
 
+export { LaneTicker } from "./LaneTicker";
+export type { LaneTickerProps } from "./LaneTicker";
+
 export { StatBand } from "./StatBand";
 export type { StatBandProps, Stat } from "./StatBand";
 

@@ -5,6 +5,7 @@ import {
   DarkCtaBand,
   DEFAULT_PRIMARY_ACTION,
   INDUSTRIES,
+  LaneTicker,
   ManifestStrip,
   PORTAL_LINK,
   SERVICES,
@@ -25,6 +26,17 @@ const STATS = [
   { value: "2.4M", label: "TEU moved annually" },
   { value: "96.2%", label: "On-time lane performance" },
   { value: "24/7", label: "Named specialist per account" },
+];
+
+const LANES = [
+  "Shanghai → Rotterdam",
+  "Ho Chi Minh → Los Angeles",
+  "Hamburg → Santos",
+  "Chicago → Guadalajara",
+  "Jebel Ali → Mombasa",
+  "Busan → Long Beach",
+  "Antwerp → Montreal",
+  "Singapore → Sydney",
 ];
 
 const CERTIFICATIONS = [
@@ -87,6 +99,8 @@ export default async function Page() {
 
           <ManifestStrip />
         </div>
+
+        <LaneTicker lanes={LANES} />
       </section>
 
       <StatBand stats={STATS} />
@@ -110,32 +124,30 @@ export default async function Page() {
             </a>
           </div>
 
-          <div className="flex flex-col">
+          <div className="grid grid-cols-1 gap-cozy sm:grid-cols-2 lg:grid-cols-3">
             {SERVICES.map((service, index) => (
-              <a
-                key={service.slug}
-                href={resolveHref(service.href)}
-                className={`group grid grid-cols-[28px_36px_1fr_22px] items-start gap-cozy border-t border-border py-comfortable transition-colors duration-base ${
-                  index === 0
-                    ? "-mx-cozy rounded-md border-t-transparent bg-beacon-soft px-cozy"
-                    : ""
-                }`}
-              >
-                <span className="pt-tight font-mono text-xs text-muted">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-md border border-border bg-background font-mono text-xs font-medium text-foreground">
-                  {initials(service.label)}
-                </span>
-                <span className="flex flex-col gap-tight">
+              <a key={service.slug} href={resolveHref(service.href)} className="block h-full">
+                <div
+                  className={`flex h-full flex-col gap-cozy rounded-md border p-comfortable transition-colors duration-base ${
+                    index === 0
+                      ? "border-beacon/30 bg-beacon-soft"
+                      : "border-border bg-surface hover:border-mist"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="flex size-9 items-center justify-center rounded-md border border-border bg-background font-mono text-xs font-medium text-foreground">
+                      {initials(service.label)}
+                    </span>
+                    <span className="font-mono text-xs text-muted">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                  </div>
                   <span className="font-display text-lg font-semibold text-foreground">
                     {service.label}
                   </span>
-                  <span className="max-w-md text-sm text-muted">{service.shortDescription}</span>
-                </span>
-                <span className="pt-tight font-mono text-sm text-beacon opacity-0 transition-opacity duration-base group-hover:opacity-100">
-                  →
-                </span>
+                  <span className="text-sm text-muted">{service.shortDescription}</span>
+                  <span className="mt-auto font-mono text-sm text-beacon">→</span>
+                </div>
               </a>
             ))}
           </div>
