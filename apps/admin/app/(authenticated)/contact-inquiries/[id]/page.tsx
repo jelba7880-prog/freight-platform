@@ -7,7 +7,7 @@ import { formatDate } from "@/lib/shipment-labels";
 import { MarkHandledButton } from "./MarkHandledButton";
 
 export const metadata: Metadata = {
-  title: "Contact inquiry | Freight Platform Admin",
+  title: "Contact inquiry | Meridian Freight Admin",
 };
 
 export default async function ContactInquiryDetailPage({

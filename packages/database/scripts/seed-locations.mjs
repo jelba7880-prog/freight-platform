@@ -47,7 +47,7 @@ const OFFICES = [
     country: "Netherlands",
     postcode: "3087 BM",
     phone: "+31 10 405 1200",
-    services: ["sea-freight", "road-freight", "cold-chain-logistics", "cargo-insurance"],
+    services: ["sea-freight", "road-freight", "cargo-insurance"],
   },
   {
     name: "Hamburg Speicherstadt Office",
@@ -74,7 +74,7 @@ const OFFICES = [
     country: "United States",
     postcode: "90745",
     phone: "+1 310 604 1800",
-    services: ["sea-freight", "ecommerce-logistics", "warehousing-fulfilment-distribution"],
+    services: ["sea-freight", "warehousing-fulfilment-distribution"],
   },
   {
     name: "New York Metro Office",
@@ -83,7 +83,7 @@ const OFFICES = [
     country: "United States",
     postcode: "07094",
     phone: "+1 201 553 6600",
-    services: ["air-freight", "ecommerce-logistics"],
+    services: ["air-freight"],
   },
   {
     name: "Toronto Pearson Office",
@@ -128,7 +128,7 @@ const OFFICES = [
     country: "Australia",
     postcode: "2036",
     phone: "+61 2 9666 3400",
-    services: ["sea-freight", "air-freight", "cold-chain-logistics"],
+    services: ["sea-freight", "air-freight"],
   },
 ];
 

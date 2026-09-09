@@ -5,7 +5,7 @@ import { createShipmentAction } from "./actions";
 import { CustomerPicker } from "./CustomerPicker";
 
 export const metadata: Metadata = {
-  title: "New shipment | Freight Platform Admin",
+  title: "New shipment | Meridian Freight Admin",
 };
 
 export default async function NewShipmentPage() {

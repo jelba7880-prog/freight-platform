@@ -5,7 +5,7 @@ import { Swatch } from "./_components/Swatch";
 import { TableDemo } from "./_components/TableDemo";
 
 export const metadata = {
-  title: "Style Guide — Freight Platform",
+  title: "Style Guide — Meridian Freight",
 };
 
 const baseSwatches = [

@@ -6,7 +6,7 @@ import { getCustomerById, listShipmentsForCustomer } from "@freight/database";
 import { ShipmentsTable } from "../../shipments/ShipmentsTable";
 
 export const metadata: Metadata = {
-  title: "Customer | Freight Platform Admin",
+  title: "Customer | Meridian Freight Admin",
 };
 
 export default async function CustomerDetailPage({

@@ -4,9 +4,9 @@ import { localePath } from "@/lib/locale/config";
 import { getLocale } from "@/lib/locale/server";
 
 export const metadata: Metadata = {
-  title: "Company | Freight Platform",
+  title: "Company | Meridian Freight",
   description:
-    "About Freight Platform, our leadership team, sustainability commitments, governance, compliance, careers, investor information, and newsroom.",
+    "About Meridian Freight, our leadership team, sustainability commitments, governance, compliance, careers, investor information, and newsroom.",
 };
 
 export default async function CompanyPage() {

@@ -6,7 +6,7 @@ import { auth } from "@/auth";
 import { ShipmentsTable } from "./ShipmentsTable";
 
 export const metadata: Metadata = {
-  title: "My shipments | Freight Platform Portal",
+  title: "My shipments | Meridian Freight Portal",
 };
 
 export default async function ShipmentsPage() {

@@ -532,7 +532,7 @@ export function Header({
       {/* Main bar: logo, primary nav, contextual CTA. */}
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-cozy px-comfortable py-snug">
         <a href={resolveHref("/")} className="font-display text-lg font-semibold text-foreground">
-          Freight Platform
+          Meridian Freight
         </a>
 
         <nav aria-label="Primary" className="hidden items-center gap-tight md:flex">

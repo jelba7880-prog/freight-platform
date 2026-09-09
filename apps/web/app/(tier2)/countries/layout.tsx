@@ -5,7 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import "@/app/globals.css";
 
 export const metadata: Metadata = {
-  title: "Freight Platform",
+  title: "Meridian Freight",
   description: "Public marketing site.",
 };
 

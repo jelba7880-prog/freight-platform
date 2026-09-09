@@ -102,9 +102,10 @@
   --shadow-lg: 0 16px 40px rgb(26 23 20 / 0.16), 0 2px 6px rgb(26 23 20 / 0.08);
 
   /* === Motion =============================================================
-     Restrained by design: a short, deliberate transition on hover/focus/
-     press only. No ambient or scroll-triggered motion tokens exist here —
-     that's a deliberate scoping choice for this pass, not an oversight. */
+     Restrained by design: mostly a short, deliberate transition on
+     hover/focus/press only. The one deliberate ambient exception is
+     animate-marquee below (a homepage lane ticker), which is pure CSS
+     transform and needs no JS reduced-motion guard — see its own comment. */
   --ease-standard: cubic-bezier(0.2, 0, 0, 1); /* precise settle, no overshoot */
   --duration-fast: 120ms; /* press feedback */
   --duration-base: 180ms; /* hover / focus-ring transitions */
@@ -122,6 +123,14 @@
      JS prefers-reduced-motion check and fall back to a flat --color-border
      fill, not just rely on reset.css's blanket duration override. */
   --animate-skeleton-shimmer: skeleton-shimmer 1.6s ease-in-out infinite;
+
+  /* Continuous horizontal scroll for a lane ticker (e.g. LaneTicker). Unlike
+     pulse-dot/skeleton-shimmer above, this has no JS-driven state churn to
+     worry about — it's a plain CSS transform loop — so reset.css's blanket
+     `@media (prefers-reduced-motion: reduce)` override (which zeroes
+     animation-duration/iteration-count globally) is sufficient on its own;
+     no extra JS guard needed. */
+  --animate-marquee: marquee 46s linear infinite;
 }
 
 @keyframes pulse-dot {
@@ -142,6 +151,18 @@
   }
   100% {
     background-position: -200% 0;
+  }
+}
+
+/* Translates by exactly -50% — the track this drives renders its content
+   twice back to back, so -50% lands precisely at the start of the second
+   copy and the loop reads as seamless. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }
 

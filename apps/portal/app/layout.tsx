@@ -4,7 +4,7 @@ import { fontVariables } from "@freight/ui/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Freight Platform — Portal",
+  title: "Meridian Freight — Portal",
   description: "Authenticated customer portal.",
 };
 

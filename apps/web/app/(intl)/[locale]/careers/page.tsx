@@ -4,8 +4,8 @@ import { localePath } from "@/lib/locale/config";
 import { getLocale } from "@/lib/locale/server";
 
 export const metadata: Metadata = {
-  title: "Careers | Freight Platform",
-  description: "Open roles at Freight Platform aren't listed here yet — reach out directly.",
+  title: "Careers | Meridian Freight",
+  description: "Open roles at Meridian Freight aren't listed here yet — reach out directly.",
 };
 
 export default async function CareersPage() {
@@ -20,7 +20,7 @@ export default async function CareersPage() {
         type: "prose",
         heading: "In the meantime",
         paragraphs: [
-          "If you're interested in working at Freight Platform, get in touch through our contact form with a short note about your background and the kind of role you're looking for. We'll follow up directly rather than through an automated applicant system — there isn't one yet.",
+          "If you're interested in working at Meridian Freight, get in touch through our contact form with a short note about your background and the kind of role you're looking for. We'll follow up directly rather than through an automated applicant system — there isn't one yet.",
         ],
       },
     ],

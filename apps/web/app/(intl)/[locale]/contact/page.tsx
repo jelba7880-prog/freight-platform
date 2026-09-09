@@ -4,7 +4,7 @@ import { Card } from "@freight/ui";
 import { ContactForm } from "./ContactForm";
 
 export const metadata: Metadata = {
-  title: "Contact us | Freight Platform",
+  title: "Contact us | Meridian Freight",
   description: "Get in touch with our team about a shipment, quote, or general enquiry.",
 };
 

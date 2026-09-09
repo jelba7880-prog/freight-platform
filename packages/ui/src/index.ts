@@ -44,6 +44,21 @@ export type { TableProps, Column, ColumnAlign, SortState, SortDirection } from "
 export { ManifestStrip } from "./ManifestStrip";
 export type { ManifestStripProps } from "./ManifestStrip";
 
+export { LaneTicker } from "./LaneTicker";
+export type { LaneTickerProps } from "./LaneTicker";
+
+export { StatBand } from "./StatBand";
+export type { StatBandProps, Stat } from "./StatBand";
+
+export { TestimonialBlock } from "./TestimonialBlock";
+export type { TestimonialBlockProps } from "./TestimonialBlock";
+
+export { CertificationsGrid } from "./CertificationsGrid";
+export type { CertificationsGridProps, Certification } from "./CertificationsGrid";
+
+export { DarkCtaBand } from "./DarkCtaBand";
+export type { DarkCtaBandProps } from "./DarkCtaBand";
+
 export { Header } from "./Header";
 export type { HeaderProps, PrimaryAction } from "./Header";
 

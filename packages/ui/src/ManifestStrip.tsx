@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cx } from "./cx";
+import { PORTAL_LINK } from "./nav-data";
 
 /**
  * A small stack of rows styled like a live shipment-tracking feed —
@@ -19,7 +20,7 @@ export interface ManifestStripProps {
   className?: string;
 }
 
-type Status = "in-transit" | "cleared";
+type Status = "in-transit" | "cleared" | "delivered" | "loading" | "booked" | "customs-hold";
 type Phase = "entering" | "idle" | "exiting";
 
 interface ManifestRow {
@@ -61,6 +62,16 @@ const TRANSITION_MS = 260; // within the requested ~200-300ms range
 const MIN_AGE_MS = 90_000; // 1.5 minutes
 const MAX_AGE_MS = 6 * 60 * 60 * 1000; // 6 hours
 
+/**
+ * Static placeholder, matching the design reference exactly — not derived
+ * from anything. Whether this should instead be wired to a real shipments
+ * count is an open question, not decided here: this component's rows are
+ * already explicitly simulated/decorative (see the file doc comment above),
+ * so a static number is consistent with that, but a real count is a
+ * reasonable alternative if this ever needs to feel less like a mockup.
+ */
+const ACTIVE_BOOKINGS_COUNT = "12,480";
+
 function randomReference(): { reference: string; coordinateLabel: string } {
   // Non-null: index is always < LOCATIONS.length, a fixed non-empty array.
   const location = LOCATIONS[Math.floor(Math.random() * LOCATIONS.length)]!;
@@ -72,8 +83,15 @@ function randomReference(): { reference: string; coordinateLabel: string } {
 }
 
 function randomStatus(): Status {
-  // Roughly 70/30 in-transit vs cleared.
-  return Math.random() < 0.7 ? "in-transit" : "cleared";
+  // Roughly 45/15/12/10/10/8: in-transit / cleared / delivered / loading /
+  // booked / customs-hold.
+  const roll = Math.random();
+  if (roll < 0.45) return "in-transit";
+  if (roll < 0.6) return "cleared";
+  if (roll < 0.72) return "delivered";
+  if (roll < 0.82) return "loading";
+  if (roll < 0.92) return "booked";
+  return "customs-hold";
 }
 
 function formatTimestamp(date: Date): string {
@@ -125,9 +143,22 @@ function usePrefersReducedMotion(): boolean {
   return reduced;
 }
 
-const statusStyles: Record<Status, { dot: string; text: string; label: string }> = {
-  "in-transit": { dot: "bg-beacon", text: "text-beacon", label: "In transit" },
-  cleared: { dot: "bg-cleared", text: "text-cleared", label: "Cleared" },
+const statusStyles: Record<Status, { dot: string; text: string; label: string; pulses: boolean }> = {
+  "in-transit": { dot: "bg-beacon", text: "text-beacon", label: "In transit", pulses: true },
+  cleared: { dot: "bg-cleared", text: "text-cleared", label: "Cleared", pulses: true },
+  // Delivered reuses the cleared/teal token — it's the same "done" family
+  // as cleared, just a later milestone, not a distinct accent.
+  delivered: { dot: "bg-cleared", text: "text-cleared", label: "Delivered", pulses: true },
+  // Loading has no natural home in the palette (ink/steel/paper/mist/
+  // beacon/cleared/danger) — it borrows the neutral muted token rather
+  // than introduce a new hue outside the design system.
+  loading: { dot: "bg-muted", text: "text-muted", label: "Loading", pulses: true },
+  // Booked hasn't started moving yet, so its dot sits static — the pulse is
+  // meant to read as "in motion," and a booked shipment isn't.
+  booked: { dot: "bg-muted", text: "text-muted", label: "Booked", pulses: false },
+  // The one status with a real exception state — reuses the existing
+  // danger token rather than a new hue.
+  "customs-hold": { dot: "bg-danger", text: "text-danger", label: "Customs hold", pulses: true },
 };
 
 const rowPhaseStyles: Record<Phase, string> = {
@@ -227,6 +258,24 @@ export function ManifestStrip({
 
   return (
     <div className={cx("rounded-lg border border-border bg-surface shadow-sm", className)}>
+      <div className="flex items-center justify-between gap-cozy border-b border-border px-snug py-snug">
+        <div className="flex items-center gap-tight">
+          <span
+            aria-hidden="true"
+            className={cx(
+              "size-1.5 shrink-0 rounded-full bg-beacon",
+              !reducedMotion && "animate-pulse-dot",
+            )}
+          />
+          <span className="font-mono text-xs font-semibold uppercase tracking-wide text-foreground">
+            Live manifest
+          </span>
+        </div>
+        <span className="font-mono text-xs uppercase tracking-wide text-muted">
+          Decorative preview data
+        </span>
+      </div>
+
       <span className="sr-only">Live shipment tracking feed (decorative preview data)</span>
       <div aria-hidden="true" className="divide-y divide-border">
         {rows.map((row) => {
@@ -247,7 +296,7 @@ export function ManifestStrip({
                   className={cx(
                     "size-1.5 shrink-0 rounded-full",
                     status.dot,
-                    !reducedMotion && "animate-pulse-dot",
+                    !reducedMotion && status.pulses && "animate-pulse-dot",
                   )}
                 />
                 <span className={cx("font-sans text-xs font-medium whitespace-nowrap", status.text)}>
@@ -264,6 +313,18 @@ export function ManifestStrip({
             </div>
           );
         })}
+      </div>
+
+      <div className="flex items-center justify-between gap-cozy border-t border-border px-snug py-snug">
+        <span className="font-mono text-xs uppercase tracking-wide text-muted">
+          {ACTIVE_BOOKINGS_COUNT} active bookings
+        </span>
+        <a
+          href={PORTAL_LINK.href}
+          className="font-mono text-xs uppercase tracking-wide text-muted transition-colors duration-base hover:text-beacon"
+        >
+          Open portal ↗
+        </a>
       </div>
     </div>
   );

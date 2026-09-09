@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { CompanyPageTemplate, type CompanyPageContent } from "@freight/ui";
 
 export const metadata: Metadata = {
-  title: "Corporate governance | Freight Platform",
+  title: "Corporate governance | Meridian Freight",
   description:
-    "How Freight Platform's board and executive leadership oversee risk, audit, and accountability across the business.",
+    "How Meridian Freight's board and executive leadership oversee risk, audit, and accountability across the business.",
 };
 
 export default function GovernancePage() {

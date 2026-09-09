@@ -4,7 +4,7 @@ import { localePath } from "@/lib/locale/config";
 import { getLocale } from "@/lib/locale/server";
 
 export const metadata: Metadata = {
-  title: "Customs Clearance | Freight Platform",
+  title: "Customs Clearance | Meridian Freight",
   description:
     "Import and export clearance handled by specialists who know local regulations. Documentation coordination that keeps your shipment moving through customs.",
 };

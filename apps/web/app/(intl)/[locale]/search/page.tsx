@@ -8,7 +8,7 @@ import { localePath } from "@/lib/locale/config";
 import { getLocale } from "@/lib/locale/server";
 
 export const metadata: Metadata = {
-  title: "Search | Freight Platform",
+  title: "Search | Meridian Freight",
   description: "Search services, industries, and locations across the site.",
 };
 

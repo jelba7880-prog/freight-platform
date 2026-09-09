@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { CompanyPageTemplate, type CompanyPageContent } from "@freight/ui";
 
 export const metadata: Metadata = {
-  title: "Compliance | Freight Platform",
+  title: "Compliance | Meridian Freight",
   description:
-    "Freight Platform's approach to trade compliance, sanctions screening, data protection, and ethical business conduct.",
+    "Meridian Freight's approach to trade compliance, sanctions screening, data protection, and ethical business conduct.",
 };
 
 export default function CompliancePage() {

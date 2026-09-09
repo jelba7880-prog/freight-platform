@@ -2,16 +2,16 @@ import type { Metadata } from "next";
 import { CompanyPageTemplate, type CompanyPageContent } from "@freight/ui";
 
 export const metadata: Metadata = {
-  title: "About | Freight Platform",
+  title: "About | Meridian Freight",
   description:
-    "Freight Platform connects shippers to sea, air, and road capacity across every major trade lane, with one accountable team behind every shipment.",
+    "Meridian Freight connects shippers to sea, air, and road capacity across every major trade lane, with one accountable team behind every shipment.",
 };
 
 export default function AboutPage() {
   const content: CompanyPageContent = {
     headline: "Global freight forwarding, run by people who've moved cargo for a living.",
     intro:
-      "Freight Platform was founded in 2011 on a simple frustration: shippers were stitching together carriers, brokers, and spreadsheets to move a single container, and nobody owned the outcome end to end. We built a single platform — and a single accountable team — around every shipment instead.",
+      "Meridian Freight was founded in 2011 on a simple frustration: shippers were stitching together carriers, brokers, and spreadsheets to move a single container, and nobody owned the outcome end to end. We built a single platform — and a single accountable team — around every shipment instead.",
     sections: [
       {
         type: "prose",
