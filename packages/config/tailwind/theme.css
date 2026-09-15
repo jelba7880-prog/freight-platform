@@ -103,9 +103,10 @@
 
   /* === Motion =============================================================
      Restrained by design: mostly a short, deliberate transition on
-     hover/focus/press only. The one deliberate ambient exception is
-     animate-marquee below (a homepage lane ticker), which is pure CSS
-     transform and needs no JS reduced-motion guard — see its own comment. */
+     hover/focus/press only. The one deliberate ambient exception is the
+     `marquee-scroll` keyframes / `.lane-ticker-track` rule below (a
+     homepage lane ticker) — see their own comments further down this
+     file for why they live outside this @theme block. */
   --ease-standard: cubic-bezier(0.2, 0, 0, 1); /* precise settle, no overshoot */
   --duration-fast: 120ms; /* press feedback */
   --duration-base: 180ms; /* hover / focus-ring transitions */
@@ -123,14 +124,6 @@
      JS prefers-reduced-motion check and fall back to a flat --color-border
      fill, not just rely on reset.css's blanket duration override. */
   --animate-skeleton-shimmer: skeleton-shimmer 1.6s ease-in-out infinite;
-
-  /* Continuous horizontal scroll for a lane ticker (e.g. LaneTicker). Unlike
-     pulse-dot/skeleton-shimmer above, this has no JS-driven state churn to
-     worry about — it's a plain CSS transform loop — so reset.css's blanket
-     `@media (prefers-reduced-motion: reduce)` override (which zeroes
-     animation-duration/iteration-count globally) is sufficient on its own;
-     no extra JS guard needed. */
-  --animate-marquee: marquee 46s linear infinite;
 }
 
 @keyframes pulse-dot {
@@ -156,13 +149,37 @@
 
 /* Translates by exactly -50% — the track this drives renders its content
    twice back to back, so -50% lands precisely at the start of the second
-   copy and the loop reads as seamless. */
-@keyframes marquee {
+   copy and the loop reads as seamless. Same shape as the marquee this
+   replaces; only the driver changed, from a fixed-duration timer to
+   scroll position (see `.lane-ticker-track` below). */
+@keyframes marquee-scroll {
   from {
     transform: translateX(0);
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+/* Binds LaneTicker's translation to document scroll position instead of a
+   timer, via `animation-timeline: scroll(root)`. That property has no
+   Firefox/Safari support today, so it's gated by @supports as well as the
+   usual prefers-reduced-motion check — reset.css's blanket
+   `@media (prefers-reduced-motion: reduce)` override only zeroes
+   time-based animation-duration, which does nothing for a scroll-bound
+   animation, so it can't be relied on alone here the way pulse-dot/
+   skeleton-shimmer above do. An unsupported browser or a
+   reduced-motion visitor gets the plain static track (no animation rule
+   ever matches) rather than a frozen or broken one.
+   A plain CSS class rather than a Tailwind `@utility`: `@utility` entries
+   are expected at the stylesheet's top level and don't work nested inside
+   @media/@supports. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .lane-ticker-track {
+      animation: marquee-scroll linear;
+      animation-timeline: scroll(root);
+    }
   }
 }
 

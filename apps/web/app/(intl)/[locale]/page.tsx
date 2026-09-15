@@ -124,31 +124,45 @@ export default async function Page() {
             </a>
           </div>
 
-          <div className="grid grid-cols-1 gap-cozy sm:grid-cols-2 lg:grid-cols-3">
+          {/* Wallet Stack: each card is position:sticky with an increasing
+              `top`, so later cards overlap and cover earlier ones as the
+              section scrolls. A single column, not a responsive grid — the
+              stacking effect only reads correctly with one card per row.
+              `top`/`zIndex` are computed per index, so they have to be
+              inline style rather than a Tailwind class: JIT needs literal
+              class strings at build time (see ManifestStrip.tsx's
+              `duration-[260ms]` comment for the same constraint). */}
+          <div className="flex flex-col gap-cozy">
             {SERVICES.map((service, index) => (
-              <a key={service.slug} href={resolveHref(service.href)} className="block h-full">
-                <div
-                  className={`flex h-full flex-col gap-cozy rounded-md border p-comfortable transition-colors duration-base ${
-                    index === 0
-                      ? "border-beacon/30 bg-beacon-soft"
-                      : "border-border bg-surface hover:border-mist"
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="flex size-9 items-center justify-center rounded-md border border-border bg-background font-mono text-xs font-medium text-foreground">
-                      {initials(service.label)}
-                    </span>
-                    <span className="font-mono text-xs text-muted">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-                  <span className="font-display text-lg font-semibold text-foreground">
-                    {service.label}
+              <div
+                key={service.slug}
+                className={`sticky flex flex-col gap-cozy rounded-md border p-comfortable transition-colors duration-base ${
+                  index === 0
+                    ? "border-beacon/30 bg-beacon-soft"
+                    : "border-border bg-surface hover:border-mist"
+                }`}
+                style={{ top: `calc(10vh + ${index * 40}px)`, zIndex: index + 1 }}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="flex size-9 items-center justify-center rounded-md border border-border bg-background font-mono text-xs font-medium text-foreground">
+                    {initials(service.label)}
                   </span>
-                  <span className="text-sm text-muted">{service.shortDescription}</span>
-                  <span className="mt-auto font-mono text-sm text-beacon">→</span>
+                  <span className="font-mono text-xs text-muted">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
                 </div>
-              </a>
+                <span className="font-display text-lg font-semibold text-foreground">
+                  {service.label}
+                </span>
+                <span className="text-sm text-muted">{service.shortDescription}</span>
+                <a
+                  href={resolveHref(service.href)}
+                  className="relative mt-auto inline-flex w-fit items-center gap-tight font-mono text-sm text-beacon after:absolute after:inset-0 after:content-['']"
+                >
+                  View service
+                  <span aria-hidden="true">→</span>
+                </a>
+              </div>
             ))}
           </div>
         </section>
@@ -193,22 +207,33 @@ export default async function Page() {
           </div>
         </section>
 
-        <section className="grid grid-cols-1 gap-loose border-t border-border pt-expansive lg:grid-cols-2">
-          <div className="flex flex-col gap-cozy">
-            <p className="font-mono text-xs font-medium uppercase tracking-wide text-beacon">
-              03 — Assurance
-            </p>
-            <TestimonialBlock
-              quote="We stopped chasing status emails. Every booking, customs file, and exception now lands in one place — and there is a named person behind it."
-              attributionName="Head of global logistics"
-              attributionDetail="Consumer electronics manufacturer"
-            />
-          </div>
-          <div className="flex flex-col gap-cozy">
-            <p className="font-mono text-xs font-medium uppercase tracking-wide text-muted">
-              Certifications and compliance
-            </p>
-            <CertificationsGrid items={CERTIFICATIONS} />
+        <section className="border-t border-border pt-expansive">
+          <p className="font-mono text-xs font-medium uppercase tracking-wide text-beacon">
+            03 — Assurance
+          </p>
+
+          {/* 200vh scroll track: the quote pins in place (sticky, top:20vh,
+              height:80vh) while the certifications grid — left in normal
+              document flow, not sticky — scrolls past underneath it. DOM
+              order (quote, then certs) matches the reading order; only the
+              visual stacking comes from position/z-index. An opaque
+              background on the pinned panel keeps the certs' text from
+              visually colliding with the quote as they scroll past behind
+              it, rather than legibly stacking. */}
+          <div className="relative mt-comfortable h-[200vh]">
+            <div className="sticky top-[20vh] z-10 flex h-[80vh] flex-col justify-center gap-cozy bg-background">
+              <TestimonialBlock
+                quote="We stopped chasing status emails. Every booking, customs file, and exception now lands in one place — and there is a named person behind it."
+                attributionName="Head of global logistics"
+                attributionDetail="Consumer electronics manufacturer"
+              />
+            </div>
+            <div className="flex flex-col gap-cozy">
+              <p className="font-mono text-xs font-medium uppercase tracking-wide text-muted">
+                Certifications and compliance
+              </p>
+              <CertificationsGrid items={CERTIFICATIONS} />
+            </div>
           </div>
         </section>
       </div>
