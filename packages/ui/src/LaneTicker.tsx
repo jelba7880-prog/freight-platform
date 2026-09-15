@@ -6,11 +6,13 @@ export interface LaneTickerProps {
 }
 
 /**
- * A continuously scrolling strip of trade-lane pairs — ambient chrome for a
- * dark hero, matching the reference's marquee. Pure CSS transform animation
- * (see theme.css's `--animate-marquee`), so it needs no JS
- * prefers-reduced-motion hook the way ManifestStrip's row churn does:
- * reset.css's blanket override already zeroes it out. Content renders
+ * A horizontally scrolling strip of trade-lane pairs — ambient chrome for a
+ * dark hero, matching the reference's marquee. Its translation is bound to
+ * document scroll position via `animation-timeline: scroll(root)` (see
+ * `.lane-ticker-track` in theme.css), not a timer, so it still needs no JS:
+ * theme.css gates the animation itself behind `@media` and `@supports`,
+ * falling back to a static (non-animated) strip when scroll-timelines
+ * aren't supported or the visitor prefers reduced motion. Content renders
  * twice back to back so the `-50%` loop point reads as seamless; the
  * duplicate is aria-hidden with a single sr-only label instead, same
  * pattern as ManifestStrip's decorative rows.
@@ -35,7 +37,7 @@ export function LaneTicker({ lanes, className }: LaneTickerProps) {
   return (
     <div className={cx("overflow-hidden border-t border-border", className)}>
       <span className="sr-only">Sample trade lanes (decorative)</span>
-      <div aria-hidden="true" className="flex w-max animate-marquee">
+      <div aria-hidden="true" className="lane-ticker-track flex w-max">
         {track}
         {track}
       </div>
