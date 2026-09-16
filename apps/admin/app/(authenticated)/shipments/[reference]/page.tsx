@@ -134,7 +134,7 @@ export default async function ShipmentDetailPage({
                 name="eventType"
                 required
                 defaultValue="milestone"
-                className="h-10 rounded-sm border border-border bg-surface px-cozy font-sans text-sm text-foreground transition-colors duration-base ease-standard focus:border-beacon"
+                className="h-10 rounded-sm border border-border bg-surface px-cozy font-sans text-sm text-foreground transition-colors duration-base ease-standard focus:border-transit"
               >
                 {(Object.keys(EVENT_TYPE_LABELS) as (keyof typeof EVENT_TYPE_LABELS)[]).map(
                   (eventType) => (
@@ -157,7 +157,7 @@ export default async function ShipmentDetailPage({
                 name="description"
                 rows={3}
                 placeholder="e.g. Departed origin port"
-                className="rounded-sm border border-border bg-surface px-cozy py-snug font-sans text-sm text-foreground placeholder:text-muted transition-colors duration-base ease-standard focus:border-beacon"
+                className="rounded-sm border border-border bg-surface px-cozy py-snug font-sans text-sm text-foreground placeholder:text-muted transition-colors duration-base ease-standard focus:border-transit"
               />
             </div>
 
@@ -198,7 +198,7 @@ export default async function ShipmentDetailPage({
                     name="description"
                     rows={3}
                     placeholder="e.g. Delayed due to customs inspection"
-                    className="rounded-sm border border-border bg-surface px-cozy py-snug font-sans text-sm text-foreground placeholder:text-muted transition-colors duration-base ease-standard focus:border-beacon"
+                    className="rounded-sm border border-border bg-surface px-cozy py-snug font-sans text-sm text-foreground placeholder:text-muted transition-colors duration-base ease-standard focus:border-transit"
                   />
                 </div>
 
@@ -227,7 +227,7 @@ export default async function ShipmentDetailPage({
                     name="newStatus"
                     required
                     defaultValue="in_transit"
-                    className="h-10 rounded-sm border border-border bg-surface px-cozy font-sans text-sm text-foreground transition-colors duration-base ease-standard focus:border-beacon"
+                    className="h-10 rounded-sm border border-border bg-surface px-cozy font-sans text-sm text-foreground transition-colors duration-base ease-standard focus:border-transit"
                   >
                     {RESUME_STATUS_OPTIONS.map((status) => (
                       <option key={status} value={status}>
@@ -268,7 +268,7 @@ export default async function ShipmentDetailPage({
                 name="documentType"
                 required
                 defaultValue="other"
-                className="h-10 rounded-sm border border-border bg-surface px-cozy font-sans text-sm text-foreground transition-colors duration-base ease-standard focus:border-beacon"
+                className="h-10 rounded-sm border border-border bg-surface px-cozy font-sans text-sm text-foreground transition-colors duration-base ease-standard focus:border-transit"
               >
                 {(Object.keys(DOCUMENT_TYPE_LABELS) as (keyof typeof DOCUMENT_TYPE_LABELS)[]).map(
                   (documentType) => (

@@ -36,7 +36,7 @@ function LinkColumn({
           <li key={link.href}>
             <a
               href={resolveHref(link.href)}
-              className="font-sans text-sm text-foreground transition-colors duration-base hover:text-beacon"
+              className="font-sans text-sm text-foreground transition-colors duration-base hover:text-oxide"
             >
               {link.label}
             </a>

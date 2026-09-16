@@ -81,7 +81,7 @@ export function CompanyPageTemplate({ content }: CompanyPageTemplateProps) {
               {section.people.map((person, personIndex) => (
                 <Card key={personIndex} className="flex flex-col gap-tight">
                   <h3 className="font-display text-base font-semibold text-foreground">{person.name}</h3>
-                  <p className="text-sm font-medium text-beacon">{person.title}</p>
+                  <p className="text-sm font-medium text-oxide">{person.title}</p>
                   <p className="text-sm text-muted">{person.bio}</p>
                 </Card>
               ))}

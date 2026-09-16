@@ -4,54 +4,95 @@
  * utility generated from theme.css, resolves back to one of these. Never
  * write a hex value anywhere else; add a new semantic token here instead.
  *
- * ink / steel / paper / mist / beacon / cleared come directly from the
- * Visual Direction spec. `danger` does not — the spec gives no
- * error/validation color, but Input requires a real error state, so this
- * is a deliberate, minimal addition, contrast-checked the same way as
- * every other accent below.
+ * Three families, kept strictly apart:
+ *
+ *   Neutrals  one cool-slate undertone end to end, so a border derived
+ *             from a neutral never fights the surface it sits on.
+ *   Brand     oxide, the single warm hue in the system. Brand only.
+ *   Status    cool hues that mean a literal shipment state. Never brand.
+ *
+ * Every accent ships in up to three shades: the solid hue for fills, and
+ * `-on-light` / `-on-dark` variants for text, icons, dots and rules, so an
+ * accent never has to be legible against both paper and ink at once. Every
+ * ratio below is measured against --palette-paper (light) or
+ * --palette-ink (dark); the tighter of paper/chalk and ink/steel is
+ * quoted, so the stated figure is the worst case in that mode.
  */
 :root {
-  /* Ink — dark, warm charcoal (NOT navy/cool black). Background for
-     apps/portal and apps/admin ONLY — apps/web never paints this. */
-  --palette-ink: #1a1714;
+  /* === Neutrals — cool slate ============================================ */
 
-  /* Steel — dark, warm charcoal, one step lighter than ink. Card/surface
-     fill in apps/portal and apps/admin ONLY. */
-  --palette-steel: #241f1a;
+  /* Ink — darkest slate. Background for apps/portal and apps/admin ONLY;
+     apps/web never paints this. Carries paper text at 17.26:1. */
+  --palette-ink: #10151b;
 
-  /* Paper — light neutral. Background for apps/web (always). Also the
-     foreground text color inside apps/portal and apps/admin. */
-  --palette-paper: #f6f7f9;
+  /* Steel — one step up from ink. Card/surface fill in the dark apps, so a
+     card reads as raised without a border doing all the work. */
+  --palette-steel: #191f27;
 
-  /* Mist — secondary text / borders, both modes, as given. */
-  --palette-mist: #5c6b80;
-  /* Mist lightened along the same hue: plain mist is only 3.29:1 against
-     ink and 3.01:1 against steel — short of WCAG AA's 4.5:1 for normal
-     text. Used for muted/secondary text in dark mode; light mode keeps
-     plain mist (5.06:1 against paper already passes AA). */
-  --palette-mist-on-dark: #7c8ca3;
+  /* Graphite — dark-mode hairline borders. Deliberately low contrast
+     against ink/steel (1.41:1 / 1.28:1): this separates regions, it never
+     carries meaning, so the 3:1 non-text floor does not apply. */
+  --palette-graphite: #2a323c;
 
-  /* Beacon — amber. In-transit / active state / primary accent, as given. */
-  --palette-beacon: #e2a33b;
-  /* Beacon darkened along the same hue: #E2A33B is only 2.05:1 against
-     paper, well short of AA (and even short of the 3:1 non-text minimum).
-     This is the beacon text/icon/dot/border color wherever beacon sits on
-     a light (paper) surface. On ink/steel, plain --palette-beacon already
-     clears AA (8.10:1 / 7.42:1) and is used directly. */
-  --palette-beacon-on-light: #96650f;
+  /* Mist — secondary/muted text in light mode. 5.11:1 on paper and
+     5.43:1 on chalk, so it clears AA for body text on either surface. */
+  --palette-mist: #5f6b7a;
+  /* Mist lightened along the same hue for dark mode: plain mist is only
+     3.38:1 on ink, short of AA. This variant reads 6.18:1 on ink and
+     5.59:1 on steel. */
+  --palette-mist-on-dark: #8b97a6;
 
-  /* Cleared — teal. Delivered / cleared state / secondary accent, as given. */
-  --palette-cleared: #46b893;
-  /* Cleared darkened along the same hue, same reasoning as beacon: plain
-     cleared is only 2.29:1 against paper. */
-  --palette-cleared-on-light: #2e7c63;
+  /* Fog — light-mode hairline borders. Same reasoning as graphite: a
+     1.23:1 rule against paper is a separator, not information. */
+  --palette-fog: #dde2e8;
 
-  /* Danger — not in the given palette (see file comment above). A warm,
-     muted red that reads as part of the same family as ink's warm
-     undertone rather than a generic bright red. Already >=4.5:1 against
-     paper as-is, so no light-mode darkening is needed. */
-  --palette-danger: #c4462f;
-  /* Danger lightened along the same hue for dark surfaces: the base value
-     is only 3.62:1 against ink / 3.32:1 against steel. */
-  --palette-danger-on-dark: #d35d47;
+  /* Paper — light background (apps/web always), and the foreground text
+     color inside apps/portal and apps/admin. */
+  --palette-paper: #f7f8fa;
+
+  /* Chalk — light-mode card surface. The elevation step above paper that
+     the ramp previously had to fake with a border and a shadow. */
+  --palette-chalk: #ffffff;
+
+  /* === Brand — oxide ======================================================
+     The only warm hue in the system, and the reason brand and status are
+     now separate families: a brand color has to work as a large fill and
+     as small text, which one status-legibility-tuned value never did. */
+
+  /* Oxide — solid fills, logo, full-bleed buttons. Carries chalk text at
+     4.85:1 (AA) — pair it with chalk/paper, never with ink (3.78:1). */
+  --palette-oxide: #b5562b;
+  /* Oxide darkened along the same hue for text, icons and rules on paper:
+     5.55:1 on paper, 5.90:1 on chalk. */
+  --palette-oxide-on-light: #a34a22;
+  /* Oxide lightened along the same hue for the dark apps: 6.94:1 on ink,
+     6.28:1 on steel. */
+  --palette-oxide-on-dark: #e08a5a;
+
+  /* === Status — cool only =================================================
+     These name a shipment state and nothing else. None of them is ever a
+     brand, CTA or navigation accent. */
+
+  /* Transit — in transit / active. Also the global focus-ring hue, the one
+     non-status job a cool accent does better than brand warmth. */
+  --palette-transit: #2f6bd0;
+  /* 6.51:1 on paper, 6.92:1 on chalk. */
+  --palette-transit-on-light: #2457ac;
+  /* 7.47:1 on ink, 6.75:1 on steel. */
+  --palette-transit-on-dark: #7ba6f0;
+
+  /* Delivered — cleared customs / delivered. */
+  --palette-delivered: #3e8f73;
+  /* 5.67:1 on paper, 6.02:1 on chalk. */
+  --palette-delivered-on-light: #2e6e58;
+  /* 8.70:1 on ink, 7.87:1 on steel. */
+  --palette-delivered-on-dark: #6bc3a4;
+
+  /* Exception — error, validation failure, customs hold. Already 4.63:1 on
+     paper and 4.92:1 on chalk, so light mode needs no darkened variant. */
+  --palette-exception: #c4462f;
+  /* Exception lightened along the same hue for dark surfaces: the base
+     value is only 3.72:1 on ink. This reads 5.00:1 on ink, 4.52:1 on
+     steel. */
+  --palette-exception-on-dark: #d9604a;
 }

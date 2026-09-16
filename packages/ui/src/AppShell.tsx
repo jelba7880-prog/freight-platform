@@ -53,7 +53,7 @@ export function AppShell({
                 <a
                   key={item.href}
                   href={resolveHref(item.href)}
-                  className="rounded-sm px-tight py-tight font-sans text-sm text-foreground transition-colors duration-base hover:text-beacon"
+                  className="rounded-sm px-tight py-tight font-sans text-sm text-foreground transition-colors duration-base hover:text-oxide"
                 >
                   {item.label}
                 </a>

@@ -18,25 +18,28 @@
  */
 :root {
   --color-background: var(--palette-paper);
-  /* Light mode has no separate "card" hue of its own — surface stays
-     paper, and cards are set apart with --color-border / shadow instead,
-     so as not to invent a 7th neutral outside the given palette. */
-  --color-surface: var(--palette-paper);
+  --color-surface: var(--palette-chalk);
   --color-foreground: var(--palette-ink);
   --color-muted: var(--palette-mist);
-  --color-border: color-mix(in srgb, var(--palette-mist) 35%, var(--color-background));
+  --color-border: var(--palette-fog);
 
   /* Accent "text" role: the AA-safe shade of each accent for whichever
      surface is currently active — text, icons, dots, borders. */
-  --color-beacon: var(--palette-beacon-on-light);
-  --color-cleared: var(--palette-cleared-on-light);
-  --color-danger: var(--palette-danger);
+  --color-oxide: var(--palette-oxide-on-light);
+  --color-transit: var(--palette-transit-on-light);
+  --color-delivered: var(--palette-delivered-on-light);
+  --color-danger: var(--palette-exception);
 
   /* Accent "soft" role: a low-opacity wash used as badge/pill backgrounds,
      mixed from the *solid* hue (not the darkened text variant) so the
-     wash still reads as the true brand hue at a glance. */
-  --color-beacon-soft: color-mix(in srgb, var(--palette-beacon) 14%, var(--color-surface));
-  --color-cleared-soft: color-mix(in srgb, var(--palette-cleared) 14%, var(--color-surface));
+     wash still reads as the true brand/status hue at a glance. Each pairs
+     with its matching text token above at >=4.89:1 — except danger, which
+     lands at 4.05:1 light / 3.97:1 dark and so is a fill for an icon or an
+     inline alert rule, not a background for body-sized error text. */
+  --color-oxide-soft: color-mix(in srgb, var(--palette-oxide) 14%, var(--color-surface));
+  --color-transit-soft: color-mix(in srgb, var(--palette-transit) 14%, var(--color-surface));
+  --color-delivered-soft: color-mix(in srgb, var(--palette-delivered) 14%, var(--color-surface));
+  --color-danger-soft: color-mix(in srgb, var(--palette-exception) 14%, var(--color-surface));
 
   /* Elevation: a normal soft dark cast reads fine on a light surface. */
   --shadow-sm: 0 1px 2px rgb(26 23 20 / 0.06);
@@ -49,14 +52,17 @@
   --color-surface: var(--palette-steel);
   --color-foreground: var(--palette-paper);
   --color-muted: var(--palette-mist-on-dark);
-  --color-border: color-mix(in srgb, var(--palette-mist) 35%, var(--color-background));
+  --color-border: var(--palette-graphite);
 
-  --color-beacon: var(--palette-beacon);
-  --color-cleared: var(--palette-cleared);
-  --color-danger: var(--palette-danger-on-dark);
+  --color-oxide: var(--palette-oxide-on-dark);
+  --color-transit: var(--palette-transit-on-dark);
+  --color-delivered: var(--palette-delivered-on-dark);
+  --color-danger: var(--palette-exception-on-dark);
 
-  --color-beacon-soft: color-mix(in srgb, var(--palette-beacon) 16%, var(--color-surface));
-  --color-cleared-soft: color-mix(in srgb, var(--palette-cleared) 16%, var(--color-surface));
+  --color-oxide-soft: color-mix(in srgb, var(--palette-oxide) 16%, var(--color-surface));
+  --color-transit-soft: color-mix(in srgb, var(--palette-transit) 16%, var(--color-surface));
+  --color-delivered-soft: color-mix(in srgb, var(--palette-delivered) 16%, var(--color-surface));
+  --color-danger-soft: color-mix(in srgb, var(--palette-exception) 16%, var(--color-surface));
 
   /* A dark cast shadow is invisible against near-black ink/steel, so
      elevation in dark mode reads as a faint light-colored glow instead. */

@@ -34,7 +34,7 @@ export function DarkCtaBand({
       <div className="mx-auto flex max-w-6xl flex-col gap-comfortable px-comfortable py-expansive sm:flex-row sm:items-end sm:justify-between">
         <div className="flex flex-col gap-cozy">
           {eyebrow ? (
-            <p className="font-mono text-xs font-medium uppercase tracking-wide text-beacon">
+            <p className="font-mono text-xs font-medium uppercase tracking-wide text-oxide">
               {eyebrow}
             </p>
           ) : null}

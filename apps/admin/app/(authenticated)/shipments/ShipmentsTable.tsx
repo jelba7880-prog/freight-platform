@@ -18,7 +18,7 @@ const columns: Column<ShipmentSummary>[] = [
     render: (row) => (
       <Link
         href={`/shipments/${row.referenceNumber}`}
-        className="font-mono text-sm text-beacon hover:underline"
+        className="font-mono text-sm text-oxide hover:underline"
       >
         {row.referenceNumber}
       </Link>

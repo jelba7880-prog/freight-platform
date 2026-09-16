@@ -70,7 +70,7 @@ export default async function Page() {
       <section data-mode="dark" className="bg-background">
         <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-loose px-comfortable py-expansive lg:grid-cols-2">
           <div className="flex flex-col gap-cozy">
-            <p className="font-mono text-xs uppercase tracking-wide text-beacon">
+            <p className="font-mono text-xs uppercase tracking-wide text-oxide">
               Global freight forwarding
             </p>
             <h1 className="font-display text-4xl font-semibold text-foreground">
@@ -109,7 +109,7 @@ export default async function Page() {
         <section className="flex flex-col gap-comfortable">
           <div className="flex flex-wrap items-end justify-between gap-cozy">
             <div className="flex flex-col gap-tight">
-              <p className="font-mono text-xs font-medium uppercase tracking-wide text-beacon">
+              <p className="font-mono text-xs font-medium uppercase tracking-wide text-oxide">
                 01 — Services
               </p>
               <h2 className="font-display text-2xl font-semibold text-foreground">
@@ -118,7 +118,7 @@ export default async function Page() {
             </div>
             <a
               href={resolveHref("/services")}
-              className="font-mono text-xs font-medium uppercase tracking-wide text-muted transition-colors duration-base hover:text-beacon"
+              className="font-mono text-xs font-medium uppercase tracking-wide text-muted transition-colors duration-base hover:text-oxide"
             >
               All services ↗
             </a>
@@ -138,7 +138,7 @@ export default async function Page() {
                 key={service.slug}
                 className={`sticky flex flex-col gap-cozy rounded-md border p-comfortable transition-colors duration-base ${
                   index === 0
-                    ? "border-beacon/30 bg-beacon-soft"
+                    ? "border-oxide/30 bg-oxide-soft"
                     : "border-border bg-surface hover:border-mist"
                 }`}
                 style={{ top: `calc(10vh + ${index * 40}px)`, zIndex: index + 1 }}
@@ -157,7 +157,7 @@ export default async function Page() {
                 <span className="text-sm text-muted">{service.shortDescription}</span>
                 <a
                   href={resolveHref(service.href)}
-                  className="relative mt-auto inline-flex w-fit items-center gap-tight font-mono text-sm text-beacon after:absolute after:inset-0 after:content-['']"
+                  className="relative mt-auto inline-flex w-fit items-center gap-tight font-mono text-sm text-oxide after:absolute after:inset-0 after:content-['']"
                 >
                   View service
                   <span aria-hidden="true">→</span>
@@ -170,7 +170,7 @@ export default async function Page() {
         <section className="flex flex-col gap-comfortable">
           <div className="flex flex-wrap items-end justify-between gap-cozy">
             <div className="flex flex-col gap-tight">
-              <p className="font-mono text-xs font-medium uppercase tracking-wide text-beacon">
+              <p className="font-mono text-xs font-medium uppercase tracking-wide text-oxide">
                 02 — Industries
               </p>
               <h2 className="font-display text-2xl font-semibold text-foreground">
@@ -179,7 +179,7 @@ export default async function Page() {
             </div>
             <a
               href={resolveHref("/industries")}
-              className="font-mono text-xs font-medium uppercase tracking-wide text-muted transition-colors duration-base hover:text-beacon"
+              className="font-mono text-xs font-medium uppercase tracking-wide text-muted transition-colors duration-base hover:text-oxide"
             >
               All industries ↗
             </a>
@@ -188,7 +188,7 @@ export default async function Page() {
           <div className="grid grid-cols-1 gap-cozy sm:grid-cols-2 lg:grid-cols-3">
             {INDUSTRIES.map((industry, index) => (
               <a key={industry.slug} href={resolveHref(industry.href)} className="block h-full">
-                <div className="flex h-full flex-col gap-cozy rounded-md border border-t-2 border-border bg-surface p-comfortable transition-[border-color,transform] duration-base hover:-translate-y-0.5 hover:border-t-beacon">
+                <div className="flex h-full flex-col gap-cozy rounded-md border border-t-2 border-border bg-surface p-comfortable transition-[border-color,transform] duration-base hover:-translate-y-0.5 hover:border-t-oxide">
                   <div className="flex items-center justify-between">
                     <span className="flex size-9 items-center justify-center rounded-md border border-border bg-background font-mono text-xs font-medium text-foreground">
                       {initials(industry.label)}
@@ -208,7 +208,7 @@ export default async function Page() {
         </section>
 
         <section className="border-t border-border pt-expansive">
-          <p className="font-mono text-xs font-medium uppercase tracking-wide text-beacon">
+          <p className="font-mono text-xs font-medium uppercase tracking-wide text-oxide">
             03 — Assurance
           </p>
 

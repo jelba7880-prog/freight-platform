@@ -212,7 +212,7 @@ function IconTrack({ className }: { className?: string }) {
 }
 
 const navLinkClass =
-  "rounded-sm px-tight py-tight font-sans text-sm text-foreground transition-colors duration-base hover:text-beacon";
+  "rounded-sm px-tight py-tight font-sans text-sm text-foreground transition-colors duration-base hover:text-oxide";
 
 function NavDropdown({
   item,
@@ -266,7 +266,7 @@ function NavDropdown({
             <a
               key={link.href}
               href={resolveHref(link.href)}
-              className="rounded-sm px-tight py-tight font-sans text-sm text-foreground transition-colors duration-base hover:bg-background hover:text-beacon"
+              className="rounded-sm px-tight py-tight font-sans text-sm text-foreground transition-colors duration-base hover:bg-background hover:text-oxide"
             >
               {link.label}
             </a>
@@ -319,7 +319,7 @@ function SearchToggle({ resolveHref }: { resolveHref: (href: string) => string }
             name="q"
             type="search"
             placeholder="Search the site"
-            className="h-10 w-full rounded-sm border border-border bg-surface px-cozy font-sans text-sm text-foreground placeholder:text-muted focus:border-beacon"
+            className="h-10 w-full rounded-sm border border-border bg-surface px-cozy font-sans text-sm text-foreground placeholder:text-muted focus:border-transit"
           />
         </form>
       ) : null}
@@ -368,7 +368,7 @@ function MobileNavAccordion({
             <a
               key={link.href}
               href={resolveHref(link.href)}
-              className="rounded-sm px-cozy py-tight font-sans text-sm text-muted transition-colors duration-base hover:text-beacon"
+              className="rounded-sm px-cozy py-tight font-sans text-sm text-muted transition-colors duration-base hover:text-oxide"
             >
               {link.label}
             </a>
@@ -522,7 +522,7 @@ export function Header({
           <SearchToggle resolveHref={resolveHref} />
           <a
             href={resolveHref(PORTAL_LINK.href)}
-            className="font-sans text-xs font-medium text-foreground transition-colors duration-base hover:text-beacon"
+            className="font-sans text-xs font-medium text-foreground transition-colors duration-base hover:text-oxide"
           >
             {PORTAL_LINK.label}
           </a>

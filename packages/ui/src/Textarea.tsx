@@ -39,7 +39,7 @@ export function Textarea({ label, error, id, className, required, ref, ...props 
         className={cx(
           "min-h-32 rounded-sm border bg-surface px-cozy py-snug font-sans text-sm text-foreground",
           "placeholder:text-muted transition-colors duration-base ease-standard",
-          error ? "border-danger" : "border-border focus:border-beacon",
+          error ? "border-danger" : "border-border focus:border-transit",
           className,
         )}
         {...props}

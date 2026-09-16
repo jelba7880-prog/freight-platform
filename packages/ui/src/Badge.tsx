@@ -15,14 +15,14 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const styles: Record<BadgeVariant, string> = {
-  "in-transit": "border-beacon/30 bg-beacon-soft text-beacon",
-  cleared: "border-cleared/30 bg-cleared-soft text-cleared",
+  "in-transit": "border-transit/30 bg-transit-soft text-transit",
+  cleared: "border-delivered/30 bg-delivered-soft text-delivered",
   neutral: "border-border bg-transparent text-muted",
 };
 
 const dotStyles: Record<BadgeVariant, string> = {
-  "in-transit": "bg-beacon",
-  cleared: "bg-cleared",
+  "in-transit": "bg-transit",
+  cleared: "bg-delivered",
   neutral: "bg-mist",
 };
 

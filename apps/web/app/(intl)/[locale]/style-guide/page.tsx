@@ -8,81 +8,126 @@ export const metadata = {
   title: "Style Guide — Meridian Freight",
 };
 
-const baseSwatches = [
+const neutralSwatches = [
   {
     name: "Ink",
     varName: "--palette-ink",
-    hex: "#1A1714",
+    hex: "#10151B",
     role: "Background — apps/portal & apps/admin only",
   },
   {
     name: "Steel",
     varName: "--palette-steel",
-    hex: "#241F1A",
+    hex: "#191F27",
     role: "Surface/card — apps/portal & apps/admin only",
   },
   {
-    name: "Paper",
-    varName: "--palette-paper",
-    hex: "#F6F7F9",
-    role: "Background — apps/web. Foreground text — apps/portal & apps/admin",
+    name: "Graphite",
+    varName: "--palette-graphite",
+    hex: "#2A323C",
+    role: "Hairline borders — dark mode",
   },
   {
     name: "Mist",
     varName: "--palette-mist",
-    hex: "#5C6B80",
-    role: "Secondary text / borders — both modes",
-  },
-];
-
-const accentSwatches = [
-  {
-    name: "Beacon",
-    varName: "--palette-beacon",
-    hex: "#E2A33B",
-    role: "In-transit / active state — raw hue, used for solid fills",
-  },
-  {
-    name: "Cleared",
-    varName: "--palette-cleared",
-    hex: "#46B893",
-    role: "Delivered / cleared state — raw hue, used for solid fills",
-  },
-];
-
-const adjustedSwatches = [
-  {
-    name: "Beacon, on light",
-    varName: "--palette-beacon-on-light",
-    hex: "#96650F",
-    role: "Beacon text/icon/border on paper — raw beacon is 2.05:1 on paper, fails AA",
-  },
-  {
-    name: "Cleared, on light",
-    varName: "--palette-cleared-on-light",
-    hex: "#2E7C63",
-    role: "Cleared text/icon/border on paper — raw cleared is 2.29:1 on paper, fails AA",
+    hex: "#5F6B7A",
+    role: "Secondary text — light mode, 5.11:1 on paper",
   },
   {
     name: "Mist, on dark",
     varName: "--palette-mist-on-dark",
-    hex: "#7C8CA3",
-    role: "Muted text on ink/steel — raw mist is 3.29:1 on ink, fails AA for body text",
+    hex: "#8B97A6",
+    role: "Secondary text — dark mode, 6.18:1 on ink (raw mist is 3.38:1, fails AA)",
+  },
+  {
+    name: "Fog",
+    varName: "--palette-fog",
+    hex: "#DDE2E8",
+    role: "Hairline borders — light mode",
+  },
+  {
+    name: "Paper",
+    varName: "--palette-paper",
+    hex: "#F7F8FA",
+    role: "Background — apps/web. Foreground text — apps/portal & apps/admin",
+  },
+  {
+    name: "Chalk",
+    varName: "--palette-chalk",
+    hex: "#FFFFFF",
+    role: "Card surface — light mode",
   },
 ];
 
-const addedSwatches = [
+const brandSwatches = [
   {
-    name: "Danger",
-    varName: "--palette-danger",
-    hex: "#C4462F",
-    role: "Input error state — not in the original palette, added (see note below)",
+    name: "Oxide",
+    varName: "--palette-oxide",
+    hex: "#B5562B",
+    role: "Solid fills, logo, full-bleed buttons — carries chalk text at 4.85:1",
   },
   {
-    name: "Danger, on dark",
-    varName: "--palette-danger-on-dark",
-    hex: "#D35D47",
-    role: "Danger text on ink/steel — raw danger is 3.62:1 on ink, fails AA",
+    name: "Oxide, on light",
+    varName: "--palette-oxide-on-light",
+    hex: "#A34A22",
+    role: "Text, icons, rules on paper — 5.55:1",
+  },
+  {
+    name: "Oxide, on dark",
+    varName: "--palette-oxide-on-dark",
+    hex: "#E08A5A",
+    role: "Text, icons, rules on ink — 6.94:1",
+  },
+];
+
+const statusSwatches = [
+  {
+    name: "Transit",
+    varName: "--palette-transit",
+    hex: "#2F6BD0",
+    role: "In transit / active — raw hue, solid fills and dots",
+  },
+  {
+    name: "Transit, on light",
+    varName: "--palette-transit-on-light",
+    hex: "#2457AC",
+    role: "In-transit text/icon on paper — 6.51:1",
+  },
+  {
+    name: "Transit, on dark",
+    varName: "--palette-transit-on-dark",
+    hex: "#7BA6F0",
+    role: "In-transit text/icon on ink — 7.47:1",
+  },
+  {
+    name: "Delivered",
+    varName: "--palette-delivered",
+    hex: "#3E8F73",
+    role: "Cleared / delivered — raw hue, solid fills and dots",
+  },
+  {
+    name: "Delivered, on light",
+    varName: "--palette-delivered-on-light",
+    hex: "#2E6E58",
+    role: "Delivered text/icon on paper — 5.67:1",
+  },
+  {
+    name: "Delivered, on dark",
+    varName: "--palette-delivered-on-dark",
+    hex: "#6BC3A4",
+    role: "Delivered text/icon on ink — 8.70:1",
+  },
+  {
+    name: "Exception",
+    varName: "--palette-exception",
+    hex: "#C4462F",
+    role: "Error / validation / customs hold — 4.63:1 on paper, no light variant needed",
+  },
+  {
+    name: "Exception, on dark",
+    varName: "--palette-exception-on-dark",
+    hex: "#D9604A",
+    role: "Exception text on ink — 5.00:1 (raw exception is 3.72:1, fails AA)",
   },
 ];
 
@@ -129,44 +174,33 @@ export default function StyleGuidePage() {
       </header>
 
       <Section
-        title="Color — base"
-        description="Ink, steel, paper, and mist, exactly as given in the Visual Direction spec."
+        title="Color — neutrals"
+        description="One cool-slate undertone end to end, ink through chalk. Eight steps, so a border, a surface and an elevated card each get a real value instead of being mixed out of a neighbour at runtime."
       >
         <div className="grid grid-cols-2 gap-cozy sm:grid-cols-4">
-          {baseSwatches.map((s) => (
+          {neutralSwatches.map((s) => (
             <Swatch key={s.name} {...s} />
           ))}
         </div>
       </Section>
 
       <Section
-        title="Color — accent"
-        description="Beacon (in-transit / active) and cleared (delivered / cleared), as given. These raw hues back solid fills only — see the adjusted variants below for text/icon use."
+        title="Color — brand"
+        description="Oxide is the brand accent and the only warm hue in the system: logo, CTA fills, links, eyebrows. It is never a shipment state. Three shades — the solid fill, plus an on-light and an on-dark text shade — so the accent never has to be legible against paper and ink at the same time."
+      >
+        <div className="grid grid-cols-2 gap-cozy sm:grid-cols-3">
+          {brandSwatches.map((s) => (
+            <Swatch key={s.name} {...s} />
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        title="Color — status"
+        description="Cool hues that mean a literal shipment state and nothing else — transit (in transit / active), delivered (cleared / delivered), exception (error, validation failure, customs hold). None of them is ever used as a brand or CTA color, which is exactly what the previous single amber token was doing in two jobs at once."
       >
         <div className="grid grid-cols-2 gap-cozy sm:grid-cols-4">
-          {accentSwatches.map((s) => (
-            <Swatch key={s.name} {...s} />
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        title="Color — adjusted for contrast"
-        description="The Visual Direction spec asked for beacon/cleared to be verified against WCAG AA on both ink and paper, with the shade adjusted (same hue family) if needed. Both failed against paper as given, so a darkened variant exists for use on light surfaces. Mist needed the same treatment against ink, which wasn't explicitly requested but follows the same non-negotiable accessibility floor."
-      >
-        <div className="grid grid-cols-2 gap-cozy sm:grid-cols-3">
-          {adjustedSwatches.map((s) => (
-            <Swatch key={s.name} {...s} />
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        title="Color — added"
-        description="The given palette has no error/validation color, but Input requires a real error state. This danger token is a deliberate, minimal addition — a warm, muted red pulled from the same undertone as ink rather than a generic bright red — contrast-checked the same way as everything else above."
-      >
-        <div className="grid grid-cols-2 gap-cozy sm:grid-cols-3">
-          {addedSwatches.map((s) => (
+          {statusSwatches.map((s) => (
             <Swatch key={s.name} {...s} />
           ))}
         </div>
@@ -174,12 +208,13 @@ export default function StyleGuidePage() {
 
       <Section
         title="Color — semantic, by mode"
-        description="background / surface / foreground / muted / border resolve differently per mode. apps/web only ever renders the light column below."
+        description="background / surface / foreground / muted / border resolve differently per mode. Border is a real neutral step in both modes — fog on light, graphite on dark — not a mix of muted into the background. apps/web only ever renders the light column below."
       >
         <PreviewPair
           light={
             <div className="flex flex-col gap-tight font-mono text-xs">
-              <p className="text-foreground">background · surface = paper</p>
+              <p className="text-foreground">background = paper</p>
+              <p className="text-foreground">surface = chalk</p>
               <p className="text-foreground">foreground = ink</p>
               <p className="text-muted">muted = mist</p>
               <p className="text-foreground">
@@ -193,6 +228,9 @@ export default function StyleGuidePage() {
               <p className="text-foreground">surface = steel</p>
               <p className="text-foreground">foreground = paper</p>
               <p className="text-muted">muted = mist-on-dark</p>
+              <p className="text-foreground">
+                border = <span className="inline-block h-3 w-3 rounded-full border border-border align-middle" />
+              </p>
             </div>
           }
         />
@@ -200,13 +238,11 @@ export default function StyleGuidePage() {
 
       <Section
         title="Type"
-        description="Display — Geist. Body — IBM Plex Sans. Mono (data/utility: reference numbers, container IDs, coordinates, timestamps) — IBM Plex Mono."
+        description='Display — Archivo, set at "wdth" 112 / weight 600 / -0.015em tracking. That width-and-tracking treatment is what separates display type from body copy, so h1/h2/h3 carry it from reset.css and no component re-declares it. Body — IBM Plex Sans, default width. Mono (data/utility: reference numbers, container IDs, coordinates, timestamps) — IBM Plex Mono, tabular figures.'
       >
         <div className="flex flex-col gap-comfortable">
           <div className="flex flex-col gap-tight">
-            <p className="font-display text-3xl font-semibold text-foreground">
-              Geist — display
-            </p>
+            <h3 className="font-display text-3xl text-foreground">Archivo — display</h3>
             <div className="flex flex-wrap gap-cozy">
               <span className="font-display text-lg font-medium text-foreground">Medium</span>
               <span className="font-display text-lg font-semibold text-foreground">Semibold</span>
@@ -255,7 +291,7 @@ export default function StyleGuidePage() {
               <span className="w-24 shrink-0 font-mono text-xs text-muted">{s.cls}</span>
               <span className="w-12 shrink-0 font-mono text-xs text-muted">{s.px}</span>
               <span
-                className="h-3 rounded-full bg-beacon-solid"
+                className="h-3 rounded-full bg-oxide-solid"
                 style={{ width: `var(--spacing-${s.cls})` }}
               />
               <span className="text-xs text-muted">{s.role}</span>
@@ -312,7 +348,7 @@ export default function StyleGuidePage() {
 
       <Section
         title="Button"
-        description='"primary" is beacon-filled and reserved for the one primary action in a real view — shown together with secondary/ghost here only for comparison.'
+        description='"primary" is oxide-filled and reserved for the one primary action in a real view — shown together with secondary/ghost here only for comparison.'
       >
         <PreviewPair
           light={
@@ -346,7 +382,7 @@ export default function StyleGuidePage() {
 
       <Section
         title="Badge"
-        description="Maps directly onto real domain states — in-transit (beacon) and cleared (teal) mean exactly that, plus a neutral variant for everything else."
+        description="Maps directly onto real domain states — in-transit (transit blue) and cleared (delivered green) mean exactly that, plus a neutral variant for everything else. Both are status hues, never the brand accent."
       >
         <PreviewPair
           light={
@@ -450,7 +486,7 @@ export default function StyleGuidePage() {
 
       <Section
         title="Header"
-        description="Utility actions (Track, Find a location, Talk to an expert, Search, Portal login) are fixed content, not a prop — a page can't grow that row. The contextual primary CTA is the one thing a page configures, via primaryAction; it always renders beacon-filled and visually heavier than the utility row. The two previews below are the same Header, differing only in that prop, to make the distinction visible."
+        description="Utility actions (Track, Find a location, Talk to an expert, Search, Portal login) are fixed content, not a prop — a page can't grow that row. The contextual primary CTA is the one thing a page configures, via primaryAction; it always renders oxide-filled and visually heavier than the utility row. The two previews below are the same Header, differing only in that prop, to make the distinction visible."
       >
         <div className="flex flex-col gap-cozy">
           <div className="flex flex-col gap-tight">

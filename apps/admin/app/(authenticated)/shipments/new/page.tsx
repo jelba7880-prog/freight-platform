@@ -36,7 +36,7 @@ export default async function NewShipmentPage() {
               id="transportMode"
               name="transportMode"
               defaultValue=""
-              className="h-10 rounded-sm border border-border bg-surface px-cozy font-sans text-sm text-foreground transition-colors duration-base ease-standard focus:border-beacon"
+              className="h-10 rounded-sm border border-border bg-surface px-cozy font-sans text-sm text-foreground transition-colors duration-base ease-standard focus:border-transit"
             >
               <option value="">—</option>
               <option value="sea">Sea</option>
