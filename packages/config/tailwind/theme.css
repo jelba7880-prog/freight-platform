@@ -102,10 +102,17 @@
      Placeholder (light) values — modes.css redeclares --shadow-sm/md/lg
      directly per mode: a soft dark cast in light mode, and a faint light
      glow in dark mode, where a dark cast shadow would be invisible against
-     ink/steel. */
-  --shadow-sm: 0 1px 2px rgb(26 23 20 / 0.06);
-  --shadow-md: 0 6px 16px rgb(26 23 20 / 0.1), 0 1px 2px rgb(26 23 20 / 0.06);
-  --shadow-lg: 0 16px 40px rgb(26 23 20 / 0.16), 0 2px 6px rgb(26 23 20 / 0.08);
+     ink/steel.
+
+     A shadow needs a color with an alpha channel, which a flat hex token
+     can't supply — which is why these used to be the one place in the
+     system carrying literal color values. color-mix derives the alpha
+     from a palette token at the use site instead, so the hue tracks
+     palette.css automatically. Same idiom as modes.css's soft-wash
+     accents. */
+  --shadow-sm: 0 1px 2px color-mix(in srgb, var(--palette-ink) 6%, transparent);
+  --shadow-md: 0 6px 16px color-mix(in srgb, var(--palette-ink) 10%, transparent), 0 1px 2px color-mix(in srgb, var(--palette-ink) 6%, transparent);
+  --shadow-lg: 0 16px 40px color-mix(in srgb, var(--palette-ink) 16%, transparent), 0 2px 6px color-mix(in srgb, var(--palette-ink) 8%, transparent);
 
   /* === Motion =============================================================
      Restrained by design: mostly a short, deliberate transition on
