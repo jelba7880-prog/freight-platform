@@ -53,6 +53,9 @@ export type { StatBandProps, Stat } from "./StatBand";
 export { TestimonialBlock } from "./TestimonialBlock";
 export type { TestimonialBlockProps } from "./TestimonialBlock";
 
+export { LogoStrip } from "./LogoStrip";
+export type { LogoStripProps } from "./LogoStrip";
+
 export { CertificationsGrid } from "./CertificationsGrid";
 export type { CertificationsGridProps, Certification } from "./CertificationsGrid";
 
@@ -78,3 +81,6 @@ export {
   COMPANY_LINKS,
 } from "./nav-data";
 export type { NavLink, PrimaryNavItem, ContentNavLink } from "./nav-data";
+
+export { CUSTOMERS, INTEGRATIONS } from "./partner-data";
+export type { Brand, BrandGlyph } from "./partner-data";

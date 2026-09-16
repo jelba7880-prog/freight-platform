@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import {
   buttonClassName,
   CertificationsGrid,
+  CUSTOMERS,
   DarkCtaBand,
   DEFAULT_PRIMARY_ACTION,
   INDUSTRIES,
+  INTEGRATIONS,
   LaneTicker,
+  LogoStrip,
   ManifestStrip,
   PORTAL_LINK,
   SERVICES,
@@ -106,6 +109,12 @@ export default async function Page() {
       <StatBand stats={STATS} />
 
       <div className="mx-auto flex max-w-6xl flex-col gap-expansive px-comfortable py-expansive">
+        {/* Unnumbered on purpose. The page's numbered sections are 01
+            Services / 02 Industries / 03 Assurance; slotting a strip into
+            that sequence would renumber copy across the page to say
+            nothing the label doesn't already say. */}
+        <LogoStrip label="Trusted by" brands={CUSTOMERS} accent="oxide" />
+
         <section className="flex flex-col gap-comfortable">
           <div className="flex flex-wrap items-end justify-between gap-cozy">
             <div className="flex flex-col gap-tight">
@@ -228,7 +237,9 @@ export default async function Page() {
                 attributionDetail="Consumer electronics manufacturer"
               />
             </div>
-            <div className="flex flex-col gap-cozy">
+            <LogoStrip label="Integrates with" brands={INTEGRATIONS} accent="transit" />
+
+            <div className="mt-expansive flex flex-col gap-cozy">
               <p className="font-mono text-xs font-medium uppercase tracking-wide text-muted">
                 Certifications and compliance
               </p>
