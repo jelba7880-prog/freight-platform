@@ -216,20 +216,33 @@ export default async function Page() {
           </div>
         </section>
 
-        <section className="border-t border-border pt-expansive">
+        <section className="flex flex-col gap-loose border-t border-border pt-expansive">
           <p className="font-mono text-xs font-medium uppercase tracking-wide text-oxide">
             03 — Assurance
           </p>
 
-          {/* 200vh scroll track: the quote pins in place (sticky, top:20vh,
-              height:80vh) while the certifications grid — left in normal
-              document flow, not sticky — scrolls past underneath it. DOM
-              order (quote, then certs) matches the reading order; only the
-              visual stacking comes from position/z-index. An opaque
-              background on the pinned panel keeps the certs' text from
-              visually colliding with the quote as they scroll past behind
-              it, rather than legibly stacking. */}
-          <div className="relative mt-comfortable h-[200vh]">
+          {/* Scroll track for the pinned quote, and nothing else. The panel
+              is sticky at top:20vh and 80vh tall, so the track's height is
+              what buys the pin its dwell: it holds for (track height - 80vh)
+              of scroll, and the same figure is the empty space left below it
+              inside the track.
+
+              That empty space is why nothing else lives in here. Flow
+              siblings placed in this track scroll *behind* the panel by
+              construction — it is opaque and z-10 — so the strip and the
+              certifications grid that used to sit here were legible for
+              only ~180px of scroll each. They now follow the track in
+              normal flow.
+
+              100vh, not 200vh: with the siblings gone, 200vh meant a 120vh
+              dwell paid for with 120vh of empty track under the quote.
+              Dwell and trailing gap are the same number, so the gap can
+              only close by shortening the hold. 100vh keeps ~180px of hold
+              — still a perceptible pin — against a 180px trailing gap,
+              which plus this section's gap-loose reads as a pause before
+              the strip rather than a void. Below ~90vh the pin stops
+              registering as a pin at all. */}
+          <div className="relative h-[100vh]">
             <div className="sticky top-[20vh] z-10 flex h-[80vh] flex-col justify-center gap-cozy bg-background">
               <TestimonialBlock
                 quote="We stopped chasing status emails. Every booking, customs file, and exception now lands in one place — and there is a named person behind it."
@@ -237,14 +250,15 @@ export default async function Page() {
                 attributionDetail="Consumer electronics manufacturer"
               />
             </div>
-            <LogoStrip label="Integrates with" brands={INTEGRATIONS} accent="transit" />
+          </div>
 
-            <div className="mt-expansive flex flex-col gap-cozy">
-              <p className="font-mono text-xs font-medium uppercase tracking-wide text-muted">
-                Certifications and compliance
-              </p>
-              <CertificationsGrid items={CERTIFICATIONS} />
-            </div>
+          <LogoStrip label="Integrates with" brands={INTEGRATIONS} accent="transit" />
+
+          <div className="flex flex-col gap-cozy">
+            <p className="font-mono text-xs font-medium uppercase tracking-wide text-muted">
+              Certifications and compliance
+            </p>
+            <CertificationsGrid items={CERTIFICATIONS} />
           </div>
         </section>
       </div>
