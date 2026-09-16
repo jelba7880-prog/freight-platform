@@ -15,7 +15,7 @@ const columns: Column<ContactInquiry>[] = [
     key: "name",
     header: "Name",
     render: (row) => (
-      <Link href={`/contact-inquiries/${row.id}`} className="text-beacon hover:underline">
+      <Link href={`/contact-inquiries/${row.id}`} className="text-oxide hover:underline">
         {row.name}
       </Link>
     ),
@@ -27,7 +27,7 @@ const columns: Column<ContactInquiry>[] = [
     render: (row) => (
       <Link
         href={`/contact-inquiries/${row.id}`}
-        className="font-mono text-sm text-beacon hover:underline"
+        className="font-mono text-sm text-oxide hover:underline"
       >
         {row.email}
       </Link>

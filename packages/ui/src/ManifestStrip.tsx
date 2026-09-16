@@ -144,14 +144,14 @@ function usePrefersReducedMotion(): boolean {
 }
 
 const statusStyles: Record<Status, { dot: string; text: string; label: string; pulses: boolean }> = {
-  "in-transit": { dot: "bg-beacon", text: "text-beacon", label: "In transit", pulses: true },
-  cleared: { dot: "bg-cleared", text: "text-cleared", label: "Cleared", pulses: true },
-  // Delivered reuses the cleared/teal token — it's the same "done" family
-  // as cleared, just a later milestone, not a distinct accent.
-  delivered: { dot: "bg-cleared", text: "text-cleared", label: "Delivered", pulses: true },
-  // Loading has no natural home in the palette (ink/steel/paper/mist/
-  // beacon/cleared/danger) — it borrows the neutral muted token rather
-  // than introduce a new hue outside the design system.
+  "in-transit": { dot: "bg-transit", text: "text-transit", label: "In transit", pulses: true },
+  cleared: { dot: "bg-delivered", text: "text-delivered", label: "Cleared", pulses: true },
+  // Delivered reuses the same token as cleared — it's the same "done"
+  // family, just a later milestone, not a distinct accent.
+  delivered: { dot: "bg-delivered", text: "text-delivered", label: "Delivered", pulses: true },
+  // Loading has no natural home in the palette (neutrals, oxide, and the
+  // transit/delivered/exception statuses) — it borrows the neutral muted
+  // token rather than introduce a new hue outside the design system.
   loading: { dot: "bg-muted", text: "text-muted", label: "Loading", pulses: true },
   // Booked hasn't started moving yet, so its dot sits static — the pulse is
   // meant to read as "in motion," and a booked shipment isn't.
@@ -263,7 +263,7 @@ export function ManifestStrip({
           <span
             aria-hidden="true"
             className={cx(
-              "size-1.5 shrink-0 rounded-full bg-beacon",
+              "size-1.5 shrink-0 rounded-full bg-oxide",
               !reducedMotion && "animate-pulse-dot",
             )}
           />
@@ -321,7 +321,7 @@ export function ManifestStrip({
         </span>
         <a
           href={PORTAL_LINK.href}
-          className="font-mono text-xs uppercase tracking-wide text-muted transition-colors duration-base hover:text-beacon"
+          className="font-mono text-xs uppercase tracking-wide text-muted transition-colors duration-base hover:text-oxide"
         >
           Open portal ↗
         </a>

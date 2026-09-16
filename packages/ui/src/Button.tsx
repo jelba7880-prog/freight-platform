@@ -5,7 +5,7 @@ export type ButtonVariant = "primary" | "secondary" | "ghost";
 export type ButtonSize = "sm" | "md";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /** "primary" is beacon-filled — reserve it for the ONE primary action in
+  /** "primary" is oxide-filled — reserve it for the ONE primary action in
    * a given view. It is never used decoratively or repeated. */
   variant?: ButtonVariant;
   size?: ButtonSize;
@@ -18,9 +18,11 @@ const base =
   "disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98]";
 
 const variants: Record<ButtonVariant, string> = {
-  // The one place beacon-solid is a full-bleed fill: always paired with
-  // ink text, regardless of which app/mode is rendering it.
-  primary: "bg-beacon-solid text-ink shadow-sm hover:brightness-105",
+  // The one place oxide-solid is a full-bleed fill: always paired with
+  // chalk text, regardless of which app/mode is rendering it — oxide is
+  // dark enough that ink on it is only 3.78:1, while chalk clears AA at
+  // 4.85:1.
+  primary: "bg-oxide-solid text-chalk shadow-sm hover:brightness-105",
   secondary: "border border-border bg-surface text-foreground hover:border-mist",
   ghost: "bg-transparent text-foreground hover:bg-surface active:bg-border/40",
 };

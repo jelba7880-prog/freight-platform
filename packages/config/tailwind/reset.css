@@ -25,14 +25,42 @@ kbd,
 samp,
 pre {
   font-family: var(--font-mono);
+  /* Reference numbers, container IDs, coordinates and timestamps are read
+     by comparing them down a column, which only works if the digits line
+     up — Plex Mono's proportional-by-default figures don't. */
+  font-variant-numeric: tabular-nums;
+}
+
+/* Display type. Archivo carries a real width axis, so headings get their
+   contrast from a slightly extended width plus tighter tracking rather
+   than from a second typeface. Declared once here as base element styling
+   so no component re-states it; body copy and UI text stay at default
+   width on Plex Sans.
+
+   This is the one rule in this file inside `@layer base` — unlike the
+   unlayered rules around it (which are meant to win, see modes.css), an
+   element-level heading rule must NOT beat a utility class, or a heading
+   that deliberately opts out (`font-sans tracking-wide` on Footer's
+   section labels) would silently get Archivo back. */
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 112;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
 }
 
 /* Visible keyboard focus on every interactive primitive. Mouse/touch
    activation never shows it (:focus-visible); keyboard navigation always
    does — components may layer their own focus treatment on top, but this
-   is the guaranteed floor. */
+   is the guaranteed floor. Transit, not the brand hue: a focus ring is a
+   system affordance, and the cool blue stays legible against both paper
+   and ink without competing with oxide-filled CTAs it lands on. */
 :focus-visible {
-  outline: 2px solid var(--color-beacon);
+  outline: 2px solid var(--color-transit);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }

@@ -1,7 +1,7 @@
 /*
  * Wires the semantic tokens from palette.css / modes.css into Tailwind's
  * theme, so components use ordinary utilities (bg-surface, text-muted,
- * text-beacon, rounded-md, shadow-md, ease-standard, …) and never a literal
+ * text-oxide, rounded-md, shadow-md, ease-standard, …) and never a literal
  * hex or Tailwind's built-in gray/blue/amber scales.
  *
  * `--color-*: initial` below wipes Tailwind's entire default color
@@ -9,8 +9,8 @@
  * reach for by accident — only the semantic names defined here do.
  *
  * The mode-aware entries (background/surface/foreground/muted/border,
- * beacon/cleared/danger and their soft variants, and the three shadow
- * tokens) only get a light-mode placeholder value here — modes.css
+ * oxide/transit/delivered/danger and their soft variants, and the three
+ * shadow tokens) only get a light-mode placeholder value here — modes.css
  * redeclares the real per-mode values directly against these same
  * property names (see the comment there for why it can't instead be a
  * `var(--background)`-style alias declared inside this @theme block).
@@ -25,25 +25,29 @@
   --color-ink: var(--palette-ink);
   --color-steel: var(--palette-steel);
   --color-paper: var(--palette-paper);
+  --color-chalk: var(--palette-chalk);
   --color-mist: var(--palette-mist);
 
   /* Fixed, non-mode-aware raw hue — full-bleed fills (e.g. the primary
-     button) that are always paired with ink-colored text on top,
+     button) that are always paired with chalk-colored text on top,
      regardless of which app/mode is rendering it. */
-  --color-beacon-solid: var(--palette-beacon);
-  --color-cleared-solid: var(--palette-cleared);
+  --color-oxide-solid: var(--palette-oxide);
+  --color-delivered-solid: var(--palette-delivered);
 
   /* Mode-aware — placeholder (light) values; modes.css owns the real ones. */
   --color-background: var(--palette-paper);
-  --color-surface: var(--palette-paper);
+  --color-surface: var(--palette-chalk);
   --color-foreground: var(--palette-ink);
   --color-muted: var(--palette-mist);
-  --color-border: var(--palette-mist);
-  --color-beacon: var(--palette-beacon-on-light);
-  --color-cleared: var(--palette-cleared-on-light);
-  --color-danger: var(--palette-danger);
-  --color-beacon-soft: var(--palette-beacon);
-  --color-cleared-soft: var(--palette-cleared);
+  --color-border: var(--palette-fog);
+  --color-oxide: var(--palette-oxide-on-light);
+  --color-transit: var(--palette-transit-on-light);
+  --color-delivered: var(--palette-delivered-on-light);
+  --color-danger: var(--palette-exception);
+  --color-oxide-soft: var(--palette-oxide);
+  --color-transit-soft: var(--palette-transit);
+  --color-delivered-soft: var(--palette-delivered);
+  --color-danger-soft: var(--palette-exception);
 
   /* === Type ==============================================================
      Font loading itself happens in packages/ui/src/fonts.ts via next/font;
@@ -51,8 +55,10 @@
      attaches to <html>. font-sans/font-mono are Tailwind's own utility
      names — pointed at Plex Sans/Mono so a bare `font-sans` still does the
      right thing. font-display has no Tailwind default; it's added here
-     for Geist headings. */
-  --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+     for Archivo headings — a grotesque with a real width axis, so display
+     type gets its contrast from width and tracking (see reset.css's
+     h1/h2/h3 rule) rather than from a second neutral sans. */
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
 

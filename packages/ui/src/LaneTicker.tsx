@@ -26,7 +26,7 @@ export function LaneTicker({ lanes, className }: LaneTickerProps) {
           className="flex items-center gap-comfortable whitespace-nowrap font-mono text-xs uppercase tracking-wide text-muted"
         >
           {lane}
-          <span aria-hidden="true" className="text-beacon">
+          <span aria-hidden="true" className="text-oxide">
             /
           </span>
         </span>

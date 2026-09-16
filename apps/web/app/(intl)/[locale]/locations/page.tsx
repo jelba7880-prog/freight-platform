@@ -45,7 +45,7 @@ function LocationsFilterForm({
             id="service"
             name="service"
             defaultValue={service ?? ""}
-            className="h-10 rounded-sm border border-border bg-surface px-cozy font-sans text-sm text-foreground transition-colors duration-base ease-standard focus:border-beacon"
+            className="h-10 rounded-sm border border-border bg-surface px-cozy font-sans text-sm text-foreground transition-colors duration-base ease-standard focus:border-transit"
           >
             <option value="">Any service</option>
             {SERVICES.map((entry) => (

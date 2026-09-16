@@ -69,7 +69,7 @@ export default async function IndustriesPage() {
                 </span>
               ))}
             </span>
-            <span className="font-mono text-sm text-beacon opacity-0 transition-opacity duration-base group-hover:opacity-100 sm:pt-tight">
+            <span className="font-mono text-sm text-oxide opacity-0 transition-opacity duration-base group-hover:opacity-100 sm:pt-tight">
               →
             </span>
           </a>

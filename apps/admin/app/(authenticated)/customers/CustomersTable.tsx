@@ -13,7 +13,7 @@ const columns: Column<CustomerWithShipmentCount>[] = [
     key: "name",
     header: "Name",
     render: (row) => (
-      <Link href={`/customers/${row.id}`} className="text-beacon hover:underline">
+      <Link href={`/customers/${row.id}`} className="text-oxide hover:underline">
         {row.name ?? "—"}
       </Link>
     ),
@@ -23,7 +23,7 @@ const columns: Column<CustomerWithShipmentCount>[] = [
     header: "Email",
     type: "data",
     render: (row) => (
-      <Link href={`/customers/${row.id}`} className="font-mono text-sm text-beacon hover:underline">
+      <Link href={`/customers/${row.id}`} className="font-mono text-sm text-oxide hover:underline">
         {row.email ?? "—"}
       </Link>
     ),

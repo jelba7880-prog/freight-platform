@@ -41,7 +41,7 @@ export function LocationCard({ location, locale }: { location: LocationSummary; 
               <Link
                 key={slug}
                 href={localePath(locale, `/services/${slug}`)}
-                className="rounded-full border border-border px-snug py-[0.1875rem] font-sans text-xs font-medium text-muted transition-colors duration-base ease-standard hover:border-beacon hover:text-beacon"
+                className="rounded-full border border-border px-snug py-[0.1875rem] font-sans text-xs font-medium text-muted transition-colors duration-base ease-standard hover:border-oxide hover:text-oxide"
               >
                 {SERVICE_LABELS[slug] ?? slug}
               </Link>
